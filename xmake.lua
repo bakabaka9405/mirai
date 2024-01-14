@@ -1,5 +1,10 @@
 add_rules("mode.debug", "mode.release")
 add_includedirs("include", {public = true})
+if is_mode("debug") then 
+    add_cxxflags("-DMR_DEBUG")
+end
+
+
 target("mirai")
     set_kind("static")
     set_languages("c11","cxx20")
@@ -9,7 +14,7 @@ target("test")
     set_languages("c11","cxx20")
     add_files("src/test/*.cpp")
 --
--- If you want to known more usage about xmake, please see https://xmake.io
+-- If you want to known more usage about xmake, please see https: //xmake.io
 --
 -- ## FAQ
 --
@@ -54,10 +59,10 @@ target("test")
 --    -- set warning all as error
 --    set_warnings("all", "error")
 --
---    -- set language: c99, c++11
+--    -- set language:  c99, c++11
 --    set_languages("c99", "c++11")
 --
---    -- set optimization: none, faster, fastest, smallest
+--    -- set optimization:  none, faster, fastest, smallest
 --    set_optimize("fastest")
 --
 --    -- add include search directories

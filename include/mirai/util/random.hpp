@@ -1,17 +1,13 @@
 #pragma once
-#include "../pch.hpp"
+#include <mirai/pch.hpp>
+#include<mirai/util/time.hpp>
 namespace mirai{
-	[[nodiscard]] inline 
-	ll time_now()mr_noexcept{
-		return chrono::system_clock::now().time_since_epoch().count();
-	}
 
 	inline
 	random_device __gen;
 
 	inline 
-	std::mt19937_64 __e(__gen());
-
+	std:: mt19937_64 __e(__gen());
 
 	[[nodiscard]] inline
 	ll randi(ll l,ll r)mr_noexcept{
@@ -27,12 +23,12 @@ namespace mirai{
 
 	inline
 	void shuffle(auto begin,auto end)mr_noexcept{
-		std::shuffle(begin,end,__gen);
+		std:: shuffle(begin,end,__gen);
 	}
 
 	inline
 	void shuffle(auto&& r)mr_noexcept{
-		ranges::shuffle(r,__gen);
-		//shuffle(std::begin(r),std::end(r));
+		ranges:: shuffle(r,__gen);
+		//shuffle(std:: begin(r),std:: end(r));
 	}
 }

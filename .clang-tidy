@@ -1,8 +1,8 @@
 #User config
-Diagnostics:
-  UnusedIncludes: Strict
-  ClangTidy:
-    Add:
+Diagnostics: 
+  UnusedIncludes:  Strict
+  ClangTidy: 
+    Add: 
     [
         # performance-*,
         # bugprone-*,
@@ -161,5 +161,5 @@ Diagnostics:
         readability-uniqueptr-delete-release,
         readability-use-anyofallof,
     ]
-    CheckOptions:
-      readability-identifier-naming.VariableCase: camelCase
+    CheckOptions: 
+      readability-identifier-naming.VariableCase:  camelCase

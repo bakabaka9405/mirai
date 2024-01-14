@@ -2,6 +2,7 @@
 #include <mirai/define.hpp>
 #include <iostream>
 #include <iomanip>
+#include <initializer_list>
 #include <queue>
 #include <stack>
 #include <string>
@@ -15,47 +16,63 @@
 #include <algorithm>
 #include <numeric>
 #include <functional>
+#include <iterator>
 #include <chrono>
 #include <ranges>
-namespace mirai{
+#include <concepts>
+#include <format>
+
+#include <cassert>
+#include <cmath>
+namespace mirai {
 	using namespace std::literals;
 
-	namespace ranges=std::ranges;	//NOLINT
-	namespace views=std::views;		//NOLINT
-	namespace chrono=std::chrono;	//NOLINT
+	namespace ranges = std::ranges; // NOLINT
+	namespace views = std::views;	// NOLINT
+	namespace chrono = std::chrono; // NOLINT
 
-	using ll=long long;
-	using ull=unsigned long long;
-	using i64=long long;
-	using i128=__int128;
+	using ll = long long;
+	using ull = unsigned long long;
+	using i64 = long long;
+	using u64 = unsigned long long;
+	using i128 = __int128;
+	using u128 = unsigned __int128;
 
+	using std::back_inserter;
+	using std::cerr;
 	using std::cin;
+	using std::clog;
+	using std::copy;
+	using std::copy_n;
 	using std::cout;
+	using std::default_random_engine;
+	using std::deque;
 	using std::endl;
-	using std::setw;
-	using std::setprecision;
-	using std::string;
-	using std::string_view;
-	using std::vector;
+	using std::format;
+	using std::function;
+	using std::greater;
+	using std::iota;
+	using std::istream_iterator;
+	using std::less;
 	using std::map;
 	using std::multimap;
-	using std::set;
 	using std::multiset;
-	using std::unordered_map;
-	using std::unordered_multimap;
-	using std::unordered_set;
-	using std::unordered_multiset;
-	using std::queue;
-	using std::deque;
-	using std::stack;
 	using std::priority_queue;
-	using std::default_random_engine;
+	using std::queue;
+	using std::random_device;
+	using std::set;
+	using std::setprecision;
+	using std::setw;
+	using std::sort;
+	using std::stack;
+	using std::string;
+	using std::string_view;
+	using std::to_string;
 	using std::uniform_int_distribution;
 	using std::uniform_real_distribution;
-	using std::random_device;
-	using std::function;
-	using std::iota;
-	using std::sort;
-	using std::greater;
-	using std::less;
-}
+	using std::unordered_map;
+	using std::unordered_multimap;
+	using std::unordered_multiset;
+	using std::unordered_set;
+	using std::vector;
+} // namespace mirai

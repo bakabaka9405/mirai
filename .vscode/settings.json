@@ -2,5 +2,8 @@
 	"files.exclude": {
 		"**/.cache": true,
 		"**/.xmake": true
+	},
+	"[cpp]": {
+		"editor.defaultFormatter": "xaver.clang-format"
 	}
 }

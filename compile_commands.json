@@ -1,6 +1,0 @@
-[
-{
-  "directory": "F:\\Working\\proj\\mirai",
-  "arguments": ["clang.exe", "-c", "-Qunused-arguments", "-m64", "-fvisibility=hidden", "-fvisibility-inlines-hidden", "-O3", "-std=c++20", "-Iinclude", "-fexceptions", "-fcxx-exceptions", "-DNDEBUG", "-o", "build\\.objs\\test\\windows\\x64\\release\\src\\test\\main.cpp.obj", "src\\test\\main.cpp"],
-  "file": "src\\test\\main.cpp"
-}]
