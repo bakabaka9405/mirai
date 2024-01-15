@@ -1,18 +1,23 @@
 add_rules("mode.debug", "mode.release")
 add_includedirs("include", {public = true})
+set_languages("c11","cxx20")
+
+
 if is_mode("debug") then 
     add_cxxflags("-DMR_DEBUG")
+    set_policy("build.sanitizer.address", true)
+    set_policy("build.sanitizer.undefined", true)
 end
 
 
 target("mirai")
     set_kind("static")
-    set_languages("c11","cxx20")
+    -- set_precompiled_header("include/mirai/pch.hpp")
 
 target("test")
     set_kind("binary")
-    set_languages("c11","cxx20")
     add_files("src/test/*.cpp")
+    add_deps("mirai")
 --
 -- If you want to known more usage about xmake, please see https: //xmake.io
 --

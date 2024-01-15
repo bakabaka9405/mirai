@@ -9,10 +9,11 @@ namespace mirai {
 		constexpr operator vec2<Y>() const mr_noexcept {
 			return { static_cast<Y>(x), static_cast<Y>(y) };
 		}
-		constexpr vec2	operator+(const vec2& rt) const mr_noexcept { return { x + rt.x, y + rt.y }; }
-		constexpr vec2	operator-(const vec2& rt) const mr_noexcept { return { x - rt.x, y - rt.y }; }
-		constexpr vec2	operator*(auto&& c) const mr_noexcept { return { x * c, y * c }; }
-		constexpr vec2	operator/(auto&& c) const mr_noexcept { return { x / c, y / c }; }
+		constexpr vec2 operator+(const vec2& rt) const mr_noexcept { return { x + rt.x, y + rt.y }; }
+		constexpr vec2 operator-(const vec2& rt) const mr_noexcept { return { x - rt.x, y - rt.y }; }
+		constexpr vec2 operator*(auto&& c) const mr_noexcept { return { x * c, y * c }; }
+		friend vec2 operator*(auto&& c, const vec2& vec) mr_noexcept { return vec * c; }
+		constexpr vec2 operator/(auto&& c) const mr_noexcept { return { x / c, y / c }; }
 		constexpr vec2& operator+=(const vec2& rt) mr_noexcept {
 			x += rt.x, y += rt.y;
 			return *this;
@@ -29,14 +30,17 @@ namespace mirai {
 			x /= c, y /= c;
 			return *this;
 		}
-		constexpr double	 norm() const mr_noexcept { return sqrt(x * x + y * y); }
-		constexpr bool		 operator==(const vec2& rt) const mr_noexcept { return std::equal_to<T>()(x, rt.x) && std::equal_to<T>()(y, rt.y); }
-		constexpr bool		 operator!=(const vec2& rt) const mr_noexcept { return !this->operator==(rt); }
-		inline std::ostream& operator<<(std::ostream& out) const mr_noexcept {
-			return out << format("({0},{1})", x, y);
+		constexpr double norm() const mr_noexcept { return sqrt(x * x + y * y); }
+		constexpr bool operator==(const vec2& rt) const mr_noexcept { return std::equal_to<T>()(x, rt.x) && std::equal_to<T>()(y, rt.y); }
+		constexpr bool operator!=(const vec2& rt) const mr_noexcept { return !this->operator==(rt); }
+		friend std::ostream& operator<<(std::ostream& out, const vec2& vec) mr_noexcept {
+			return out << format("({0},{1})", vec.x, vec.y);
 		}
 		inline string to_string() const mr_noexcept {
 			return format("({0},{1})", x, y);
+		}
+		MR_NODISCARD friend inline vec2 lerp(const vec2& lhs, const vec2& rhs, double t) mr_noexcept {
+			return lhs + t * (rhs - lhs);
 		}
 	};
 	using vec2i = vec2<ll>;
@@ -49,10 +53,11 @@ namespace mirai {
 		constexpr operator vec3<Y>() const mr_noexcept {
 			return { static_cast<Y>(x), static_cast<Y>(y), static_cast<Y>(z) };
 		}
-		constexpr vec3	operator+(const vec3& rt) const mr_noexcept { return { x + rt.x, y + rt.y, z + rt.z }; }
-		constexpr vec3	operator-(const vec3& rt) const mr_noexcept { return { x - rt.x, y - rt.y, z - rt.z }; }
-		constexpr vec3	operator*(auto&& c) const mr_noexcept { return { x * c, y * c, z * c }; }
-		constexpr vec3	operator/(auto&& c) const mr_noexcept { return { x / c, y / c, z / c }; }
+		constexpr vec3 operator+(const vec3& rt) const mr_noexcept { return { x + rt.x, y + rt.y, z + rt.z }; }
+		constexpr vec3 operator-(const vec3& rt) const mr_noexcept { return { x - rt.x, y - rt.y, z - rt.z }; }
+		constexpr vec3 operator*(auto&& c) const mr_noexcept { return { x * c, y * c, z * c }; }
+		friend vec3 operator*(auto&& c, const vec3& vec) mr_noexcept { return vec * c; }
+		constexpr vec3 operator/(auto&& c) const mr_noexcept { return { x / c, y / c, z / c }; }
 		constexpr vec3& operator+=(const vec3& rt) mr_noexcept {
 			x += rt.x, y += rt.y, z += rt.z;
 			return *this;
@@ -72,13 +77,16 @@ namespace mirai {
 		constexpr bool operator==(const vec3& rt) const mr_noexcept {
 			return std::equal_to<T>()(x, rt.x) && std::equal_to<T>()(y, rt.y) && std::equal_to<T>()(z, rt.z);
 		}
-		constexpr bool	 operator!=(const vec3& rt) const mr_noexcept { return !this->operator==(rt); }
+		constexpr bool operator!=(const vec3& rt) const mr_noexcept { return !this->operator==(rt); }
 		constexpr double norm() const mr_noexcept { return sqrt(x * x + y * y + z * z); }
-		std::ostream&	 operator<<(std::ostream& out) const mr_noexcept {
-			   return out << format("({0},{1},{2})", x, y, z);
+		friend std::ostream& operator<<(std::ostream& out, const vec3& vec) mr_noexcept {
+			return out << format("({0},{1},{2})", vec.x, vec.y, vec.z);
 		}
 		string to_string() const mr_noexcept {
 			return format("({0},{1},{2})", x, y, z);
+		}
+		MR_NODISCARD friend inline vec3 lerp(const vec3& lhs, const vec3& rhs, double t) mr_noexcept {
+			return lhs + t * (rhs - lhs);
 		}
 	};
 	using vec3i = vec3<ll>;

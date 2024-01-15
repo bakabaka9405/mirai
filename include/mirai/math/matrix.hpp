@@ -17,8 +17,8 @@ namespace mirai {
 			for (T* p = &v[0][0]; auto&& v : val) *p++ = std::move(v);
 		}
 		matrix(const matrix& rt) mr_noexcept : matrix() {
-			T *p = &v[0][0];
-			const T *q = &rt.v[0][0];
+			T* p = &v[0][0];
+			const T* q = &rt.v[0][0];
 			for (auto i = n * m; i; --i) *p++ = *q++;
 		}
 
@@ -85,7 +85,6 @@ namespace mirai {
 		}
 		return out;
 	}
-
 
 	template <typename T, std::size_t n, class add_proxy>
 	matrix<T, n, n, add_proxy> fastpow(matrix<T, n, n, add_proxy> x, ll k) mr_noexcept {

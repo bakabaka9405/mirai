@@ -2,9 +2,10 @@
 #include <mirai/pch.hpp>
 namespace mirai {
 	template <typename T>
-	struct IE {
-		constexpr static T val;
-	};
+	struct IE {};
+
+	template<typename T>
+	inline constexpr T IE_v=IE<T>::value;
 
 	template <typename T>
 		requires std::integral<T>
@@ -12,9 +13,9 @@ namespace mirai {
 		constexpr static T val = T(1);
 	};
 
-	MR_NODISCARD inline ll
-	fastpow(ll x, ll k, ll P) mr_noexcept {
-		ll res = 1;
+	MR_NODISCARD inline ull
+	fastpow(ull x, ull k, ull P) mr_noexcept {
+		ull res = 1;
 		while (k) {
 			if (k & 1) res = res * x % P;
 			x = x * x % P;
@@ -23,7 +24,7 @@ namespace mirai {
 		return res;
 	}
 
-	MR_NODISCARD inline ll inv(ll x, ll P) mr_noexcept {
+	MR_NODISCARD inline ull inv(ull x, ull P) mr_noexcept {
 		return fastpow(x, P - 2, P);
 	}
 

@@ -24,6 +24,7 @@
 
 #include <cassert>
 #include <cmath>
+#include <cctype>
 namespace mirai {
 	using namespace std::literals;
 
@@ -75,4 +76,7 @@ namespace mirai {
 	using std::unordered_multiset;
 	using std::unordered_set;
 	using std::vector;
+	using std::gcd;
+	using std::lcm;
+	using std::lerp;
 } // namespace mirai
