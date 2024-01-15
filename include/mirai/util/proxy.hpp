@@ -15,7 +15,7 @@ namespace mirai {
 	};
 
 	template <typename T, size_t P>
-		requires std::integral<T>
+		requires integral<T>
 	struct mod_add_proxy {
 		MR_NODISCARD inline static T
 		work(const T& lt, const T& rt) mr_noexcept {
@@ -25,7 +25,7 @@ namespace mirai {
 	};
 
 	template <typename T, size_t P>
-		requires std::integral<T>
+		requires integral<T>
 	struct safe_mod_add_proxy {
 		MR_NODISCARD inline static T
 		work(const T& lt, const T& rt) mr_noexcept {
@@ -35,7 +35,7 @@ namespace mirai {
 	};
 
 	template <typename T, size_t P>
-		requires std::integral<T>
+		requires integral<T>
 	struct mod_mul_proxy {
 		MR_NODISCARD inline static T
 		work(const T& lt, const T& rt) mr_noexcept {
@@ -56,7 +56,7 @@ namespace mirai {
 	struct minimum_proxy {
 		MR_NODISCARD inline static T
 		work(const T& lhs, const T& rhs) mr_noexcept {
-			return std::min(lhs,rhs);
+			return std::min(lhs, rhs);
 		}
 	};
 

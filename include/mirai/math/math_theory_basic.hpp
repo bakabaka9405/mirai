@@ -4,11 +4,11 @@ namespace mirai {
 	template <typename T>
 	struct IE {};
 
-	template<typename T>
-	inline constexpr T IE_v=IE<T>::value;
+	template <typename T>
+	inline constexpr T IE_v = IE<T>::value;
 
 	template <typename T>
-		requires std::integral<T>
+		requires integral<T>
 	struct IE<T> {
 		constexpr static T val = T(1);
 	};
@@ -39,7 +39,7 @@ namespace mirai {
 
 	inline void generate_inv_arr(std::random_access_iterator auto it, size_t n, size_t P) mr_noexcept {
 		*(it + 1) = 1;
-		auto p	  = it + 2;
+		auto p = it + 2;
 		for (size_t i = 2; i <= n; ++i, ++p) {
 			*p = (P - P / i) * it[P % i] % P;
 		}

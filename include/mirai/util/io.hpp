@@ -31,7 +31,7 @@ namespace mirai {
 	}
 
 	inline ll read() {
-		ll	 x = 0;
+		ll x = 0;
 		bool f = 0;
 		char c = getchar();
 		while (c < '0' || c > '9') {
@@ -45,7 +45,7 @@ namespace mirai {
 		return f ? -x : x;
 	}
 
-	inline void write(std::integral auto x) {
+	inline void write(integral auto x) {
 		if (x < 0) putchar('-'), x = -x;
 		if (x > 9) write(x / 10);
 		putchar(x % 10 + '0');
