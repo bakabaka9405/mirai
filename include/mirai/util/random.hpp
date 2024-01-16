@@ -1,6 +1,5 @@
 #pragma once
 #include <mirai/pch.hpp>
-#include <random>
 namespace mirai {
 
 	inline random_device __gen;

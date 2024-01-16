@@ -37,7 +37,7 @@ namespace mirai {
 		y -= a / b * x;
 	}
 
-	inline void generate_inv_arr(std::random_access_iterator auto it, size_t n, size_t P) mr_noexcept {
+	inline void generate_inv_arr(std::random_access_iterator auto it, size_t n, ull P) mr_noexcept {
 		*(it + 1) = 1;
 		auto p = it + 2;
 		for (size_t i = 2; i <= n; ++i, ++p) {

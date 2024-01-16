@@ -40,6 +40,7 @@ namespace mirai {
 	using u128 = unsigned __int128; 
 
 	using std::initializer_list;
+	using std::inserter;
 	using std::back_inserter;
 	using std::cerr;
 	using std::cin;
@@ -89,4 +90,5 @@ namespace mirai {
 	using chrono::duration;
 	using std::pair;
 	using std::tuple;
+	using std::swap;
 } // namespace mirai

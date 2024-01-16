@@ -7,5 +7,6 @@
 #define mr_assert(x) assert(x)
 #else
 #define mr_noexcept noexcept
+//#define mr_assert(x) [[assume(!(x))]]
 #define mr_assert(x) void()
 #endif

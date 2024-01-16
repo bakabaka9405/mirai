@@ -12,7 +12,7 @@ namespace mirai {
 		constexpr vec2 operator+(const vec2& rt) const mr_noexcept { return { x + rt.x, y + rt.y }; }
 		constexpr vec2 operator-(const vec2& rt) const mr_noexcept { return { x - rt.x, y - rt.y }; }
 		constexpr vec2 operator*(auto&& c) const mr_noexcept { return { x * c, y * c }; }
-		friend vec2 operator*(auto&& c, const vec2& vec) mr_noexcept { return vec * c; }
+		friend constexpr vec2 operator*(auto&& c, const vec2& vec) mr_noexcept { return vec * c; }
 		constexpr vec2 operator/(auto&& c) const mr_noexcept { return { x / c, y / c }; }
 		constexpr vec2& operator+=(const vec2& rt) mr_noexcept {
 			x += rt.x, y += rt.y;
@@ -56,7 +56,7 @@ namespace mirai {
 		constexpr vec3 operator+(const vec3& rt) const mr_noexcept { return { x + rt.x, y + rt.y, z + rt.z }; }
 		constexpr vec3 operator-(const vec3& rt) const mr_noexcept { return { x - rt.x, y - rt.y, z - rt.z }; }
 		constexpr vec3 operator*(auto&& c) const mr_noexcept { return { x * c, y * c, z * c }; }
-		friend vec3 operator*(auto&& c, const vec3& vec) mr_noexcept { return vec * c; }
+		friend constexpr vec3 operator*(auto&& c, const vec3& vec) mr_noexcept { return vec * c; }
 		constexpr vec3 operator/(auto&& c) const mr_noexcept { return { x / c, y / c, z / c }; }
 		constexpr vec3& operator+=(const vec3& rt) mr_noexcept {
 			x += rt.x, y += rt.y, z += rt.z;

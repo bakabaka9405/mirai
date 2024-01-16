@@ -10,16 +10,8 @@
 #include <mirai/util/time.hpp>
 using namespace mirai;
 int main() {
-	vector<ll> v1(1e7);
-	rand_generator<ll> gen(1, 1e8);
-	ll res=0;
-	ranges::generate(v1, gen);
-	{
-		auto_timer timer;
-		for(auto [i,j]:zip(views::iota(0ll,static_cast<ll>(v1.size())),v1)){
-			res=max(res,i*2+j);
-		}
-	}
-	cout<<res<<endl;
+	using mat = matrix<ll, 2, 2, mod_add_proxy<ll, 998244353>>;
+	mat a{ 1, 2, 3, 4 };
+
 	return 0;
 }
