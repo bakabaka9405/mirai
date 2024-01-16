@@ -1,9 +1,9 @@
 #pragma once
 #include <mirai/pch.hpp>
 namespace mirai {
-	inline auto zip(auto&& arr1, auto&& arr2) mr_noexcept {
-		using arr1_t = decltype(arr1);
-		using arr2_t = decltype(arr2);
+	
+	template<typename _range1,typename _range2>
+	inline auto zip(_range1&& arr1, _range2&& arr2) mr_noexcept {
 		using iter1_t = decltype(std::begin(arr1));
 		using iter2_t = decltype(std::begin(arr2));
 
@@ -31,14 +31,14 @@ namespace mirai {
 				return iterator{ std::end(_arr1), std::end(_arr2) };
 			}
 
-			arr1_t _arr1;
-			arr2_t _arr2;
+			_range1 _arr1;
+			_range2 _arr2;
 		};
-		return zip_wrapper{ arr1, arr2 };
+		return zip_wrapper{ std::forward<_range1>(arr1), std::forward<_range2>(arr2) };
 	}
 
-	inline auto enumerate(auto&& arr) mr_noexcept {
-		using arr_t = decltype(arr);
+	template<typename _range>
+	inline auto enumerate(_range&& arr) mr_noexcept {
 		using iter_t = decltype(std::begin(arr));
 
 		struct enum_wrapper {
@@ -65,8 +65,8 @@ namespace mirai {
 			auto end() mr_noexcept {
 				return iterator{ static_cast<ll>(std::size(_data)), std::end(_data) };
 			}
-			arr_t _data;
+			_range _data;
 		};
-		return enum_wrapper{ arr };
+		return enum_wrapper{ std::forward<_range>(arr) };
 	}
 } // namespace mirai
