@@ -8,10 +8,10 @@
 #include <mirai/util/string.hpp>
 #include <mirai/util/range.hpp>
 #include <mirai/util/time.hpp>
+#include <mirai/util/type_info.hpp>
 using namespace mirai;
+constinit string_view type = type_name<tuple<int, tuple<ll*, ll&&, ll&, ll*&>, double>>;
 int main() {
-	using mat = matrix<ll, 2, 2, mod_add_proxy<ll, 998244353>>;
-	mat a{ 1, 2, 3, 4 };
-
+	cout << type << endl;
 	return 0;
 }

@@ -8,5 +8,5 @@
 #else
 #define mr_noexcept noexcept
 //#define mr_assert(x) [[assume(!(x))]]
-#define mr_assert(x) void()
+#define mr_assert(x) (void(0))
 #endif

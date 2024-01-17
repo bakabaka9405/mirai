@@ -6,4 +6,7 @@ build/
 .DS_Store
 
 # clang cache
-.cache
+.cache/
+
+# vscode cache
+.vscode/

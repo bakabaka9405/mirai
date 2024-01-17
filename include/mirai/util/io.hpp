@@ -30,7 +30,7 @@ namespace mirai {
 		return out << to_string(v);
 	}
 
-	inline ll read() {
+	inline ll readi() {
 		ll x = 0;
 		bool f = 0;
 		char c = getchar();
@@ -45,9 +45,26 @@ namespace mirai {
 		return f ? -x : x;
 	}
 
-	inline void write(integral auto x) {
+	inline void puti(integral auto x) {
 		if (x < 0) putchar('-'), x = -x;
-		if (x > 9) write(x / 10);
+		if (x > 9) puti(x / 10);
 		putchar(x % 10 + '0');
+	}
+
+	template<typename... Args>
+	inline void input(Args&&... args){
+		((cin>>args),...);
+	}
+
+	template<typename... Args>
+	inline void output(Args&&... args){
+		((cout<<args),...);
+	}
+
+	template<typename... Args>
+	inline auto read_tuple(){
+		tuple<Args...> res;
+
+		return res;
 	}
 } // namespace mirai
