@@ -23,19 +23,22 @@ namespace mirai {
 	ADD_TYPE_NAME(typename T, T&, string_concat(type_name<T>, string_literal("&")));
 	ADD_TYPE_NAME(typename T, T*, string_concat(type_name<T>, string_literal("*")));
 	ADD_TYPE_NAME(typename T, T&&, string_concat(type_name<T>, string_literal("&&")));
+	ADD_TYPE_NAME(typename T, const T, string_concat(string_literal("const "), type_name<T>));
 	ADD_TYPE_NAME(, int, string_literal("int"));
 	ADD_TYPE_NAME(, long long, string_literal("long long"));
 	ADD_TYPE_NAME(, double, string_literal("double"));
 	ADD_TYPE_NAME(typename T COMMA typename Y, pair<T COMMA Y>,
 				  string_concat(string_literal("pair<"), type_name<T>, string_literal(", "), type_name<Y>, string_literal(">")));
 	ADD_TYPE_NAME(typename DOTS Args, tuple<Args DOTS>,
-				  string_concat(string_literal("tuple<"),type_name<Args DOTS>, string_literal(">")));
+				  string_concat(string_literal("tuple<"), type_name<Args DOTS>, string_literal(">")));
 
-	constexpr string get_type_name(auto&& x) {
+	template<typename T>
+	constexpr string get_type_name(T&& x) {
 		return type_name<decltype(x)>.data;
 	}
 
-#undef ADD_TYPE_NAME
-#undef COMMA
-#undef DOTS
+	template <typename T, typename... Args>
+	constexpr string get_type_name(T&& x, Args&&... args) {
+		return get_type_name(std::forward<T>(x)) + ", " + get_type_name(std::forward<Args...>(args...));
+	}
 } // namespace mirai

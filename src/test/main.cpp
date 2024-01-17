@@ -10,8 +10,10 @@
 #include <mirai/util/time.hpp>
 #include <mirai/util/type_info.hpp>
 using namespace mirai;
-constinit string_view type = type_name<tuple<int, tuple<ll*, ll&&, ll&, ll*&>, double>>;
 int main() {
-	cout << type << endl;
+	vector vec{1,2,3,4,5};
+	for(auto [i,j]:enumerate(vec)){
+		cout<<get_type_name(std::move(i),j)<<endl;
+	}
 	return 0;
 }
