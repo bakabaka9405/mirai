@@ -11,9 +11,7 @@
 #include <mirai/util/type_info.hpp>
 using namespace mirai;
 int main() {
-	vector vec{1,2,3,4,5};
-	for(auto [i,j]:enumerate(vec)){
-		cout<<get_type_name(std::move(i),j)<<endl;
-	}
+	auto t=read_tuple<int,double>();
+	cout<<get_type_name(t)<<endl;
 	return 0;
 }

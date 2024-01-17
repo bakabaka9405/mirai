@@ -1,6 +1,7 @@
 #pragma once
 #include <mirai/pch.hpp>
 #include <mirai/util/string.hpp>
+#include <utility>
 namespace mirai {
 	template <typename T>
 	inline void read_array(auto&& it, size_t read_n) mr_noexcept {
@@ -51,20 +52,29 @@ namespace mirai {
 		putchar(x % 10 + '0');
 	}
 
-	template<typename... Args>
-	inline void input(Args&&... args){
-		((cin>>args),...);
+	template <typename... Args>
+	inline void input(Args&&... args) {
+		((cin >> args), ...);
 	}
 
-	template<typename... Args>
-	inline void output(Args&&... args){
-		((cout<<args),...);
+	template <typename... Args>
+	inline void output(Args&&... args) {
+		((cout << args), ...);
 	}
 
-	template<typename... Args>
-	inline auto read_tuple(){
+	template <typename... Args, size_t... I>
+	inline auto read_tuple(std::index_sequence<I...>) {
 		tuple<Args...> res;
-
+		((cin >> std::get<I>(res)), ...);
 		return res;
+	}
+
+	template <typename... Args>
+	inline auto read_tuple() {
+		return []<size_t... I>(std::index_sequence<I...>) {
+			std::tuple<Args...> res;
+			((cin >> std::get<I>(res)), ...);
+			return res;
+		}(std::make_index_sequence<sizeof...(Args)>());
 	}
 } // namespace mirai
