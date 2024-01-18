@@ -11,7 +11,9 @@
 #include <mirai/util/type_info.hpp>
 using namespace mirai;
 int main() {
-	auto t=read_tuple<int,double>();
-	cout<<get_type_name(t)<<endl;
+	vector<ll> vec;
+	cout<<get_type_name(cin)<<endl;
+	pair<int, tuple<ll, double, tuple<char, string>>> p;
+	cout<<get_type_name(p);
 	return 0;
 }

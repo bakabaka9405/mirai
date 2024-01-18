@@ -20,19 +20,27 @@ namespace mirai {
 #define COMMA ,
 #define DOTS ...
 
-	ADD_TYPE_NAME(typename T, T&, string_concat(type_name<T>, string_literal("&")));
-	ADD_TYPE_NAME(typename T, T*, string_concat(type_name<T>, string_literal("*")));
-	ADD_TYPE_NAME(typename T, T&&, string_concat(type_name<T>, string_literal("&&")));
-	ADD_TYPE_NAME(typename T, const T, string_concat(string_literal("const "), type_name<T>));
-	ADD_TYPE_NAME(, int, string_literal("int"));
-	ADD_TYPE_NAME(, long long, string_literal("long long"));
-	ADD_TYPE_NAME(, double, string_literal("double"));
+	ADD_TYPE_NAME(typename T, T&, string_concat(type_name<T>, "&"));
+	ADD_TYPE_NAME(typename T, T*, string_concat(type_name<T>, "*"));
+	ADD_TYPE_NAME(typename T, T&&, string_concat(type_name<T>, "&&"));
+	ADD_TYPE_NAME(typename T, const T, string_concat("const ", type_name<T>));
+	ADD_TYPE_NAME(, char, "char");
+	ADD_TYPE_NAME(, int, "int");
+	ADD_TYPE_NAME(, long long, "long long");
+	ADD_TYPE_NAME(, double, "double");
+	ADD_TYPE_NAME(, string, "string");
+	ADD_TYPE_NAME(, string_view, "string_view");
+	ADD_TYPE_NAME(, std::istream, "istream");
+	ADD_TYPE_NAME(, std::ostream, "ostream");
+	ADD_TYPE_NAME(typename T, vector<T>, string_concat("vector<", type_name<T>, ">"));
+	ADD_TYPE_NAME(typename T, set<T>, string_concat("set<", type_name<T>, ">"));
+	ADD_TYPE_NAME(typename T COMMA typename Y, map<T COMMA Y>, string_concat("map<", type_name<T>, ", ", type_name<Y>, ">"));
 	ADD_TYPE_NAME(typename T COMMA typename Y, pair<T COMMA Y>,
 				  string_concat(string_literal("pair<"), type_name<T>, string_literal(", "), type_name<Y>, string_literal(">")));
 	ADD_TYPE_NAME(typename DOTS Args, tuple<Args DOTS>,
 				  string_concat(string_literal("tuple<"), type_name<Args DOTS>, string_literal(">")));
 
-	template<typename T>
+	template <typename T>
 	constexpr string get_type_name(T&& x) {
 		return type_name<decltype(x)>.data;
 	}

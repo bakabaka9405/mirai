@@ -62,19 +62,29 @@ namespace mirai {
 		((cout << args), ...);
 	}
 
-	template <typename... Args, size_t... I>
-	inline auto read_tuple(std::index_sequence<I...>) {
-		tuple<Args...> res;
-		((cin >> std::get<I>(res)), ...);
-		return res;
+	template <typename T, typename Y>
+	inline std::istream& operator>>(std::istream& in, pair<T, Y>& p) {
+		return in >> p.first >> p.second;
+	}
+
+	template <typename T, typename Y>
+	inline std::ostream& operator<<(std::ostream& out, const pair<T, Y>& p) {
+		return out << format("({}, {})", p.first, p.second);
 	}
 
 	template <typename... Args>
-	inline auto read_tuple() {
-		return []<size_t... I>(std::index_sequence<I...>) {
-			std::tuple<Args...> res;
-			((cin >> std::get<I>(res)), ...);
-			return res;
+	inline std::istream& operator>>(std::istream& in, tuple<Args...>& t) {
+		[&]<size_t... I>(std::index_sequence<I...>) {
+			((in >> std::get<I>(t)), ...);
 		}(std::make_index_sequence<sizeof...(Args)>());
+		return in;
+	}
+
+	template <typename T, typename... Args>
+	inline std::ostream& operator<<(std::ostream& out, const tuple<T, Args...>& t) {
+		[&]<size_t... I>(std::index_sequence<I...>) {
+			out << "(" << std::get<0>(t), ((out << ", " << std::get<I + 1>(t)), ...), out << ")";
+		}(std::make_index_sequence<sizeof...(Args)>());
+		return out;
 	}
 } // namespace mirai
