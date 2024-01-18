@@ -5,5 +5,13 @@
 	},
 	"[cpp]": {
 		"editor.defaultFormatter": "xaver.clang-format"
-	}
+	},
+	"clangd.arguments": [
+		"--background-index",
+		"--compile-commands-dir=.vscode",
+		"-j=4",
+		"--clang-tidy",
+		"--pch-storage=memory",
+		"--pretty"
+	]
 }

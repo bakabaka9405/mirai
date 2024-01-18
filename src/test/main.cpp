@@ -9,11 +9,9 @@
 #include <mirai/util/range.hpp>
 #include <mirai/util/time.hpp>
 #include <mirai/util/type_info.hpp>
+#include <mirai/ds/unordered_dense.hpp>
 using namespace mirai;
 int main() {
-	vector<ll> vec;
-	cout<<get_type_name(cin)<<endl;
-	pair<int, tuple<ll, double, tuple<char, string>>> p;
-	cout<<get_type_name(p);
+	
 	return 0;
 }

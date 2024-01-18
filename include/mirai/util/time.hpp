@@ -1,8 +1,8 @@
 #pragma once
 #include <mirai/pch.hpp>
 namespace mirai {
-	MR_NODISCARD inline time_point<system_clock> curr_time_point() mr_noexcept {
-		return system_clock::now();
+	MR_NODISCARD inline time_point<steady_clock> curr_time_point() mr_noexcept {
+		return steady_clock::now();
 	}
 
 	MR_NODISCARD inline ll time_now() mr_noexcept {
@@ -10,9 +10,9 @@ namespace mirai {
 	}
 
 	struct auto_timer {
-		time_point<system_clock> start;
+		time_point<steady_clock> start;
 		auto_timer() mr_noexcept : start{ curr_time_point() } {}
-		void restart() mr_noexcept { start = time_point<system_clock>{ curr_time_point() }; }
+		void restart() mr_noexcept { start = time_point<steady_clock>{ curr_time_point() }; }
 		auto now() const mr_noexcept {
 			return curr_time_point() - start;
 		}

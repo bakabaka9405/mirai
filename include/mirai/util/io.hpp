@@ -20,6 +20,7 @@ namespace mirai {
 		put_array(std::begin(r), std::end(r), sep);
 	}
 
+#if MR_HAVE_INT128
 	inline std::istream& operator>>(std::istream& in, i128& v) {
 		string s;
 		in >> s;
@@ -30,7 +31,7 @@ namespace mirai {
 	inline std::ostream& operator<<(std::ostream& out, i128 v) {
 		return out << to_string(v);
 	}
-
+#endif
 	inline ll readi() {
 		ll x = 0;
 		bool f = 0;

@@ -3,20 +3,40 @@
 namespace mirai {
 	MR_NODISCARD inline ll clzll(ull x) mr_noexcept {
 		mr_assert(x);
+#if MR_USE_MSVC
+		return _lzcnt_u64(x);
+#else
 		return __builtin_clzll(x);
+#endif
 	}
 
 	MR_NODISCARD inline ll ctzll(ull x) mr_noexcept {
 		mr_assert(x);
+#if MR_USE_MSVC
+		return _tzcnt_u64(x);
+#else
 		return __builtin_ctzll(x);
+#endif
 	}
 
-	MR_NODISCARD inline ll ffsll(ull x) mr_noexcept{
-		return __builtin_ffsll(x);
+	MR_NODISCARD inline ll ffsll(ull x) mr_noexcept {
+#if MR_USE_MSVC
+		unsigned long res = 0L;
+		if (_BitScanForward64(&res, x))
+			return static_cast<ll>(res);
+		else
+			return 0;
+#else
+		return __builtin_ffsll(x) - 1;
+#endif
 	}
 
 	MR_NODISCARD inline ll popcntll(ull x) mr_noexcept {
+#if MR_USE_MSVC
+		return _mm_popcnt_u64(x);
+#else
 		return __builtin_popcountll(x);
+#endif
 	}
 
 	MR_NODISCARD inline ll get_bit(ll src, ull x) mr_noexcept {

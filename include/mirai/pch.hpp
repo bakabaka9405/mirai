@@ -8,11 +8,10 @@
 #include <stack>
 #include <string>
 #include <string_view>
+#include <array>
 #include <vector>
 #include <map>
 #include <set>
-#include <unordered_map>
-#include <unordered_set>
 #include <random>
 #include <algorithm>
 #include <numeric>
@@ -26,6 +25,10 @@
 #include <cassert>
 #include <cmath>
 #include <cctype>
+
+#if MR_USE_MSVC
+#include <immintrin.h>
+#endif
 namespace mirai {
 	using namespace std::literals;
 
@@ -37,8 +40,11 @@ namespace mirai {
 	using ull = unsigned long long;
 	using i64 = long long;
 	using u64 = unsigned long long;
-	using i128 = __int128;
-	using u128 = unsigned __int128;
+
+#if MR_HAVE_INT128
+	using i128 = __int128_t;
+	using u128 = __uint128_t;
+#endif
 
 	// IO
 	using std::cerr;
@@ -50,11 +56,12 @@ namespace mirai {
 	using std::setw;
 
 	// utility
-	using std::pair;
 	using std::make_pair;
-	using std::tuple;
 	using std::make_tuple;
+	using std::pair;
 	using std::swap;
+	using std::tuple;
+
 	// string
 	using std::format;
 	using std::string;
@@ -65,6 +72,7 @@ namespace mirai {
 	using std::back_inserter;
 	using std::inserter;
 	using std::istream_iterator;
+	using std::ostream_iterator;
 
 	// algorithm
 	using std::copy;
@@ -77,13 +85,17 @@ namespace mirai {
 	using std::random_device;
 	using std::uniform_int_distribution;
 	using std::uniform_real_distribution;
+
 	// chrono
 	using chrono::duration;
+	using chrono::steady_clock;
 	using chrono::system_clock;
 	using chrono::time_point;
+
 	// numeric
 	using std::adjacent_difference;
 	using std::gcd;
+	using std::iota;
 	using std::lcm;
 	using std::lerp;
 	using std::max;
@@ -91,6 +103,7 @@ namespace mirai {
 	using std::partial_sum;
 
 	// data structure
+	using std::array;
 	using std::deque;
 	using std::initializer_list;
 	using std::map;
@@ -98,19 +111,13 @@ namespace mirai {
 	using std::multiset;
 	using std::priority_queue;
 	using std::queue;
-	using std::random_device;
 	using std::set;
 	using std::stack;
-	using std::unordered_map;
-	using std::unordered_multimap;
-	using std::unordered_multiset;
-	using std::unordered_set;
 	using std::vector;
 
 	// functor
 	using std::function;
 	using std::greater;
-	using std::iota;
 	using std::less;
 
 	// concepts

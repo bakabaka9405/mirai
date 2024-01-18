@@ -5,6 +5,7 @@ namespace mirai {
 	concept vector_like = requires(T t1, T t2) {
 		{ t1 + t2 } -> std::same_as<T>;
 		{ -t1 } -> std::same_as<T>;
+		{ t1 == t2 } -> std::same_as<bool>;
 		t1.norm();
 	};
 
@@ -22,7 +23,7 @@ namespace mirai {
 
 	public:
 		inline dsu(ll n) mr_noexcept : _fa(n), _diff(n) {
-			ranges::iota(_fa, 0);
+			std::iota(_fa.begin(), _fa.end(), 0);
 		}
 		inline ll find(ll x) mr_noexcept {
 			if (x == _fa[x]) return x;
@@ -30,15 +31,27 @@ namespace mirai {
 			_diff[x] = _diff[x] + _diff[_fa[x]];
 			return _fa[x] = _fa[_fa[x]];
 		}
-		inline ll merge(ll x, ll y, vec_t diff) mr_noexcept {
+		inline void merge(ll x, ll y, vec_t diff) mr_noexcept {
 			ll x_fa = find(x), y_fa = find(y);
 			_fa[x_fa] = y_fa;
-			_diff[x_fa] = -_diff[x] + diff + _diff[y];
+			_diff[x_fa] = (-_diff[x]) + diff + _diff[y];
 		}
 		inline auto query(ll x, ll y) mr_noexcept {
-			ll x_fa = find(x), y_fa = find(y);
+			[[maybe_unused]] ll x_fa = find(x), y_fa = find(y);
 			mr_assert(x_fa == y_fa);
-			return (_diff[x] - _diff[y]).norm();
+			return (_diff[x] + (-_diff[y])).norm();
+		}
+		inline bool try_merge(ll x, ll y, vec_t diff) mr_noexcept {
+			if (find(x) == find(y)) {
+				if (query(x, y) == diff)
+					return true;
+				else
+					return false;
+			}
+			else {
+				merge(x, y, diff);
+				return true;
+			}
 		}
 	};
 
@@ -48,14 +61,15 @@ namespace mirai {
 		vector<ll> _fa;
 
 	public:
-		inline dsu(ll n) mr_noexcept : _fa(n) { ranges::iota(_fa, 0); }
+		inline dsu(ll n) mr_noexcept : _fa(n) { std::iota(_fa.begin(), _fa.end(), 0); }
 		inline ll find(ll x) mr_noexcept {
 			while (x != _fa[x]) x = _fa[x] = _fa[_fa[x]];
 			return x;
 		}
 		inline void merge(ll x, ll y) mr_noexcept { _fa[find(x)] = find(y); }
 		inline bool query(ll x, ll y) mr_noexcept { return find(x) == find(y); }
+		inline bool try_merge(ll x, ll y) mr_noexcept { return merge(x, y), true; }
 	};
 
 	using simple_dsu = dsu<void>;
-} // namespace mirai::beta
+} // namespace mirai

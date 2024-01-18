@@ -5,7 +5,7 @@ namespace mirai {
 		std::reverse(s.begin(), s.end());
 		return s;
 	}
-
+#if MR_HAVE_INT128
 	[[nodiscard]] inline i128 stoi128(const string& s) mr_noexcept {
 		i128 res = 0, f = 1;
 		auto pt = s.begin();
@@ -27,7 +27,7 @@ namespace mirai {
 		if (f) res.push_back('-');
 		return reversed_str(res);
 	}
-
+#endif
 	MR_NODISCARD inline string itos(ll x, ll base, ll minimum_width = 0) mr_noexcept {
 		string res;
 		constexpr char digit[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";

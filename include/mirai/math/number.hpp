@@ -1,5 +1,6 @@
 #pragma once
 #include <mirai/pch.hpp>
+#include <mirai/util/binary.hpp>
 namespace mirai {
 	[[maybe_unused]] inline constexpr ll
 		pow10[] = { 1ll,
@@ -22,37 +23,11 @@ namespace mirai {
 					100000000000000000ll,
 					1000000000000000000ll };
 
+	inline consteval ll pow2(ll x) {
+		return 1ll << x;
+	}
+
 	inline ull lg(ull n) mr_noexcept {
-		return 63 - __builtin_clzll(n);
+		return 63 - clzll(n);
 	}
 } // namespace mirai
-
-namespace std {
-	MR_NODISCARD inline long long max(long long lhs, unsigned long long rhs) mr_noexcept {
-#ifdef MR_DEBUG
-#warning 正数与负数比大小
-#endif
-		return max(lhs, static_cast<long long>(rhs));
-	}
-
-	MR_NODISCARD inline long long max(unsigned long long lhs, long long rhs) mr_noexcept {
-#ifdef MR_DEBUG
-#warning 正数与负数比大小
-#endif
-		return max(static_cast<long long>(lhs), rhs);
-	}
-
-	MR_NODISCARD inline long long min(long long lhs, unsigned long long rhs) mr_noexcept {
-#ifdef MR_DEBUG
-#warning 正数与负数比大小
-#endif
-		return min(lhs, static_cast<long long>(rhs));
-	}
-
-	MR_NODISCARD inline long long min(unsigned long long lhs, long long rhs) mr_noexcept {
-#ifdef MR_DEBUG
-#warning 正数与负数比大小
-#endif
-		return min(static_cast<long long>(lhs), rhs);
-	}
-} // namespace std

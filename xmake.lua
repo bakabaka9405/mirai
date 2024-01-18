@@ -5,10 +5,8 @@ set_languages("c11","cxx23")
 
 if is_mode("debug") then 
     add_cxxflags("-DMR_DEBUG")
-    if is_tool("clang") then 
-        set_policy("build.sanitizer.address", true)
-        set_policy("build.sanitizer.undefined", true)
-    end
+    -- set_policy("build.sanitizer.address", true)
+    -- set_policy("build.sanitizer.undefined", true)
 end
 
 

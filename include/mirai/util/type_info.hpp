@@ -3,7 +3,9 @@
 #include <mirai/util/constexpr_str.hpp>
 namespace mirai {
 	template <typename T, typename... Args>
-	struct type_name_helper;
+	struct type_name_helper{
+		constexpr static auto name=string_literal("<unknown-type>");
+	};
 
 	template <typename T, typename... Args>
 	constexpr constexpr_str type_name = string_concat(type_name<T>, string_literal(", "), type_name<Args...>);
@@ -33,6 +35,7 @@ namespace mirai {
 	ADD_TYPE_NAME(, std::istream, "istream");
 	ADD_TYPE_NAME(, std::ostream, "ostream");
 	ADD_TYPE_NAME(typename T, vector<T>, string_concat("vector<", type_name<T>, ">"));
+	ADD_TYPE_NAME(typename T, queue<T>, string_concat("queue<", type_name<T>, ">"));
 	ADD_TYPE_NAME(typename T, set<T>, string_concat("set<", type_name<T>, ">"));
 	ADD_TYPE_NAME(typename T COMMA typename Y, map<T COMMA Y>, string_concat("map<", type_name<T>, ", ", type_name<Y>, ">"));
 	ADD_TYPE_NAME(typename T COMMA typename Y, pair<T COMMA Y>,
