@@ -12,8 +12,7 @@ namespace mirai {
 		inline void load(auto begin, auto end) mr_noexcept {
 			ull n = std::distance(begin, end);
 			ull layer = lg(n) + 1;
-			val.resize(layer);
-			for (auto& i : val) i.resize(n);
+			val.resize(layer, vector<T>(n));
 			copy(begin, end, val[0].begin());
 			for (ull i = 1, k = 1; i < layer; i++, k <<= 1) {
 				for (ull l = 0, r = k; r < n; l++, r++) {
@@ -21,9 +20,9 @@ namespace mirai {
 				}
 			}
 		}
-		sparse_table(auto begin, auto end) mr_noexcept {
-			load(begin, end);
-		}
+		inline void load(auto&& r) mr_noexcept { load(std::begin(r), std::end(r)); }
+		sparse_table(auto begin, auto end) mr_noexcept { load(begin, end); }
+		sparse_table(auto&& r) mr_noexcept : sparse_table(std::begin(r), std::end(r)) {}
 
 		MR_NODISCARD inline T query(ull l, ull r) mr_noexcept {
 			ull layer = lg(r - l + 1);

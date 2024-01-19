@@ -18,6 +18,16 @@ namespace mirai {
 		return u(__e);
 	}
 
+	MR_NODISCARD inline ull
+	fast_rand() mr_noexcept {
+		constexpr ull wy_prime0 = 0xa0761d6478bd642f;
+		constexpr ull wy_prime1 = 0xe7037ed1a0b428db;
+		static ull seed = __gen();
+		seed += wy_prime0;
+		unsigned __int128 C = seed * seed ^ wy_prime1;
+		return C >> 64 ^ C;
+	}
+
 	template <typename T>
 	struct uniform_auto_distribution_helper;
 
@@ -39,7 +49,7 @@ namespace mirai {
 		T l, r;
 		uniform_auto_distribution<T> u;
 		rand_generator(T l, T r) mr_noexcept : l(l), r(r), u{ l, r } {}
-		T operator()()mr_noexcept{
+		T operator()() mr_noexcept {
 			return u(__gen);
 		}
 	};

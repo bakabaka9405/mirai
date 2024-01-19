@@ -2040,8 +2040,8 @@ namespace mirai {
 	template <typename T>
 	using unordered_set = ankerl::unordered_dense::set<T>;
 
-	template<typename T>
-	using hash=ankerl::unordered_dense::hash<T>;
+	template <typename T>
+	using hash = ankerl::unordered_dense::hash<T>;
 } // namespace mirai
 
 #endif
