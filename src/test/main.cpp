@@ -15,17 +15,6 @@ constexpr ull n = 1e8;
 vector<ull> v1(n),v2(n);
 ull cnt;
 int main() {
-	ull *v3=new ull[n];
-	srand(__gen());
-	{
-		auto_timer t;
-		ranges::generate(v3,v3+n, fast_rand);
-	}
-	{
-		auto_timer t;
-		ranges::generate(v1, fast_rand);
-	}
-	for(ull i=0;i<n;i++)cnt+=(v1[i]>v3[i]);
-	cout<<cnt<<endl;
+	
 	return 0;
 }

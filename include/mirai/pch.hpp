@@ -56,6 +56,8 @@ namespace mirai {
 	using std::setw;
 
 	// utility
+	using std::copy;
+	using std::copy_n;
 	using std::make_pair;
 	using std::make_tuple;
 	using std::pair;
@@ -75,10 +77,11 @@ namespace mirai {
 	using std::ostream_iterator;
 
 	// algorithm
-	using std::copy;
-	using std::copy_n;
+	using std::nth_element;
 	using std::sort;
 	using std::stable_sort;
+	using std::unique;
+	using std::unique_copy;
 
 	// random
 	using std::default_random_engine;
@@ -112,8 +115,9 @@ namespace mirai {
 	using std::priority_queue;
 	using std::queue;
 	using std::set;
-	using std::stack;
 	using std::vector;
+	template <typename T>
+	using stack = std::stack<T, vector<T>>;
 
 	// functor
 	using std::function;
