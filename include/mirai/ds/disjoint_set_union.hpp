@@ -4,18 +4,19 @@
 namespace mirai {
 	template <typename T>
 	concept vector_like = requires(T t1, T t2) {
+		T{};
 		{ t1 + t2 } -> std::same_as<T>;
 		{ -t1 } -> std::same_as<T>;
 		{ t1 == t2 } -> std::same_as<bool>;
 	};
 
-	template <vector_like diff_t, bool Compression = true, bool MergeByRank = true>
+	template <vector_like diff_t = ll, bool Compression = true, bool MergeByRank = true>
 	class disjoint_set_union {
 	private:
 		vector<ll> _fa;
 		vector<diff_t> _diff;
 		vector<ll> _rank;
-		[[noreturn]] inline void trace_to_top(ll& x, diff_t& diff) {
+		inline void trace_to_top(ll& x, diff_t& diff) {
 			if constexpr (Compression) {
 				diff = _diff[std::exchange(x, find(x))];
 			}
@@ -39,7 +40,7 @@ namespace mirai {
 			}
 			return top;
 		}
-		inline void merge(ll x, ll y, diff_t diff) mr_noexcept {
+		inline void merge(ll x, ll y, diff_t diff = diff_t{}) mr_noexcept {
 			diff_t diff_x, diff_y;
 			trace_to_top(x, diff_x);
 			trace_to_top(y, diff_y);
@@ -57,7 +58,7 @@ namespace mirai {
 			mr_assert(x == y);
 			return diff_x + (-diff_y);
 		}
-		inline bool try_merge(ll x, ll y, diff_t diff) mr_noexcept {
+		inline bool try_merge(ll x, ll y, diff_t diff = diff_t{}) mr_noexcept {
 			if (find(x) == find(y)) {
 				if (query(x, y) == diff)
 					return true;
@@ -69,7 +70,7 @@ namespace mirai {
 				return true;
 			}
 		}
-		inline ll get_rank(ll x) {
+		inline ll get_rank(ll x) mr_noexcept {
 			return _rank[find(x)];
 		}
 	};

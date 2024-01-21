@@ -1,6 +1,6 @@
 [
 {
-  "directory": "G:\\Working\\proj\\mirai",
-  "arguments": ["gcc.exe", "-c", "-m64", "-g", "-O0", "-std=c++23", "-Iinclude", "-fexceptions", "-DMR_DEBUG", "-o", "build\\.objs\\test\\windows\\x64\\debug\\src\\test\\main.cpp.obj", "src\\test\\main.cpp"],
+  "directory": "g:\\Working\\proj\\mirai",
+  "arguments": ["gcc.exe", "-c", "-m64", "-fvisibility=hidden", "-fvisibility-inlines-hidden", "-O3", "-std=c++20", "-Iinclude", "-fexceptions", "-DNDEBUG", "-o", "build\\.objs\\test\\windows\\x64\\release\\src\\test\\main.cpp.obj", "src\\test\\main.cpp"],
   "file": "src\\test\\main.cpp"
 }]

@@ -1,6 +1,6 @@
 add_rules("mode.debug", "mode.release")
 add_includedirs("include", {public = true})
-set_languages("c11","cxx23")
+set_languages("c11","cxx20")
 
 
 if is_mode("debug") then 
