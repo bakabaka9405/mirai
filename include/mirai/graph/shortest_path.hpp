@@ -23,7 +23,7 @@ namespace mirai {
 	}
 	void spfa(auto&& G, auto& dis, ll start, auto&& get_weight) {
 		vector<ll> in_queue(G.node_count, 1);
-		using node = pair<ll, ll>;
+		using node = pair<ll, ll>; 
 		queue<ll> q;
 		q.push(start);
 		in_queue[start] = 1;

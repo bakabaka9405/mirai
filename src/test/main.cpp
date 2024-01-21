@@ -1,9 +1,6 @@
 #include <mirai/graph/graph.hpp>
 #include <mirai/util/tuple.hpp>
 using namespace mirai;
-struct S {
-	ll a, b;
-};
 int main() {
 	graph<ll, mirai::link_model> G(101);
 	G.insert(1, 2, 3);
