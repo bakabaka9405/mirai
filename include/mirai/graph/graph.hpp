@@ -54,10 +54,17 @@ namespace mirai {
 							_index = _e[_index].second;
 							return *this;
 						}
+						inline iterator operator++(int) mr_noexcept { return iterator{ std::exchange(_index, _e[_index].second), _e }; }
 						inline auto operator*() const mr_noexcept { return _e[_index].first; }
 					};
 					inline auto begin() const mr_noexcept { return iterator{ _start, _e }; }
 					inline auto end() const mr_noexcept { return iterator{ -1, _e }; }
+					inline size_t size() const mr_noexcept {
+						size_t res = 0;
+						ll x = _start;
+						while (~x) res++, x = _e[x].second;
+						return res;
+					}
 				};
 				return range_wrapper{ _head[u], _e };
 			}

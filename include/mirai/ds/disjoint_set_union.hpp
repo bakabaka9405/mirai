@@ -74,4 +74,9 @@ namespace mirai {
 			return _rank[find(x)];
 		}
 	};
+
+	namespace alias {
+		template <vector_like diff_t = ll, bool Compression = true, bool MergeByRank = true>
+		using dsu = mirai::disjoint_set_union<diff_t, Compression, MergeByRank>;
+	}
 } // namespace mirai

@@ -29,4 +29,9 @@ namespace mirai {
 			return combine_proxy::work(val[layer][l], val[layer][r - (1ull << layer) + 1]);
 		}
 	};
+
+	namespace alias {
+		template <typename T, class combine_proxy>
+		using st = mirai::sparse_table<T, combine_proxy>;
+	}
 } // namespace mirai
