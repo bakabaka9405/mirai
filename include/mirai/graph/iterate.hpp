@@ -9,7 +9,8 @@ namespace mirai {
 		if constexpr (requires { config.dfn;config.timestamp; }) config.dfn[u] = ++config.timestamp;
 		if constexpr (requires { config.size; }) config.size[u] = 1;
 		for (auto&& [v, w] : config.G[u]) {
-			if (v == fa) continue;
+			[[unlikely]] if (v == fa)
+				continue;
 			__dfs_in_graph_impl<config>(v, u);
 			if constexpr (requires { config.size; }) config.size[u] += config.size[v];
 		}

@@ -3,23 +3,6 @@
 #include <mirai/util/string.hpp>
 #include <utility>
 namespace mirai {
-	template <typename T>
-	inline void read_array(auto&& it, size_t read_n) mr_noexcept {
-		copy_n(istream_iterator<T>(cin), read_n, it);
-	}
-
-	inline void put_array(auto&& begin, auto&& end, const char* sep = " ") mr_noexcept {
-		auto pt = begin;
-		cout << *pt++;
-		while (pt != end) {
-			cout << sep << *pt++;
-		}
-	}
-
-	inline void put_array(auto&& r, const char* sep = " ") mr_noexcept {
-		put_array(std::begin(r), std::end(r), sep);
-	}
-
 #if MR_HAVE_INT128
 	inline std::istream& operator>>(std::istream& in, i128& v) {
 		string s;
@@ -87,5 +70,23 @@ namespace mirai {
 			out << "(" << std::get<0>(t), ((out << ", " << std::get<I + 1>(t)), ...), out << ")";
 		}(std::make_index_sequence<sizeof...(Args)>());
 		return out;
+	}
+
+	template <typename T>
+	inline void read_array(auto&& it, size_t read_n) mr_noexcept {
+		copy_n(istream_iterator<T>(cin), read_n, it);
+	}
+
+	inline void put_array(auto&& begin, auto&& end, const char* sep = " ", bool end_line = true) mr_noexcept {
+		auto pt = begin;
+		cout << *pt++;
+		while (pt != end) {
+			cout << sep << *pt++;
+		}
+		if (end_line) cout << endl;
+	}
+
+	inline void put_array(auto&& r, const char* sep = " ") mr_noexcept {
+		put_array(std::begin(r), std::end(r), sep);
 	}
 } // namespace mirai

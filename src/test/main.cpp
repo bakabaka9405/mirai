@@ -6,10 +6,13 @@
 #include <mirai/util/type_info.hpp>
 #include <mirai/util/time.hpp>
 using namespace mirai;
-graph<ll, vector_model> G(100);
-ll fa[1000001], sz[1000001], dfn[1000001], lev[1000001], t;
+graph<ll, link_model> G(100);
 int main() {
 	auto_timer t;
-	cout<<sizeof(G)<<endl;
+	G.insert(1, 2,3);
+	G.insert(1, 3,4);
+	vector<pair<ll,ll>> vec;
+	copy(G[1].begin(),G[1].end(), back_inserter(vec));
+	put_array(vec,", ");
 	return 0;
 }

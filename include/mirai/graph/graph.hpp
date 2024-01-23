@@ -42,10 +42,18 @@ namespace mirai {
 					const ll _start;
 					const vector<pair<edge, ll>>& _e;
 					struct iterator {
+						using value_type = edge;
+						using difference_type = ll;
+						using pointer = value_type*;
+						using reference = value_type&;
+						using iterator_category = std::forward_iterator_tag;
 						ll _index;
 						const vector<pair<edge, ll>>& _e;
 						inline bool operator!=(const iterator& rt) const mr_noexcept { return _index != rt._index; }
-						inline void operator++() mr_noexcept { _index = _e[_index].second; }
+						inline iterator& operator++() mr_noexcept {
+							_index = _e[_index].second;
+							return *this;
+						}
 						inline auto operator*() const mr_noexcept { return _e[_index].first; }
 					};
 					inline auto begin() const mr_noexcept { return iterator{ _start, _e }; }
