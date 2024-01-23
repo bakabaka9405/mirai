@@ -46,60 +46,60 @@ namespace mirai {
 		return constexpr_str<N - 1, StaticStringLiteral>(s);
 	}
 
-	template <size_t N,int T>
+	template <size_t N, int T>
 	constexpr auto string_literal(constexpr_str<N, T> s) {
 		return s;
 	}
 
 	template <size_t N1, int T1, size_t N2, int T2>
 	constexpr auto string_concat(const constexpr_str<N1, T1>& s1,
-								 const constexpr_str<N2, T2>& s2) {
+								 const constexpr_str<N2, T2>& s2) mr_noexcept {
 		return constexpr_str<N1 + N2, StaticStringConcat>(s1, s2);
 	}
 
 	template <size_t N1, int T1, size_t N2, int T2, typename... Args>
 	constexpr auto string_concat(const constexpr_str<N1, T1>& s1,
 								 const constexpr_str<N2, T2>& s2,
-								 Args&&... args) {
+								 Args&&... args) mr_noexcept {
 		return string_concat(string_concat(s1, s2), args...);
 	}
 
 	template <size_t N1, int T1, size_t N2>
 	constexpr auto string_concat(const constexpr_str<N1, T1>& s1,
-								 const char (&s2)[N2]) {
+								 const char (&s2)[N2]) mr_noexcept {
 		return string_concat(s1, string_literal(s2));
 	}
 
 	template <size_t N1, int T1, size_t N2, typename... Args>
 	constexpr auto string_concat(const constexpr_str<N1, T1>& s1,
 								 const char (&s2)[N2],
-								 Args&&... args) {
+								 Args&&... args) mr_noexcept {
 		return string_concat(string_concat(s1, string_literal(s2)), args...);
 	}
 
 	template <size_t N1, size_t N2, int T2>
 	constexpr auto string_concat(const char (&s1)[N1],
-								 const constexpr_str<N2, T2>& s2) {
+								 const constexpr_str<N2, T2>& s2) mr_noexcept {
 		return string_concat(string_literal(s1), s2);
 	}
 
 	template <size_t N1, size_t N2, int T2, typename... Args>
 	constexpr auto string_concat(const char (&s1)[N1],
 								 const constexpr_str<N2, T2>& s2,
-								 Args&&... args) {
+								 Args&&... args) mr_noexcept {
 		return string_concat(string_concat(string_literal(s1), s2), args...);
 	}
 
 	template <size_t N1, size_t N2>
 	constexpr auto string_concat(const char (&s1)[N1],
-								 const char (&s2)[N2]) {
+								 const char (&s2)[N2]) mr_noexcept {
 		return string_concat(string_literal(s1), string_literal(s2));
 	}
 
 	template <size_t N1, size_t N2, typename... Args>
 	constexpr auto string_concat(const char (&s1)[N1],
 								 const char (&s2)[N2],
-								 Args&&... args) {
+								 Args&&... args) mr_noexcept {
 		return string_concat(string_concat(string_literal(s1), string_literal(s2)), args...);
 	}
 

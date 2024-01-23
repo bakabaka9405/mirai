@@ -1,10 +1,15 @@
 #include <mirai/graph/graph.hpp>
 #include <mirai/util/tuple.hpp>
+#include <mirai/util/io.hpp>
+#include <mirai/ds/disjoint_set_union.hpp>
+#include <mirai/graph/iterate.hpp>
+#include <mirai/util/type_info.hpp>
+#include <mirai/util/time.hpp>
 using namespace mirai;
+graph<ll, vector_model> G(100);
+ll fa[1000001], sz[1000001], dfn[1000001], lev[1000001], t;
 int main() {
-	graph<ll, mirai::link_model> G(101);
-	G.insert(1, 2, 3);
-	G.insert(1, 3, 4);
-	for (auto [i, j] : G[1]) cout << i << " " << j << endl;
+	auto_timer t;
+	cout<<sizeof(G)<<endl;
 	return 0;
 }
