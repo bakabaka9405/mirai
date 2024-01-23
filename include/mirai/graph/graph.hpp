@@ -19,7 +19,7 @@ namespace mirai {
 		};
 		[[no_unique_address]] std::conditional_t<_is_link_model, vector<ll>, __empty_item> _head; // NOLINT
 	public:
-		inline graph(ll n) mr_noexcept : _e(n), _head(n, -1) {}
+		inline graph(ll n) mr_noexcept : _e(_is_vector_model ? n : 0), _head(n, -1) {}
 		template <typename U = T, typename std::enable_if_t<!std::is_same_v<U, void>, int> = 0>
 		void insert(ll u, ll v, const std::conditional_t<_have_weight, ll, U>& data) mr_noexcept {
 			if constexpr (_is_vector_model)
@@ -61,6 +61,12 @@ namespace mirai {
 				};
 				return range_wrapper{ _head[u], _e };
 			}
+		}
+		inline ll node_count() const mr_noexcept {
+			if constexpr (_is_vector_model)
+				return _e.size();
+			else
+				return _head.size();
 		}
 	};
 } // namespace mirai
