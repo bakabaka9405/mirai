@@ -1,6 +1,6 @@
 #pragma once
-#include<mirai/pch.hpp>
-#include<mirai/graph/graph_model.hpp>
-namespace mirai{
+#include <mirai/pch.hpp>
+#include <mirai/graph/graph.hpp>
+namespace mirai {
 
 }

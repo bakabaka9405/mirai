@@ -1,6 +1,6 @@
 #pragma once
 #include <mirai/pch.hpp>
-#include <mirai/graph/graph_model.hpp>
+#include <mirai/graph/graph.hpp>
 namespace mirai {
 	template <auto& G, auto& config>
 	void calc_graph_degree() {

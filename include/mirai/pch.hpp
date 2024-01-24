@@ -63,6 +63,7 @@ namespace mirai {
 	using std::pair;
 	using std::swap;
 	using std::tuple;
+	using std::declval;
 
 	// string
 	using std::format;
