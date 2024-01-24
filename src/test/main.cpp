@@ -7,14 +7,11 @@
 #include <mirai/util/time.hpp>
 #include <mirai/util/range.hpp>
 #include <mirai/util/random.hpp>
+#include <mirai/util/pipeline.hpp>
+#include <mirai/util/debug.hpp>
 using namespace mirai;
+graph<ll> G(100);
 int main() {
-	vector<ull> vec(1e8);
-	vector<ull> cnt(200);
-	ranges::generate(vec,__e);
-	auto_timer t;
-	ull res=0;
-	for(auto i:vec)cnt[i%200]++;
-	for(auto i:cnt)cout<<i<<endl;
+	for (auto [i,j] : zip(vector{ 1, 2, 3, 4, 5 }, vector{ 2, 4, 6, 8, 10 }) | transform([](auto&& x) { return pair{x.second,x.first}; })) debug(i,j);
 	return 0;
 }
