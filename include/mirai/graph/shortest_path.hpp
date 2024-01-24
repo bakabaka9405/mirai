@@ -2,7 +2,7 @@
 #include <mirai/pch.hpp>
 #include <mirai/graph/graph.hpp>
 namespace mirai {
-	void dijkstra(auto&& G, std::random_access_iterator auto dis, ll start, auto&& get_weight) {
+	void dijkstra(weighted_graph auto&& G, std::random_access_iterator auto dis, ll start, auto&& get_weight) {
 		vector<ll> vis(G.node_count, 0);
 		using node = pair<ll, ll>;
 		priority_queue<node, vector<node>, std::greater<node>> pq;
@@ -21,7 +21,7 @@ namespace mirai {
 			}
 		}
 	}
-	void spfa(auto&& G, std::random_access_iterator auto dis, ll start, auto&& get_weight) {
+	void spfa(weighted_graph auto&& G, std::random_access_iterator auto dis, ll start, auto&& get_weight) {
 		vector<ll> in_queue(G.node_count, 1);
 		using node = pair<ll, ll>;
 		queue<ll> q;

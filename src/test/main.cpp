@@ -11,14 +11,16 @@
 #include <mirai/util/debug.hpp>
 using namespace mirai;
 graph<void> G(100);
-ll id[100];
-struct{
-	ll (&in_degree)[];
-}config{id};
+ll id[100], od[100];
+vector<ll> euler;
+struct _config {
+	CONFIG_ITEM euler_order = euler;
+} config;
 int main() {
-	G.insert(1,2);
-	G.insert(2,3);
-	calc_graph_degree<G, config>();
-	for(auto i:id)cout<<i<<endl;
+	G.insert(1, 2);
+	G.insert(2, 3);
+	G.insert(1, 4);
+	dfs_in_tree<G,config>(1);
+	for(auto i:euler)cout<<i<<endl;
 	return 0;
 }

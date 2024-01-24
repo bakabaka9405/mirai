@@ -77,4 +77,8 @@ namespace mirai {
 				return _head.size();
 		}
 	};
+
+	template<typename T>
+	concept weighted_graph=!std::same_as<T,void>;
+
 } // namespace mirai

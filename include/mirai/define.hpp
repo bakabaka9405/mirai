@@ -24,3 +24,5 @@
 // #define mr_assert(x) [[assume(!(x))]]
 #define mr_assert(x) (void(0))
 #endif
+
+#define CONFIG_ITEM constexpr static auto&
