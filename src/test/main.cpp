@@ -10,8 +10,15 @@
 #include <mirai/util/pipeline.hpp>
 #include <mirai/util/debug.hpp>
 using namespace mirai;
-graph<ll> G(100);
+graph<void> G(100);
+ll id[100];
+struct{
+	ll (&in_degree)[];
+}config{id};
 int main() {
-	for (auto [i,j] : zip(vector{ 1, 2, 3, 4, 5 }, vector{ 2, 4, 6, 8, 10 }) | transform([](auto&& x) { return pair{x.second,x.first}; })) debug(i,j);
+	G.insert(1,2);
+	G.insert(2,3);
+	calc_graph_degree<G, config>();
+	for(auto i:id)cout<<i<<endl;
 	return 0;
 }

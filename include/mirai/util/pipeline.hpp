@@ -106,7 +106,8 @@ namespace mirai {
 		}
 	};
 
-	inline auto transform(auto func) {
-		return __transform_helper{ std::forward<decltype(func)>(func) };
+	template<typename Func>
+	inline auto transform(Func func) {
+		return __transform_helper{ std::forward<Func>(func) };
 	}
 } // namespace mirai
