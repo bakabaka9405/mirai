@@ -17,10 +17,6 @@ struct _config {
 	CONFIG_ITEM euler_order = euler;
 } config;
 int main() {
-	G.insert(1, 2);
-	G.insert(2, 3);
-	G.insert(1, 4);
-	dfs_in_tree<G,config>(1);
-	for(auto i:euler)cout<<i<<endl;
+	for (auto i : views::iota(0,-10)) cout << i << " ";
 	return 0;
 }

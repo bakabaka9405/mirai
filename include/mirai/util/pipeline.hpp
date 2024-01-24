@@ -64,7 +64,7 @@ namespace mirai {
 		struct transform_wrapper {
 			_range _r;
 			Func _func;
-			struct sentinel{
+			struct sentinel {
 				decltype(mr_end(_r)) _it;
 			};
 			struct iterator {
@@ -106,8 +106,37 @@ namespace mirai {
 		}
 	};
 
-	template<typename Func>
+	template <typename Func>
 	inline auto transform(Func func) {
 		return __transform_helper{ std::forward<Func>(func) };
+	}
+
+	template <range _range>
+	inline auto skip(_range&& r, size_t n) {
+		struct skip_wrapper {
+			_range r;
+			size_t _n;
+			inline auto begin() const mr_noexcept {
+				auto p = mr_begin(r);
+				auto e = mr_end(r);
+				for (size_t i = _n; i && p != e; --i) ++p;
+				return p;
+			};
+			inline auto end() const mr_noexcept {
+				return mr_end(r);
+			}
+		};
+		return skip_wrapper{ std::forward<_range>(r), n };
+	}
+
+	struct __skip_helper {
+		size_t n;
+		friend inline auto operator|(auto&& lhs, const __skip_helper& self) mr_noexcept {
+			return skip(std::forward<decltype(lhs)>(lhs), self.n);
+		}
+	};
+
+	inline auto skip(size_t n) {
+		return __skip_helper{ n };
 	}
 } // namespace mirai
