@@ -2,6 +2,7 @@
 #include <mirai/pch.hpp>
 #include <mirai/util/pipeline.hpp>
 #include <mirai/graph/graph.hpp>
+#include <mirai/math/number.hpp>
 namespace mirai {
 	inline constexpr auto __edge_get_v = [](auto&& edge) {
 		if constexpr (std::is_same_v<std::decay_t<decltype(edge)>, ll>)
@@ -53,7 +54,16 @@ namespace mirai {
 
 	template <auto& G, auto& config>
 	void __dfs_in_tree_impl(ll u, ll fa, ll t) {
-		if constexpr (requires { config.fa; }) config.fa[u] = fa;
+		if constexpr (requires { config.fa; }) {
+			if constexpr (requires { config.fa[u][0]; }) {
+				config.fa[u][0] = fa;
+				for (auto i : views::iota(1) | take(lg(G.node_count())))
+					config.fa[u][i] = config.fa[config.fa[u][i - 1]][i - 1];
+			}
+			else
+				config.fa[u] = fa;
+		}
+		if constexpr (requires { config.depth; }) config.depth[u] = config.depth[fa] + 1;
 		if constexpr (requires { config.dfn; }) config.dfn[u] = t;
 		if constexpr (requires { config.size; }) config.size[u] = 1;
 		if constexpr (requires { config.dfs_order; }) {
