@@ -84,11 +84,12 @@ int main(int argc, char** argv) {
 	ofstream fout("output.cpp");
 	for (auto i : topo | transform([](ll x) {
 					  if (x == 0)
-						  return string("");
+						  return string("<source file>");
 					  else
 						  return header_index[x];
 				  })) {
-		if (i == "")
+		debug(i);
+		if (i == "<source file>")
 			fin.open(src_path);
 		else
 			fin.open(mirai_path / i);
