@@ -1,21 +1,19 @@
 #pragma once
 #include <mirai/pch.hpp>
 namespace mirai {
-	inline auto mr_begin(auto&& v) mr_noexcept {
+	template<typename T>
+	requires requires(T&& v){v.begin();}||requires(T&& v){std::begin(v);}
+	inline auto mr_begin(T&& v) mr_noexcept {
 		if constexpr (requires { v.begin(); })
 			return v.begin();
-		else if constexpr (requires { std::begin(v); })
-			return std::begin(v);
-		else
-			static_assert(false, "parameter doesn't meet the constraints of mr_begin.");
+		else return std::begin(v);
 	}
-	inline auto mr_end(auto&& v) mr_noexcept {
+	template<typename T>
+	requires requires(T&& v){v.end();}||requires(T&& v){std::end(v);}
+	inline auto mr_end(T&& v) mr_noexcept {
 		if constexpr (requires { v.end(); })
 			return v.end();
-		else if constexpr (requires { std::end(v); })
-			return std::end(v);
-		else
-			static_assert(false, "parameter doesn't meet the constraints of mr_begin.");
+		else return std::end(v);
 	}
 
 	template <typename T>

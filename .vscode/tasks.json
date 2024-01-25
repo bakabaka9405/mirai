@@ -6,7 +6,7 @@
 		{
 			"label": "mirai xmake build&run",
 			"type": "shell",
-			"command": "xmake -w &&echo ------------- && xmake run",
+			"command": "xmake -w &&echo ------------- && xmake run test",
 			"presentation": {
 				"reveal": "silent",
 				"revealProblems": "onProblem",
