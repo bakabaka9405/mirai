@@ -58,7 +58,6 @@ int main(int argc, char** argv) {
 			getline(fin, line);
 			string header = get_header(line);
 			if (header == "" || header.substr(0, 5) != "mirai") continue;
-			header = header.substr(6);
 			debug("found header:", header);
 			if (register_header(header)) q.push(header_table[header]);
 			G.insert(header_table[header], u);

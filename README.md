@@ -61,7 +61,7 @@ And then, run
 embedder.exe ./test.cpp <PATH_TO_MIRAI_INCLUDE_DIR>
 ```
 
-For example, run `embedder.exe ./test.cpp G:/Working/proj/mirai/include/mirai`
+For example, run `embedder.exe ./test.cpp G:/Working/proj/mirai/include/`
 
 The embedder will scan your source file, then embed all the header file needed into it. A new file `output.cpp` will be created, containing the parsed code. It will automatically opened by vscode (if installed). You can change the tool if you want.
 
