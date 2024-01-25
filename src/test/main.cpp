@@ -12,22 +12,21 @@
 using namespace mirai;
 graph<void, link_model> G;
 ll id[100], od[100];
-vector<ll> euler;
+vector<ll> topo;
+vector<ll> res;
 struct _config {
-	CONFIG_ITEM euler_order = euler;
+	CONFIG_ITEM in_degree = id;
+	CONFIG_ITEM topo_order = topo;
 } config;
 int main() {
 	auto_timer t;
 	G.resize(10);
-	G.insert(1, 2);
+	G.insert(2, 1);
 	G.insert(2, 3);
 	G.insert(1, 4);
-	for(auto i:G[1])cout<<i<<" ";
-	cout<<endl;
-	for(auto i:G[2])cout<<i<<" ";
-	cout<<endl;
-	dfs_in_tree<G, config>(1);
-	for (auto i : euler) cout << i << " ";
+	calc_graph_degree<G, config>();
+	topo_sort<G, config, priority_queue<ll, vector<ll>, greater<ll>>>();
+	for (auto i : topo) cout << i << " ";
 	cout << endl;
 	return 0;
 }
