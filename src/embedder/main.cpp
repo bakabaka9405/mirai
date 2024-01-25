@@ -102,6 +102,6 @@ int main(int argc, char** argv) {
 		}
 		fin.close();
 	}
-	system("start notepad3 output.cpp");
+	system("code output.cpp");
 	return 0;
 }
