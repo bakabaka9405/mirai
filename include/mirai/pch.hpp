@@ -2,6 +2,7 @@
 #include <mirai/define.hpp>
 #include <utility>
 #include <iostream>
+#include <fstream>
 #include <iomanip>
 #include <initializer_list>
 #include <queue>
@@ -18,6 +19,7 @@
 #include <functional>
 #include <iterator>
 #include <chrono>
+#include <regex>
 #include <ranges>
 #include <concepts>
 #include <format>
@@ -52,18 +54,20 @@ namespace mirai {
 	using std::clog;
 	using std::cout;
 	using std::endl;
+	using std::ifstream;
+	using std::ofstream;
 	using std::setprecision;
 	using std::setw;
 
 	// utility
 	using std::copy;
 	using std::copy_n;
+	using std::declval;
 	using std::make_pair;
 	using std::make_tuple;
 	using std::pair;
 	using std::swap;
 	using std::tuple;
-	using std::declval;
 
 	// string
 	using std::format;
@@ -124,6 +128,11 @@ namespace mirai {
 	using std::function;
 	using std::greater;
 	using std::less;
+
+	// regex
+	using std::regex;
+	using std::regex_search;
+	using std::smatch;
 
 	// concepts
 	using std::floating_point;

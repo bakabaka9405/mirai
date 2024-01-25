@@ -30,6 +30,7 @@ namespace mirai {
 		}
 		template <typename U = T, typename std::enable_if_t<!std::is_same_v<U, void>, int> = 0>
 		void insert(ll u, ll v, const std::conditional_t<_have_weight, ll, U>& data) mr_noexcept {
+			if (node_count() <= max(u, v)) resize(max(u, v) + 1);
 			if constexpr (_is_vector_model)
 				_e[u].emplace_back(v, data);
 			else
@@ -37,6 +38,7 @@ namespace mirai {
 		}
 		template <typename U = T, typename std::enable_if_t<std::is_same_v<U, void>, int> = 0>
 		void insert(ll u, ll v) mr_noexcept {
+			if (node_count() <= max(u, v)) resize(max(u, v) + 1);
 			if constexpr (_is_vector_model)
 				_e[u].push_back(v);
 			else

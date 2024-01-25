@@ -1,5 +1,4 @@
 #pragma once
-#include "mirai/define.hpp"
 #include <mirai/pch.hpp>
 namespace mirai {
 	template <typename T>
@@ -49,6 +48,7 @@ namespace mirai {
 				if (_rank[x] > _rank[y]) swap(x, y), diff = -diff;
 			}
 			_rank[y] += _rank[x];
+			_diff[x] = diff;
 			_fa[x] = y;
 		}
 		inline auto query(ll x, ll y) mr_noexcept {
