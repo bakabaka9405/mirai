@@ -20,7 +20,14 @@ namespace mirai {
 		};
 		[[no_unique_address]] std::conditional_t<_is_link_model, vector<ll>, __empty_item> _head; // NOLINT
 	public:
-		inline graph(ll n) mr_noexcept : _e(_is_vector_model ? n : 0), _head(n, -1) {}
+		inline graph() mr_noexcept : _e(), _head(0, -1) {}
+		inline graph(size_t n) mr_noexcept : _e(_is_vector_model ? n : 0), _head(n, -1) {}
+		inline void resize(size_t n) mr_noexcept {
+			if constexpr (_is_vector_model)
+				_e.resize(n);
+			else
+				_head.resize(n, -1);
+		}
 		template <typename U = T, typename std::enable_if_t<!std::is_same_v<U, void>, int> = 0>
 		void insert(ll u, ll v, const std::conditional_t<_have_weight, ll, U>& data) mr_noexcept {
 			if constexpr (_is_vector_model)
@@ -42,15 +49,11 @@ namespace mirai {
 				struct range_wrapper {
 					const ll _start;
 					const vector<pair<edge, ll>>& _e;
+					struct sentinel {};
 					struct iterator {
-						using value_type = edge;
-						using difference_type = ll;
-						using pointer = value_type*;
-						using reference = value_type&;
-						using iterator_category = std::forward_iterator_tag;
 						ll _index;
 						const vector<pair<edge, ll>>& _e;
-						inline bool operator!=(const iterator& rt) const mr_noexcept { return _index != rt._index; }
+						inline bool operator!=(const sentinel& rt) const mr_noexcept { return _index != -1; }
 						inline iterator& operator++() mr_noexcept {
 							_index = _e[_index].second;
 							return *this;
@@ -59,7 +62,7 @@ namespace mirai {
 						inline auto operator*() const mr_noexcept { return _e[_index].first; }
 					};
 					inline auto begin() const mr_noexcept { return iterator{ _start, _e }; }
-					inline auto end() const mr_noexcept { return default_pair_sentinel{ -1, _e }; }
+					inline auto end() const mr_noexcept { return sentinel{}; }
 					inline size_t size() const mr_noexcept {
 						size_t res = 0;
 						ll x = _start;
@@ -78,7 +81,7 @@ namespace mirai {
 		}
 	};
 
-	template<typename T>
-	concept weighted_graph=!std::same_as<T,void>;
+	template <typename T>
+	concept weighted_graph = !std::same_as<T, void>;
 
 } // namespace mirai
