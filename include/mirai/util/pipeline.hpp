@@ -140,8 +140,6 @@ namespace mirai {
 		return __skip_helper{ n };
 	}
 
-	
-
 	template <typename T, range _range, typename Func>
 	inline auto extreme_value(_range&& r, Func cmp) {
 		struct extreme_value_wrapper {
@@ -172,31 +170,38 @@ namespace mirai {
 		return __extreme_value_helper<T, Func>{ std::forward<Func>(cmp) };
 	}
 
-	template <typename T, range _range>
-	inline auto maximum(_range&& r) {
-		return extreme_value<T>(std::forward<_range>(r), std::greater<T>());
-	}
+	template <typename T>
+	struct __maximum {
+		constexpr static auto _cmp = std::greater<T>();
+		inline decltype(auto) operator()(range auto&& r) const mr_noexcept {
+			return extreme_value<T>(std::forward<decltype(r)>(r), _cmp);
+		}
+		friend inline decltype(auto) operator|(range auto&& r, const __maximum&) mr_noexcept {
+			return extreme_value<T>(std::forward<decltype(r)>(r), _cmp);
+		}
+	};
 
 	template <typename T>
-	inline auto maximum() {
-		return extreme_value<T>(std::greater<T>());
-	}
-
-	template <typename T, range _range>
-	inline auto minimum(_range&& r) {
-		return extreme_value<T>(std::forward<_range>(r), std::less<T>());
-	}
+	struct __minimum {
+		constexpr static auto _cmp = std::less<T>();
+		inline decltype(auto) operator()(range auto&& r) const mr_noexcept {
+			return extreme_value<T>(std::forward<decltype(r)>(r), _cmp);
+		}
+		friend inline decltype(auto) operator|(range auto&& r, const __minimum&) mr_noexcept {
+			return extreme_value<T>(std::forward<decltype(r)>(r), _cmp);
+		}
+	};
 
 	template <typename T>
-	inline auto minimum() {
-		return extreme_value<T>(std::less<T>());
-	}
+	inline constexpr __maximum<T> maximum;
 
-	struct __endp {};
+	template <typename T>
+	inline constexpr __minimum<T> minimum;
 
-	inline auto operator|(auto&& lhs, const __endp& rhs) mr_noexcept {
+	constexpr inline struct {
+	} endp;
+
+	inline auto operator|(auto&& lhs, const decltype(endp)&) mr_noexcept {
 		return lhs();
 	}
-
-	constexpr inline __endp endp;
 } // namespace mirai

@@ -10,7 +10,7 @@ First, you need to install Xmake.
 
 To build the embedder tool, run the following command at the root of the library:
 
-```
+```bash
 xmake -w
 ```
 
@@ -57,7 +57,7 @@ int main(){
 
 And then, run
 
-```
+```bash
 embedder.exe ./test.cpp <PATH_TO_MIRAI_INCLUDE_DIR>
 ```
 

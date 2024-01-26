@@ -72,7 +72,7 @@ namespace mirai {
 			else
 				config.dfs_order.push_back(u);
 		}
-		if constexpr (requires { config.euler_order; }) {
+		if constexpr (requires { config.euler_order; }) { 
 			if constexpr (requires { config.euler_order_pt; })
 				config.euler_order[config.euler_order_pt++] = u;
 			else
