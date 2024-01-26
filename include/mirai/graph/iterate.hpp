@@ -72,7 +72,7 @@ namespace mirai {
 			else
 				config.dfs_order.push_back(u);
 		}
-		if constexpr (requires { config.euler_order; }) { 
+		if constexpr (requires { config.euler_order; }) {
 			if constexpr (requires { config.euler_order_pt; })
 				config.euler_order[config.euler_order_pt++] = u;
 			else
@@ -96,5 +96,14 @@ namespace mirai {
 	template <auto& G, auto& config>
 	void dfs_in_tree(ll start) {
 		__dfs_in_tree_impl<G, config>(start, start, 0);
+	}
+
+	template <auto& G, auto& config>
+	void __tree_decomposition_impl(ll u) {
+	}
+
+	template <auto& G, auto& config>
+	void tree_decomposition(ll start) {
+		return __tree_decomposition_impl<G, config>(start);
 	}
 } // namespace mirai
