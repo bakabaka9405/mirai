@@ -139,4 +139,64 @@ namespace mirai {
 	inline auto skip(size_t n) {
 		return __skip_helper{ n };
 	}
+
+	
+
+	template <typename T, range _range, typename Func>
+	inline auto extreme_value(_range&& r, Func cmp) {
+		struct extreme_value_wrapper {
+			_range _r;
+			Func _cmp;
+			inline auto operator()() const mr_noexcept->T {
+				T res = *mr_begin(_r);
+				for (auto&& i : _r) {
+					if (_cmp(i, res)) res = i;
+				}
+				return res;
+			}
+		};
+		return extreme_value_wrapper{ std::forward<_range>(r), cmp };
+	}
+
+	template <typename T, typename Func>
+	struct __extreme_value_helper {
+		Func&& _cmp;
+		template <range _range>
+		friend inline auto operator|(_range lhs, const __extreme_value_helper& rhs) mr_noexcept {
+			return extreme_value<T>(std::forward<_range>(lhs), std::forward<Func>(rhs._cmp));
+		}
+	};
+
+	template <typename T, typename Func>
+	inline auto extreme_value(Func cmp) {
+		return __extreme_value_helper<T, Func>{ std::forward<Func>(cmp) };
+	}
+
+	template <typename T, range _range>
+	inline auto maximum(_range&& r) {
+		return extreme_value<T>(std::forward<_range>(r), std::greater<T>());
+	}
+
+	template <typename T>
+	inline auto maximum() {
+		return extreme_value<T>(std::greater<T>());
+	}
+
+	template <typename T, range _range>
+	inline auto minimum(_range&& r) {
+		return extreme_value<T>(std::forward<_range>(r), std::less<T>());
+	}
+
+	template <typename T>
+	inline auto minimum() {
+		return extreme_value<T>(std::less<T>());
+	}
+
+	struct __endp {};
+
+	inline auto operator|(auto&& lhs, const __endp& rhs) mr_noexcept {
+		return lhs();
+	}
+
+	constexpr inline __endp endp;
 } // namespace mirai

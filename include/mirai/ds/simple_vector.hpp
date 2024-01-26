@@ -11,6 +11,7 @@ namespace mirai {
 	public:
 		using iterator = T*;
 		simple_vector() mr_noexcept : n{}, capacity(32), arr(new T[32]) {}
+		~simple_vector() mr_noexcept { delete[] arr; }
 		inline void push_back(const T& val) {
 			if (n == capacity)
 				arr = (T*)realloc(arr, sizeof(T) * (capacity = capacity << 1 | 1));
