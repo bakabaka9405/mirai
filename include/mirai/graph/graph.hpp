@@ -71,6 +71,7 @@ namespace mirai {
 						while (~x) res++, x = _e[x].second;
 						return res;
 					}
+					inline bool empty() const mr_noexcept { return _start != -1; }
 				};
 				return range_wrapper{ _head[u], _e };
 			}

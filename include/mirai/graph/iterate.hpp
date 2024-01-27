@@ -53,7 +53,7 @@ namespace mirai {
 	}
 
 	template <auto& G, auto& config>
-	void __dfs_in_tree_impl(ll u, ll fa, ll t) {
+	void __dfs_in_tree_impl(ll u, ll fa, ll& t) {
 		if constexpr (requires { config.fa; }) {
 			if constexpr (requires { config.fa[u][0]; }) {
 				config.fa[u][0] = fa;
@@ -64,7 +64,7 @@ namespace mirai {
 				config.fa[u] = fa;
 		}
 		if constexpr (requires { config.depth; }) config.depth[u] = config.depth[fa] + 1;
-		if constexpr (requires { config.dfn; }) config.dfn[u] = t;
+		if constexpr (requires { config.dfn; }) config.dfn[u] = ++t;
 		if constexpr (requires { config.size; }) config.size[u] = 1;
 		if constexpr (requires { config.dfs_order; }) {
 			if constexpr (requires { config.dfs_order_pt; })
@@ -81,7 +81,7 @@ namespace mirai {
 		for (auto&& v : G[u] | transform(__edge_get_v)) {
 			[[unlikely]] if (v == fa)
 				continue;
-			__dfs_in_tree_impl<G, config>(v, u, t + 1);
+			__dfs_in_tree_impl<G, config>(v, u, t);
 			if constexpr (requires { config.size; }) config.size[u] += config.size[v];
 		}
 		if constexpr (requires { config.dfn;config.lev; }) config.lev[u] = t;
@@ -95,15 +95,33 @@ namespace mirai {
 
 	template <auto& G, auto& config>
 	void dfs_in_tree(ll start) {
-		__dfs_in_tree_impl<G, config>(start, start, 0);
+		ll t = 0;
+		__dfs_in_tree_impl<G, config>(start, start, t);
 	}
 
 	template <auto& G, auto& config>
-	void __tree_decomposition_impl(ll u) {
+	void __tree_decomposition_impl(ll u, ll top, ll& t) {
+		config.dfn[u] = ++t;
+		config.top[u] = top;
+		if constexpr (requires { config.dfs_order_pt; })
+			config.dfs_order[config.dfs_order_pt]++;
+		else if constexpr (requires { config.dfs_order; })
+			config.dfs_order.push_back(u);
+		auto son = G[u] | transform(__edge_get_v) | filter([u](ll v) { return v != config.fa[u]; })
+				   | extreme_value<ll>([](ll l, ll r) { return config.size[l] > config.size[r]; }) | endp;
+		if(son.has_value())__tree_decomposition_impl<G, config>(*son, top, t);
+		for (auto i : G[u] | transform(__edge_get_v) | filter([u, son](ll v) { return v != *son && v != config.fa[u]; })) __tree_decomposition_impl<G, config>(i, i, t);
 	}
 
 	template <auto& G, auto& config>
+		requires requires {
+			config.top[0];
+			config.size[0];
+			config.fa[0];
+			config.dfn[0];
+		}
 	void tree_decomposition(ll start) {
-		return __tree_decomposition_impl<G, config>(start);
+		ll t = 0;
+		return __tree_decomposition_impl<G, config>(start, start, t);
 	}
 } // namespace mirai

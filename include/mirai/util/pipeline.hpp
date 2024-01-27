@@ -1,5 +1,4 @@
 #pragma once
-#include <concepts>
 #include <mirai/pch.hpp>
 #include <mirai/util/range.hpp>
 namespace mirai {
@@ -51,7 +50,7 @@ namespace mirai {
 
 	struct __take_helper {
 		size_t n;
-		friend inline auto operator|(auto&& lhs, const __take_helper& self) mr_noexcept {
+		friend inline auto operator|(auto&& lhs, __take_helper self) mr_noexcept {
 			return take(std::forward<decltype(lhs)>(lhs), self.n);
 		}
 	};
@@ -61,7 +60,7 @@ namespace mirai {
 	}
 
 	template <range _range, typename Func>
-	inline auto transform(_range&& r, Func func) {
+	inline auto transform(_range&& r, Func&& func) {
 		struct transform_wrapper {
 			_range _r;
 			Func _func;
@@ -77,7 +76,7 @@ namespace mirai {
 					return _it != rt._it;
 				}
 				inline bool operator==(const sentinel& rt) const mr_noexcept {
-					return !this->operator==(rt);
+					return !this->operator!=(rt);
 				}
 				inline decltype(auto) operator++() mr_noexcept {
 					++_it;
@@ -99,21 +98,21 @@ namespace mirai {
 	template <typename Func>
 	struct __transform_helper {
 		Func func;
-		friend inline auto operator|(auto&& lhs, const __transform_helper& self) mr_noexcept {
-			return transform(std::forward<decltype(lhs)>(lhs), self.func);
-		}
-		friend inline auto operator|(auto&& lhs, __transform_helper&& self) mr_noexcept {
-			return transform(std::forward<decltype(lhs)>(lhs), std::forward<Func>(self.func));
+		template <range _range>
+		friend inline auto operator|(_range&& lhs, __transform_helper self) mr_noexcept {
+			return transform(std::forward<_range>(lhs), std::move(self.func));
 		}
 	};
 
 	template <typename Func>
-	inline auto transform(Func func) {
+	inline auto transform(Func&& func) {
 		return __transform_helper{ std::forward<Func>(func) };
 	}
 
+	// #define _range vector<ll>
+	// #define Func std::function<bool(ll)>
 	template <range _range, typename Func>
-	inline auto filter(_range&& r, Func func) {
+	inline auto filter(_range&& r, Func&& func) {
 		struct filter_wrapper {
 			_range _r;
 			Func _func;
@@ -124,13 +123,13 @@ namespace mirai {
 				using iter_t = decltype(mr_begin(_r));
 				iter_t _it;
 				Func _func;
-				const sentinel& _end;
-				using value_type = decltype(_func(*_it));
+				sentinel _end;
+				using value_type = decltype(*_it);
 				inline bool operator!=(const sentinel& rt) const mr_noexcept {
 					return _it != rt._it;
 				}
 				inline bool operator==(const sentinel& rt) const mr_noexcept {
-					return !this->operator==(rt);
+					return !this->operator!=(rt);
 				}
 				inline decltype(auto) operator++() mr_noexcept {
 					do {
@@ -143,32 +142,37 @@ namespace mirai {
 					this->operator++();
 					return it;
 				}
-				inline auto operator*() const mr_noexcept {
+				inline auto operator*() const mr_noexcept->value_type {
 					return *_it;
 				}
 			};
-			inline auto begin() const mr_noexcept { return iterator{ mr_begin(_r), _func, end() }; }
+			inline auto begin() const mr_noexcept {
+				auto it = mr_begin(_r);
+				auto end = mr_end(_r);
+				while (it != end && !_func(*it)) ++it;
+				return iterator{ it, _func, sentinel{ end } };
+			}
 			inline auto end() const mr_noexcept { return sentinel{ mr_end(_r) }; }
 		};
-		return filter_wrapper{ std::forward<_range>(r), func };
+		return filter_wrapper{ std::forward<_range>(r), std::forward<Func>(func) };
 	};
-
 	template <typename Func>
 	struct __filter_helper {
 		Func func;
-		friend inline auto operator|(auto&& lhs, const __filter_helper& self) mr_noexcept {
-			return filter(std::forward<decltype(lhs)>(lhs), self.func);
-		}
-		friend inline auto operator|(auto&& lhs, __filter_helper&& self) mr_noexcept {
-			return filter(std::forward<decltype(lhs)>(lhs), std::forward<Func>(self.func));
+
+		template <range _range>
+		friend inline auto operator|(_range&& lhs, __filter_helper self) mr_noexcept {
+			return filter(std::forward<_range>(lhs), std::move(self.func));
 		}
 	};
 
 	template <typename Func>
-	inline auto filter(Func func) {
+	inline auto filter(Func&& func) {
 		return __filter_helper{ std::forward<Func>(func) };
 	}
 
+	// #undef _range
+	// #undef Func
 	template <range _range>
 	inline auto skip(_range&& r, size_t n) {
 		struct skip_wrapper {
@@ -203,10 +207,10 @@ namespace mirai {
 		struct extreme_value_wrapper {
 			_range _r;
 			Func _cmp;
-			inline auto operator()() const mr_noexcept->T {
-				T res = *mr_begin(_r);
+			inline auto operator()() const mr_noexcept->std::optional<T> {
+				std::optional<T> res;
 				for (auto&& i : _r) {
-					if (_cmp(i, res)) res = i;
+					if (!res.has_value() || _cmp(i, *res)) res = i;
 				}
 				return res;
 			}
@@ -266,4 +270,5 @@ namespace mirai {
 	inline constexpr auto as_abs = [](auto x) { return x < 0 ? -x : x; };
 
 	inline constexpr auto as_square = [](auto x) { return x * x; };
+
 } // namespace mirai
