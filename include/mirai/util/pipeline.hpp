@@ -268,14 +268,14 @@ namespace mirai {
 
 	template <range _range, typename T>
 	inline auto addup_to(_range&& r, T& dst) {
-		struct extreme_value_wrapper {
+		struct addup_to {
 			_range _r;
 			T& _dst;
-			inline auto operator()() const mr_noexcept->std::optional<T> {
+			inline auto operator()() const mr_noexcept {
 				for (auto&& i : _r) _dst += i;
 			}
 		};
-		return extreme_value_wrapper{ std::forward<_range>(r), dst };
+		return addup_to{ std::forward<_range>(r), dst };
 	}
 
 	template <typename T>
