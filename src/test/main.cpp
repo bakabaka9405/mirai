@@ -14,7 +14,7 @@ int main() {
 	}
 	double ans = float_bsearch_by_times<dextral>(0, 1e10, 200, [&](double mid) {
 		kahan sum;
-		for (auto i : views::iota(1ll, n + 1) | transform([&](ll x) { return a[x] * mid - b[x]; }) | filter(is_positive)) sum += i;
+		views::iota(1ll, n + 1) | transform([&](ll x) { return a[x] * mid - b[x]; }) | filter(is_positive) | addup_to(sum) | endp;
 		return (*sum <= mid * m);
 	});
 	cout << std::fixed << setprecision(10) << ans << endl;

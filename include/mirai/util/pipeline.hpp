@@ -266,6 +266,32 @@ namespace mirai {
 	template <typename T>
 	inline constexpr __minimum<T> minimum;
 
+	template <range _range, typename T>
+	inline auto addup_to(_range&& r, T& dst) {
+		struct extreme_value_wrapper {
+			_range _r;
+			T& _dst;
+			inline auto operator()() const mr_noexcept->std::optional<T> {
+				for (auto&& i : _r) _dst += i;
+			}
+		};
+		return extreme_value_wrapper{ std::forward<_range>(r), dst };
+	}
+
+	template <typename T>
+	struct __addup_to_helper {
+		T& _dst;
+		template <range _range>
+		friend inline auto operator|(_range&& lhs, __addup_to_helper rhs) mr_noexcept {
+			return addup_to(std::forward<_range>(lhs), rhs._dst);
+		}
+	};
+
+	template <typename T>
+	inline auto addup_to(T& cmp) {
+		return __addup_to_helper{ cmp };
+	}
+
 	constexpr inline struct {
 	} endp;
 
