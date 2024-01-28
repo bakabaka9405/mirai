@@ -98,30 +98,4 @@ namespace mirai {
 		ll t = 0;
 		__dfs_in_tree_impl<G, config>(start, start, t);
 	}
-
-	template <auto& G, auto& config>
-	void __tree_decomposition_impl(ll u, ll top, ll& t) {
-		config.dfn[u] = ++t;
-		config.top[u] = top;
-		if constexpr (requires { config.dfs_order_pt; })
-			config.dfs_order[config.dfs_order_pt]++;
-		else if constexpr (requires { config.dfs_order; })
-			config.dfs_order.push_back(u);
-		auto son = G[u] | transform(__edge_get_v) | filter([u](ll v) { return v != config.fa[u]; })
-				   | extreme_value<ll>([](ll l, ll r) { return config.size[l] > config.size[r]; }) | endp;
-		if(son.has_value())__tree_decomposition_impl<G, config>(*son, top, t);
-		for (auto i : G[u] | transform(__edge_get_v) | filter([u, son](ll v) { return v != *son && v != config.fa[u]; })) __tree_decomposition_impl<G, config>(i, i, t);
-	}
-
-	template <auto& G, auto& config>
-		requires requires {
-			config.top[0];
-			config.size[0];
-			config.fa[0];
-			config.dfn[0];
-		}
-	void tree_decomposition(ll start) {
-		ll t = 0;
-		return __tree_decomposition_impl<G, config>(start, start, t);
-	}
 } // namespace mirai

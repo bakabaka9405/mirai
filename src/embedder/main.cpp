@@ -96,7 +96,9 @@ int main(int argc, char** argv) {
 		while (!fin.eof()) {
 			string line;
 			getline(fin, line);
-			if(line.starts_with("#pragma once")||line.starts_with("//")||line.empty())continue;
+			string tmp = line;
+			while (!tmp.empty() && (tmp[0] == '\t' || tmp[0] == ' ')) tmp = tmp.substr(1);
+			if (tmp.starts_with("#pragma once") || tmp.starts_with("//") || tmp.empty()) continue;
 			string header = get_header(line);
 			if (header == "" || header.substr(0, 5) != "mirai") fout << line << endl;
 		}

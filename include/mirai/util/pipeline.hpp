@@ -1,7 +1,18 @@
 #pragma once
+#include <iterator>
 #include <mirai/pch.hpp>
 #include <mirai/util/range.hpp>
 namespace mirai {
+	template <typename iter_t>
+	inline auto from(iter_t&& it) {
+		struct from_wrapper {
+			iter_t it;
+			inline constexpr auto begin() const mr_noexcept { return it; }
+			inline constexpr auto end() const mr_noexcept { return std::unreachable_sentinel; }
+		};
+		return from_wrapper{ std::forward<iter_t>(it) };
+	}
+
 	template <range _range>
 	inline auto take(_range&& r, size_t n) mr_noexcept {
 		struct take_wrapper {
@@ -10,27 +21,24 @@ namespace mirai {
 			struct iterator {
 				using iter_t = decltype(mr_begin(_r));
 				using value_type = std::decay<decltype(*(declval<iter_t>()))>;
-				using difference_type = ll;
+				using difference_type = std::ptrdiff_t;
 				using pointer = value_type*;
 				using reference = value_type&;
 				using iterator_category = std::forward_iterator_tag;
 
 				iter_t _it;
-				size_t _index;
+				size_t _count;
 
-				inline bool operator!=(const iterator& rt) const mr_noexcept {
-					return _index != rt._index;
-				}
-				inline bool operator==(const iterator& rt) const mr_noexcept {
-					return !this->operator==(rt);
+				inline bool operator!=(const std::default_sentinel_t& rt) const mr_noexcept {
+					return _count;
 				}
 				inline decltype(auto) operator++() mr_noexcept {
 					++_it;
-					++_index;
+					--_count;
 					return *this;
 				}
 				inline auto operator++(int) mr_noexcept {
-					return iterator{ _it++, _index++ };
+					return iterator{ _it++, _count-- };
 				}
 				inline auto operator*() const mr_noexcept {
 					return *_it;
@@ -38,11 +46,11 @@ namespace mirai {
 			};
 
 			inline auto begin() const mr_noexcept {
-				return iterator{ mr_begin(_r), 0 };
+				return iterator{ mr_begin(_r), _n };
 			}
 
-			inline auto end() const mr_noexcept {
-				return default_pair_sentinel{ mr_end(_r), _n };
+			inline constexpr auto end() const mr_noexcept {
+				return std::default_sentinel;
 			}
 		};
 		return take_wrapper{ std::forward<_range>(r), n };
@@ -55,7 +63,7 @@ namespace mirai {
 		}
 	};
 
-	inline auto take(size_t n) {
+	inline constexpr auto take(size_t n) {
 		return __take_helper{ n };
 	}
 
@@ -109,8 +117,6 @@ namespace mirai {
 		return __transform_helper{ std::forward<Func>(func) };
 	}
 
-	// #define _range vector<ll>
-	// #define Func std::function<bool(ll)>
 	template <range _range, typename Func>
 	inline auto filter(_range&& r, Func&& func) {
 		struct filter_wrapper {
@@ -171,8 +177,6 @@ namespace mirai {
 		return __filter_helper{ std::forward<Func>(func) };
 	}
 
-	// #undef _range
-	// #undef Func
 	template <range _range>
 	inline auto skip(_range&& r, size_t n) {
 		struct skip_wrapper {
@@ -198,7 +202,7 @@ namespace mirai {
 		}
 	};
 
-	inline auto skip(size_t n) {
+	inline constexpr auto skip(size_t n) {
 		return __skip_helper{ n };
 	}
 
@@ -220,10 +224,10 @@ namespace mirai {
 
 	template <typename T, typename Func>
 	struct __extreme_value_helper {
-		Func&& _cmp;
+		Func _cmp;
 		template <range _range>
-		friend inline auto operator|(_range lhs, const __extreme_value_helper& rhs) mr_noexcept {
-			return extreme_value<T>(std::forward<_range>(lhs), std::forward<Func>(rhs._cmp));
+		friend inline auto operator|(_range&& lhs, __extreme_value_helper rhs) mr_noexcept {
+			return extreme_value<T>(std::forward<_range>(lhs), std::move(rhs._cmp));
 		}
 	};
 

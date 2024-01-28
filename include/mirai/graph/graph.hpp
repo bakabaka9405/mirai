@@ -51,11 +51,10 @@ namespace mirai {
 				struct range_wrapper {
 					const ll _start;
 					const vector<pair<edge, ll>>& _e;
-					struct sentinel {};
 					struct iterator {
 						ll _index;
 						const vector<pair<edge, ll>>& _e;
-						inline bool operator!=(const sentinel& rt) const mr_noexcept { return _index != -1; }
+						inline bool operator!=(const std::default_sentinel_t& rt) const mr_noexcept { return _index != -1; }
 						inline iterator& operator++() mr_noexcept {
 							_index = _e[_index].second;
 							return *this;
@@ -64,7 +63,7 @@ namespace mirai {
 						inline auto operator*() const mr_noexcept { return _e[_index].first; }
 					};
 					inline auto begin() const mr_noexcept { return iterator{ _start, _e }; }
-					inline auto end() const mr_noexcept { return sentinel{}; }
+					inline auto end() const mr_noexcept { return std::default_sentinel_t{}; }
 					inline size_t size() const mr_noexcept {
 						size_t res = 0;
 						ll x = _start;
