@@ -4,12 +4,6 @@
 #include <mirai/graph/graph.hpp>
 #include <mirai/math/number.hpp>
 namespace mirai {
-	inline constexpr auto __edge_get_v = [](auto&& edge) {
-		if constexpr (std::is_same_v<std::decay_t<decltype(edge)>, ll>)
-			return edge;
-		else
-			return edge.first;
-	};
 	template <auto& G, auto& config>
 	void calc_graph_degree() {
 		for (ll i = G.node_count() - 1; i >= 0; i--) {

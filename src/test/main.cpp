@@ -1,4 +1,5 @@
 #include <mirai/graph/tree_decomposition.hpp>
+#include <mirai/graph/iterate.hpp>
 #include <mirai/util/pipeline.hpp>
 #include <mirai/util/io.hpp>
 using namespace mirai;

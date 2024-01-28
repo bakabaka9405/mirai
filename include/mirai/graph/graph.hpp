@@ -96,4 +96,10 @@ namespace mirai {
 	template <typename T>
 	concept weighted_graph = !std::same_as<T, void>;
 
+	inline constexpr auto __edge_get_v = [](auto&& edge) {
+		if constexpr (std::is_same_v<std::decay_t<decltype(edge)>, ll>)
+			return edge;
+		else
+			return edge.first;
+	};
 } // namespace mirai

@@ -1,6 +1,7 @@
 #pragma once
 #include <mirai/pch.hpp>
-#include <mirai/graph/iterate.hpp>
+#include <mirai/graph/graph.hpp>
+#include <mirai/util/pipeline.hpp>
 namespace mirai {
 	template <auto& G, auto& config>
 	inline void __tree_decomposition_impl(ll u, ll top, ll& t) mr_noexcept {
