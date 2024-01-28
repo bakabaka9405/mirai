@@ -2,6 +2,12 @@
 #include <mirai/pch.hpp>
 #include <mirai/util/string.hpp>
 namespace mirai {
+	inline void disable_sync() mr_noexcept {
+		std::ios::sync_with_stdio(false);
+		cin.tie(0);
+		cout.tie(0);
+	}
+
 #if MR_HAVE_INT128
 	inline std::istream& operator>>(std::istream& in, i128& v) {
 		string s;
@@ -93,11 +99,12 @@ namespace mirai {
 	struct __input_iterator_t {
 		inline decltype(auto) operator++() mr_noexcept { return *this; }
 		inline auto operator++(int) mr_noexcept { return *this; }
-		inline auto operator*() const mr_noexcept {
+		inline auto get() const mr_noexcept {
 			tuple<Args...> res;
 			cin >> res;
 			return res;
 		}
+		inline auto operator*() const mr_noexcept { return get(); }
 	};
 
 	template <typename... Args>

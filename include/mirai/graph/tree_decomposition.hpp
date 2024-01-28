@@ -34,9 +34,9 @@ namespace mirai {
 		requires requires {config.top[0];config.fa[0];config.dep[0]; }
 	inline void tree_path_iterate(ll u, ll v, Func&& func) mr_noexcept {
 		while (config.top[u] != config.top[v]) {
-			if (config.dep[u] > config.dep[v]) swap(u, v);
+			if (config.dep[config.top[u]] > config.dep[config.top[v]]) swap(u, v);
 			func(u, v);
-			u = config.fa[config.top[u]];
+			v = config.fa[config.top[v]];
 		}
 		if (config.dep[u] > config.dep[v]) swap(u, v);
 		func(u, v);
@@ -46,8 +46,8 @@ namespace mirai {
 		requires requires {config.top[0];config.fa[0];config.depth[0]; }
 	inline ll tree_path_lca(ll u, ll v) {
 		while (config.top[u] != config.top[v]) {
-			if (config.depth[u] > config.depth[v]) swap(u, v);
-			u = config.fa[config.top[u]];
+			if (config.dep[config.top[u]] > config.dep[config.top[v]]) swap(u, v);
+			v = config.fa[config.top[v]];
 		}
 		if (config.depth[u] > config.depth[v]) swap(u, v);
 		return u;

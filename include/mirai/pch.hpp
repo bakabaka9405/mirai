@@ -81,6 +81,11 @@ namespace mirai {
 	using std::istream_iterator;
 	using std::ostream_iterator;
 
+	//tuple
+	using std::tie;
+	using std::make_tuple;
+	using std::make_pair;
+
 	// algorithm
 	using std::nth_element;
 	using std::sort;
