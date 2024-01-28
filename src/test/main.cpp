@@ -1,7 +1,10 @@
 #include <mirai/util/pipeline.hpp>
+#include <mirai/util/time.hpp>
+#include <mirai/util/debug.hpp>
+#include <mirai/util/io.hpp>
 using namespace mirai;
 int main() {
-	ll vec[]{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-	for (auto i : from(vec + 1) | take(5)) cout << i << endl;
+	auto_timer __t;
+	for (auto [i, j] : from(input_iterator<ll, ll>) | take(5)) debug(i, j);
 	return 0;
 }

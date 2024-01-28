@@ -13,6 +13,7 @@ namespace mirai {
 		return from_wrapper{ std::forward<iter_t>(it) };
 	}
 
+
 	template <range _range>
 	inline auto take(_range&& r, size_t n) mr_noexcept {
 		struct take_wrapper {
@@ -59,7 +60,7 @@ namespace mirai {
 	struct __take_helper {
 		size_t n;
 		friend inline auto operator|(auto&& lhs, __take_helper self) mr_noexcept {
-			return take(std::forward<decltype(lhs)>(lhs), self.n);
+			return take(std::forward<std::decay_t<decltype(lhs)>>(lhs), self.n);
 		}
 	};
 
