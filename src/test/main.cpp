@@ -3,7 +3,7 @@
 #include <mirai/util/io.hpp>
 using namespace mirai;
 graph<void> G;
-ll fa[1000001], dep[1000001], sz[1000001], top[1000001];
+array<ll, 1000001> fa, sz, dep, top;
 constexpr struct _config1 {
 	CONFIG_ITEM fa = ::fa;
 	CONFIG_ITEM size = sz;
@@ -17,18 +17,12 @@ constexpr struct _config2 {
 } config2;
 ll n, m, s;
 int main() {
-	disable_sync();
+	disable_stdio_sync();
 	input(n, m, s);
 	G.resize(n + 1);
-	for (auto [u, v] : from(input_iterator<ll, ll>) | take(n - 1)) {
-		G.insert(u, v);
-		G.insert(v, u);
-	}
+	for (auto [u, v] : from(input_iterator<ll, ll>) | take(n - 1)) G.insert_bothway(u, v);
 	dfs_in_tree<G, config1>(s);
 	tree_decomposition<G, config2>(s);
-	for (auto [u, v] : from(input_iterator<ll, ll>) | take(m)) {
-		puti(tree_path_lca<config2>(u, v));
-		puts("");
-	}
+	for (auto [u, v] : from(input_iterator<ll, ll>) | take(m)) cout << tree_path_lca<config2>(u, v) << endl;
 	return 0;
 }

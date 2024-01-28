@@ -2,7 +2,7 @@
 #include <mirai/pch.hpp>
 #include <mirai/util/string.hpp>
 namespace mirai {
-	inline void disable_sync() mr_noexcept {
+	inline void disable_stdio_sync() mr_noexcept {
 		std::ios::sync_with_stdio(false);
 		cin.tie(0);
 		cout.tie(0);

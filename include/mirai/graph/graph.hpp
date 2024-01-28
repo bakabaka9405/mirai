@@ -44,6 +44,16 @@ namespace mirai {
 			else
 				_e.emplace_back(v, std::exchange(_head[u], _e.size()));
 		}
+		template <typename U = T, typename std::enable_if_t<!std::is_same_v<U, void>, int> = 0>
+		void insert_bothway(ll u, ll v, const std::conditional_t<_have_weight, ll, U>& data) mr_noexcept {
+			insert(u, v, data);
+			insert(v, u, data);
+		}
+		template <typename U = T, typename std::enable_if_t<std::is_same_v<U, void>, int> = 0>
+		void insert_bothway(ll u, ll v) mr_noexcept {
+			insert(u, v);
+			insert(v, u);
+		}
 		decltype(auto) operator[](size_t u) const mr_noexcept {
 			if constexpr (_is_vector_model)
 				return _e[u];
