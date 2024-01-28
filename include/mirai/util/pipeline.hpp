@@ -13,7 +13,6 @@ namespace mirai {
 		return from_wrapper{ std::forward<iter_t>(it) };
 	}
 
-
 	template <range _range>
 	inline auto take(_range&& r, size_t n) mr_noexcept {
 		struct take_wrapper {
@@ -92,7 +91,9 @@ namespace mirai {
 					return *this;
 				}
 				inline auto operator++(int) mr_noexcept {
-					return iterator{ _it++ };
+					iterator res = *this;
+					this->operator++();
+					return res;
 				}
 				inline auto operator*() const mr_noexcept {
 					return _func(*_it);
@@ -275,5 +276,9 @@ namespace mirai {
 	inline constexpr auto as_abs = [](auto x) { return x < 0 ? -x : x; };
 
 	inline constexpr auto as_square = [](auto x) { return x * x; };
+
+	inline constexpr auto is_positive = [](auto x) { return x > 0; };
+
+	inline constexpr auto not_negative = [](auto x) { return x >= 0; };
 
 } // namespace mirai
