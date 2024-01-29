@@ -1,7 +1,8 @@
 {
 	"files.exclude": {
 		"**/.cache": true,
-		"**/.xmake": true
+		"**/.xmake": true,
+		"build":true
 	},
 	"[cpp]": {
 		"editor.defaultFormatter": "xaver.clang-format"
@@ -9,9 +10,11 @@
 	"clangd.arguments": [
 		"--background-index",
 		"--compile-commands-dir=.vscode",
+		"--header-insertion=never",
 		"-j=4",
 		"--clang-tidy",
 		"--pch-storage=memory",
 		"--pretty"
-	]
+	],
+	"xmake.debugConfigType": "codelldb",
 }

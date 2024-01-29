@@ -95,12 +95,12 @@ namespace mirai {
 		put_array(std::begin(r), std::end(r), sep);
 	}
 
-	template <typename... Args>
+	template <typename T, typename... Args>
 	struct __input_iterator_t {
 		inline decltype(auto) operator++() mr_noexcept { return *this; }
 		inline auto operator++(int) mr_noexcept { return *this; }
 		inline auto get() const mr_noexcept {
-			tuple<Args...> res;
+			std::conditional_t<sizeof...(Args) == 0, T, tuple<T, Args...>> res;
 			cin >> res;
 			return res;
 		}

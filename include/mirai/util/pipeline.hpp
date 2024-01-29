@@ -1,5 +1,4 @@
 #pragma once
-#include <iterator>
 #include <mirai/pch.hpp>
 #include <mirai/util/range.hpp>
 namespace mirai {
@@ -209,7 +208,7 @@ namespace mirai {
 	}
 
 	template <typename T, range _range, typename Func>
-	inline auto extreme_value(_range&& r, Func cmp) {
+	MR_NODISCARD inline auto extreme_value(_range&& r, Func cmp) {
 		struct extreme_value_wrapper {
 			_range _r;
 			Func _cmp;
@@ -267,7 +266,7 @@ namespace mirai {
 	inline constexpr __minimum<T> minimum;
 
 	template <range _range, typename T>
-	inline auto addup_to(_range&& r, T& dst) {
+	MR_NODISCARD inline auto addup_to(_range&& r, T& dst) {
 		struct addup_to {
 			_range _r;
 			T& _dst;
@@ -288,8 +287,34 @@ namespace mirai {
 	};
 
 	template <typename T>
-	inline auto addup_to(T& cmp) {
-		return __addup_to_helper{ cmp };
+	MR_NODISCARD inline auto addup_to(T& dst) {
+		return __addup_to_helper{ dst };
+	}
+
+	template <range _range, typename T>
+	MR_NODISCARD inline auto save_to(_range&& r, T&& dst) {
+		struct addup_to {
+			_range _r;
+			T _dst;
+			inline auto operator()() mr_noexcept {
+				for (auto&& i : _r) *_dst++ += i;
+			}
+		};
+		return addup_to{ std::forward<_range>(r), std::forward<T>(dst) };
+	}
+
+	template <typename T>
+	struct __save_to_helper {
+		T _dst;
+		template <range _range>
+		friend inline auto operator|(_range&& lhs, __save_to_helper rhs) mr_noexcept {
+			return save_to(std::forward<_range>(lhs), std::move(rhs._dst));
+		}
+	};
+
+	template <typename T>
+	MR_NODISCARD inline auto save_to(T&& dst) {
+		return __save_to_helper{ std::forward<T>(dst) };
 	}
 
 	constexpr inline struct {
