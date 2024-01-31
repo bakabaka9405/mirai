@@ -38,6 +38,7 @@ ll query(ll l, ll r) {
 int main() {
 	disable_stdio_sync();
 	input(n);
+	auto t = transform([]() {});
 	from(input_iterator<ll>) | take(n) | save_to(arr.begin() + 1) | endp;
 	build();
 	for (auto [opt, l, r, c] : from(input_iterator<ll, ll, ll, ll>) | take(n)) {
