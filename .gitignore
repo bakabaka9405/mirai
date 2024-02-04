@@ -10,3 +10,7 @@ build/
 
 # vscode cache
 .vscode/
+
+src/test
+
+mirai_config.json

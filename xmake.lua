@@ -2,6 +2,7 @@ add_rules("mode.debug", "mode.release")
 add_includedirs("include", {public = true})
 set_languages("c11","cxx20")
 
+add_cxxflags("-DMR_LOCAL")
 
 if is_mode("debug") then 
     add_cxxflags("-DMR_DEBUG")
@@ -15,10 +16,18 @@ target("mirai")
     set_pcxxheader("include/mirai/pch.hpp")
     -- set_precompiled_header("include/mirai/pch.hpp")
 
-target("test")
-    set_kind("binary")
-    add_files("src/test/*.cpp")
-    add_deps("mirai")
+local cpp_files = os.files("src/test/*.cpp")
+-- 循环处理每个cpp文件
+for _, file in ipairs(cpp_files) do
+    -- 提取文件名（不包含路径和扩展名）
+    local file_name = path.basename(file)
+
+    -- 创建独立的项目
+    target(file_name)
+        set_kind("binary")
+        add_files(file)
+        add_deps("mirai")
+end
 
 target("embedder")
     set_kind("binary")

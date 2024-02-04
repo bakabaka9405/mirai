@@ -22,11 +22,19 @@
 #include <regex>
 #include <ranges>
 #include <concepts>
+#ifndef MR_FLAG_USE_INDEPENDENT_FMT
 #include <format>
+#else
+#define FMT_HEADER_ONLY
+// EMBED_IFDEF MR_FLAG_USE_INDEPENDENT_FMT
+#include <mirai/util/format.hpp>
+// EMBED_ENDIF
+#endif
 
 #include <cassert>
 #include <cmath>
 #include <cctype>
+#include <cstring>
 
 #if MR_USE_MSVC
 #include <immintrin.h>
@@ -69,8 +77,13 @@ namespace mirai {
 	using std::swap;
 	using std::tuple;
 
-	// string
+// string
+#ifndef MR_FLAG_USE_INDEPENDENT_FMT
 	using std::format;
+#else
+	using fmt::format;
+	using fmt::print;
+#endif
 	using std::string;
 	using std::string_view;
 	using std::to_string;
@@ -81,10 +94,10 @@ namespace mirai {
 	using std::istream_iterator;
 	using std::ostream_iterator;
 
-	//tuple
-	using std::tie;
-	using std::make_tuple;
+	// tuple
 	using std::make_pair;
+	using std::make_tuple;
+	using std::tie;
 
 	// algorithm
 	using std::nth_element;

@@ -193,7 +193,7 @@ namespace mirai {
 
 	struct __skip_helper {
 		size_t n;
-		friend inline auto operator|(auto&& lhs, const __skip_helper& self) mr_noexcept {
+		friend inline auto operator|(auto&& lhs, __skip_helper self) mr_noexcept {
 			return skip(std::forward<decltype(lhs)>(lhs), self.n);
 		}
 	};
@@ -288,14 +288,19 @@ namespace mirai {
 
 	template <range _range, typename T>
 	MR_NODISCARD inline auto save_to(_range&& r, T&& dst) {
-		struct addup_to {
+		struct save_to_wrapper {
 			_range _r;
 			T _dst;
 			inline auto operator()() mr_noexcept {
 				for (auto&& i : _r) *_dst++ += i;
 			}
 		};
-		return addup_to{ std::forward<_range>(r), std::forward<T>(dst) };
+		return save_to_wrapper{ std::forward<_range>(r), std::forward<T>(dst) };
+	}
+
+	template <range range_l, range range_r>
+	MR_NODISCARD inline auto save_to(range_l&& r, range_r&& dst) {
+		return save_to(std::forward<range_l>(r), mr_begin(dst));
 	}
 
 	template <typename T>
@@ -312,12 +317,17 @@ namespace mirai {
 		return __save_to_helper{ std::forward<T>(dst) };
 	}
 
+	template <range range>
+	MR_NODISCARD inline auto save_to(range&& dst) {
+		return __save_to_helper{ mr_begin(dst) };
+	}
+
 	template <range range, typename Container>
 	inline constexpr auto maps_to(range&& r, Container&& table) {
 		struct maps_to_wrapper {
 			using iter_t = decltype(mr_begin(r));
 			using sen_t = decltype(mr_end(r));
-			range r;
+			range _r;
 			Container table;
 			struct sentinel {
 				sen_t sen;
@@ -332,8 +342,8 @@ namespace mirai {
 					return *this;
 				}
 			};
-			inline constexpr auto begin() { return iterator{ mr_begin(r), std::forward<Container>(table) }; }
-			inline constexpr auto end() const { return sentinel{ mr_end(r) }; }
+			inline constexpr auto begin() { return iterator{ mr_begin(_r), std::forward<Container>(table) }; }
+			inline constexpr auto end() const { return sentinel{ mr_end(_r) }; }
 		};
 		return maps_to_wrapper{ std::forward<range>(r), std::forward<Container>(table) };
 	}
