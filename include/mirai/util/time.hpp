@@ -17,8 +17,7 @@ namespace mirai {
 			return curr_time_point() - start;
 		}
 		~auto_timer() mr_noexcept {
-			clog << format("timer stopped after {}.\n",
-						   duration_cast<chrono::milliseconds>(curr_time_point() - start));
+			clog << "timer stopped after " << duration_cast<chrono::milliseconds>(curr_time_point() - start) << " ms." << endl;
 		}
 	};
 

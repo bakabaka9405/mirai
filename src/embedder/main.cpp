@@ -7,6 +7,7 @@
 #include <mirai/ds/unordered_dense.hpp>
 #include <regex>
 #include <filesystem>
+#include<format>
 using namespace mirai;
 namespace fs = std::filesystem;
 vector<string> header_index(1);
@@ -164,6 +165,8 @@ int main(int argc, char** argv) {
 				continue;
 			}
 			if (tmp.starts_with("#pragma once") || tmp.starts_with("//") || tmp.empty()) continue;
+			string define = get_define(line);
+			if (define.starts_with("MR_FLAG"))continue;
 			string header = get_header(line);
 			if (!header.starts_with("fmt") && header.substr(0, 5) != "mirai") {
 				if (in_embed_trunk && embed_flag) continue;

@@ -74,6 +74,6 @@ namespace mirai {
 	}
 
 	inline auto enumerate(range auto&& arr) mr_noexcept {
-		return zip(views::iota(0), std::forward<decltype(arr)>(arr));
+		return zip(views::iota(0ll), std::forward<decltype(arr)>(arr));
 	}
 } // namespace mirai

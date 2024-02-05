@@ -10,7 +10,7 @@ namespace mirai {
 	}
 
 #ifdef MR_DEBUG
-#define debug(...) mirai::print_dbg(format("[{0}: {1}]", __func__, __LINE__), ##__VA_ARGS__)
+#define debug(...) mirai::print_dbg("[", __func__,":", __LINE__,"]", ##__VA_ARGS__)
 #else
 #define debug(...)
 #endif
