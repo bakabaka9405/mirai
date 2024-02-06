@@ -12,6 +12,17 @@ namespace mirai {
 		return from_wrapper{ std::forward<iter_t>(it) };
 	}
 
+	template <range range>
+	inline constexpr auto in_array(range&& arr, ull l, ull r) {
+		struct in_array_wrapper {
+			range arr;
+			ull l, r;
+			inline constexpr auto begin() const mr_noexcept { return mr_begin(arr) + l; }
+			inline constexpr auto end() const mr_noexcept { return mr_begin(arr) + r + 1; }
+		};
+		return in_array_wrapper{ std::forward<range>(arr), l, r };
+	}
+
 	template <range _range>
 	inline constexpr auto take(_range&& r, size_t n) mr_noexcept {
 		struct take_wrapper {
