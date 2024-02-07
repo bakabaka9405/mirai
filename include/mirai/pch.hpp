@@ -22,6 +22,7 @@
 #include <regex>
 #include <ranges>
 #include <concepts>
+#include <memory_resource>
 
 #include <cassert>
 #include <cmath>
@@ -69,7 +70,7 @@ namespace mirai {
 	using std::swap;
 	using std::tuple;
 
-// string
+	// string
 	using std::string;
 	using std::string_view;
 	using std::to_string;

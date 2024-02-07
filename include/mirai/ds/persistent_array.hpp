@@ -1,3 +1,4 @@
+#pragma once
 #include <mirai/pch.hpp>
 namespace mirai {
 	template <typename T>
@@ -8,11 +9,21 @@ namespace mirai {
 		segment_tree_node(T val, segment_tree_node* left = nullptr, segment_tree_node* right = nullptr)
 			: val(val), left(left), right(right) {}
 	};
-	template <typename T, size_t size, typename Node = segment_tree_node<T>, typename Allocator = std::allocator<Node>>
+	template <typename T, size_t size, typename Node = segment_tree_node<T>,typename Allocator = std::pmr::polymorphic_allocator<Node>>
 	class persistent_array {
 	private:
+		Allocator alloc;
 		Node* root;
-		inline static Allocator alloc;
+		Node* construct(ll val, Node* left = nullptr, Node* right = nullptr) {
+			if constexpr (requires { alloc.new_object; }) {
+				return alloc.new_object(val, left, right);
+			}
+			else {
+				Node* x = alloc.allocate(1);
+				alloc.construct(x, val, left, right);
+				return x;
+			}
+		}
 		T get(Node* x, ll pos, ll L, ll R) {
 			while (L != R) {
 				ll M = (L + R) / 2;
@@ -28,51 +39,41 @@ namespace mirai {
 			return x->val;
 		}
 		Node* set(Node* x, ll pos, T val, ll L, ll R) {
-			if (L == R) return new Node(val);
+			if (L == R) return construct(val);
 			ll M = (L + R) / 2;
 			if (pos <= M)
-				return new Node(x->val, set(x->left, pos, val, L, M), x->right);
+				return construct(x->val, set(x->left, pos, val, L, M), x->right);
 			else
-				return new Node(x->val, x->left, set(x->right, pos, val, M + 1, R));
+				return construct(x->val, x->left, set(x->right, pos, val, M + 1, R));
 		}
 		template <size_t N>
 		Node* set(ll (&arr)[N], ll L, ll R) {
-			if (L == R) return new Node(arr[L]);
+			if (L == R) return construct(arr[L]);
 			ll M = (L + R) / 2;
-			return new Node(0, set(arr, L, M), set(arr, M + 1, R));
+			return construct(0, set(arr, L, M), set(arr, M + 1, R));
 		}
-		persistent_array(Node* root)
-			: root(root) {}
+		persistent_array(Node* root, Allocator alloc = {})
+			: root(root), alloc(alloc) {}
 
 	public:
 		persistent_array()
-			: root(nullptr) {}
+			: root(nullptr), alloc{} {}
+		persistent_array(std::pmr::monotonic_buffer_resource* pool)
+			: root(nullptr), alloc{ pool } {}
 		persistent_array(const persistent_array& x)
-			: root(x.root) {}
+			: root(x.root), alloc{ x.alloc } {}
 		persistent_array(persistent_array&& x)
-			: root(x.root) {
+			: root(x.root), alloc{ std::move(x.alloc) } {
 			x.root = nullptr;
 		}
-		persistent_array& operator=(const persistent_array& x) {
-			if (this == &x) return *this;
-			root = x.root;
-			return *this;
-		}
-		persistent_array& operator=(persistent_array&& x) {
-			if (this == &x) return *this;
-			root = x.root;
-			x.root = nullptr;
-			return *this;
-		}
+		template <size_t N>
+		persistent_array(T (&val)[N], std::pmr::monotonic_buffer_resource* pool)
+			: alloc(pool), root(set(val, 0, size)) {}
 		T get(ll i) {
 			return get(root, i, 0, size);
 		}
 		persistent_array set(ll i, T val) {
-			return persistent_array{ set(root, i, val, 0, size) };
-		}
-		template <size_t N>
-		void set(T (&val)[N]) {
-			root = set(val, 0, size);
+			return persistent_array{ set(root, i, val, 0, size), alloc };
 		}
 	};
 } // namespace mirai
