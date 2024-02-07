@@ -11,13 +11,17 @@ namespace mirai {
 
 	struct auto_timer {
 		time_point<steady_clock> start;
-		auto_timer() mr_noexcept : start{ curr_time_point() } {}
+		string name;
+		auto_timer(const string& name = "") mr_noexcept : start{ curr_time_point() }, name(name) {}
 		void restart() mr_noexcept { start = time_point<steady_clock>{ curr_time_point() }; }
 		auto now() const mr_noexcept {
 			return curr_time_point() - start;
 		}
 		~auto_timer() mr_noexcept {
-			clog << "timer stopped after " << duration_cast<chrono::milliseconds>(curr_time_point() - start) << " ms." << endl;
+			if (name.empty())
+				cout << "timer stopped after " << duration_cast<chrono::milliseconds>(curr_time_point() - start) << "." << endl;
+			else
+				cout << "timer [" << name << "] stopped after " << duration_cast<chrono::milliseconds>(curr_time_point() - start) << "." << endl;
 		}
 	};
 
