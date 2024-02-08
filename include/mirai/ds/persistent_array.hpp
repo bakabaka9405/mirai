@@ -9,15 +9,15 @@ namespace mirai {
 		segment_tree_node(T val, segment_tree_node* left = nullptr, segment_tree_node* right = nullptr)
 			: val(val), left(left), right(right) {}
 	};
-	template <typename T, size_t size, typename Node = segment_tree_node<T>,typename Allocator = std::pmr::polymorphic_allocator<Node>>
+	template <typename T, size_t size, typename Node = segment_tree_node<T>, typename Allocator = std::pmr::polymorphic_allocator<Node>>
 	class persistent_array {
 	private:
 		Allocator alloc;
 		Node* root;
-		Node* construct(ll val, Node* left = nullptr, Node* right = nullptr) {
+		Node* construct(T val, Node* left = nullptr, Node* right = nullptr) {
 			if constexpr (requires { alloc.new_object; }) {
-				return alloc.new_object(val, left, right);
-			}
+				return alloc.template new_object<Node>(val, left, right);
+			} 
 			else {
 				Node* x = alloc.allocate(1);
 				alloc.construct(x, val, left, right);
@@ -53,17 +53,17 @@ namespace mirai {
 			return construct(0, set(arr, L, M), set(arr, M + 1, R));
 		}
 		persistent_array(Node* root, Allocator alloc = {})
-			: root(root), alloc(alloc) {}
+			: alloc(alloc), root(root) {}
 
 	public:
 		persistent_array()
-			: root(nullptr), alloc{} {}
+			: alloc{}, root(nullptr) {}
 		persistent_array(std::pmr::monotonic_buffer_resource* pool)
-			: root(nullptr), alloc{ pool } {}
+			: alloc{ pool }, root(nullptr) {}
 		persistent_array(const persistent_array& x)
-			: root(x.root), alloc{ x.alloc } {}
+			: alloc{ x.alloc }, root(x.root) {}
 		persistent_array(persistent_array&& x)
-			: root(x.root), alloc{ std::move(x.alloc) } {
+			: alloc{ std::move(x.alloc) }, root(x.root) {
 			x.root = nullptr;
 		}
 		template <size_t N>

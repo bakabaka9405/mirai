@@ -27,6 +27,7 @@ for _, file in ipairs(cpp_files) do
         set_kind("binary")
         add_files(file)
         add_deps("mirai")
+        set_default(false)
 end
 
 target("embedder")
