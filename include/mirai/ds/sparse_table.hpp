@@ -15,18 +15,21 @@ namespace mirai {
 			ull layer = lg(n) + 1;
 			val.resize(layer, vector<T>(n));
 			copy(begin, end, val[0].begin());
-			for (ull i = 1, k = 1; i < layer; i++, k <<= 1) {
+			for (ull i = 1, k = 1; i < layer; i++, k <<= 1u) {
 				for (ull l = 0, r = k; r < n; l++, r++) {
 					val[i][l] = combine_proxy::work(val[i - 1][l], val[i - 1][r]);
 				}
 			}
 		}
 		inline void load(range auto&& r) mr_noexcept { load(mr_begin(r), mr_end(r)); }
+		sparse_table() mr_noexcept = default;
+		sparse_table(const sparse_table&) = delete;
+		sparse_table(sparse_table&&) = delete;
 		sparse_table(auto begin, auto end) mr_noexcept { load(begin, end); }
-		sparse_table(auto&& r) mr_noexcept : sparse_table(std::begin(r), std::end(r)) {}
+		explicit sparse_table(auto&& r) mr_noexcept : sparse_table(std::begin(r), std::end(r)) {}
 
 		MR_NODISCARD inline T query(ull l, ull r) mr_noexcept {
-			mr_assert(l <= r);
+			MR_ASSUME(l <= r);
 			ull layer = lg(r - l + 1);
 			return combine_proxy::work(val[layer][l], val[layer][r - (1ull << layer) + 1]);
 		}

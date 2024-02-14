@@ -23,11 +23,11 @@ namespace mirai {
 					100000000000000000ll,
 					1000000000000000000ll };
 
-	inline consteval ll pow2(ll x) {
-		return 1ll << x;
+	inline consteval ull pow2(ull x) {
+		return 1ull << x;
 	}
 
 	inline ull lg(ull n) mr_noexcept {
-		return 63 - clzll(n);
+		return std::bit_width(n);
 	}
 } // namespace mirai

@@ -3,7 +3,7 @@
 #include <mirai/util/range.hpp>
 namespace mirai {
 	template <typename iter_t>
-	inline constexpr auto from(iter_t&& it) {
+	MR_NODISCARD inline constexpr auto from(iter_t&& it) {
 		struct from_wrapper {
 			iter_t it;
 			inline constexpr auto begin() const mr_noexcept { return it; }
@@ -68,7 +68,7 @@ namespace mirai {
 		}
 	};
 
-	inline constexpr auto take(size_t n) {
+	MR_NODISCARD inline constexpr auto take(size_t n) {
 		return __take_helper{ n };
 	}
 

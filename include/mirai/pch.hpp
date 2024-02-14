@@ -23,11 +23,15 @@
 #include <ranges>
 #include <concepts>
 #include <memory_resource>
+#include <bit>
 
 #include <cassert>
 #include <cmath>
 #include <cctype>
 #include <cstring>
+#ifdef _WIN32
+#include<conio.h>
+#endif
 
 #if MR_USE_MSVC
 #include <immintrin.h>
@@ -59,16 +63,25 @@ namespace mirai {
 	using std::ofstream;
 	using std::setprecision;
 	using std::setw;
+	#ifdef _WIN32
+	#define getchar_unlocked _getchar_nolock
+	#define putchar_unlocked _putchar_nolock
+	#endif
 
 	// utility
 	using std::copy;
 	using std::copy_n;
 	using std::declval;
+	using std::exchange;
 	using std::make_pair;
 	using std::make_tuple;
 	using std::pair;
 	using std::swap;
 	using std::tuple;
+
+	//bit
+	using std::popcount;
+	
 
 	// string
 	using std::string;

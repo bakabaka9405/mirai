@@ -55,7 +55,7 @@ namespace mirai {
 			diff_t diff_x, diff_y;
 			trace_to_top(x, diff_x);
 			trace_to_top(y, diff_y);
-			mr_assert(x == y);
+			MR_ASSUME(x == y);
 			return diff_x + (-diff_y);
 		}
 		inline bool try_merge(ll x, ll y, diff_t diff = diff_t{}) mr_noexcept {

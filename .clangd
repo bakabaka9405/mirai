@@ -1,6 +1,8 @@
-#User config
+If:
+  PathMatch: [.*\.cpp,.*\.h,.*\.hpp]
+
 Diagnostics: 
-  UnusedIncludes:  Strict
+  UnusedIncludes:  None
   ClangTidy: 
     Add: 
     [
@@ -65,7 +67,7 @@ Diagnostics:
         cert-dcl58-cpp,
         cert-err34-c,
         cert-err52-cpp,
-        cert-err58-cpp,
+        # cert-err58-cpp,
         cert-err60-cpp,
         cert-flp30-c,
         cert-msc50-cpp,
@@ -119,8 +121,8 @@ Diagnostics:
         modernize-use-override,
         modernize-use-transparent-functors,
         modernize-use-uncaught-exceptions,
-        mpi-buffer-deref,
-        mpi-type-mismatch,
+        # mpi-buffer-deref,
+        # mpi-type-mismatch,
         openmp-use-default-none,
         performance-faster-string-find,
         performance-for-range-copy,
@@ -142,7 +144,7 @@ Diagnostics:
         readability-container-size-empty,
         readability-convert-member-functions-to-static,
         readability-delete-null-pointer,
-        readability-deleted-default,
+        # readability-deleted-default,
         readability-inconsistent-declaration-parameter-name,
         readability-make-member-function-const,
         readability-misleading-indentation,
@@ -159,7 +161,18 @@ Diagnostics:
         readability-static-definition-in-anonymous-namespace,
         readability-string-compare,
         readability-uniqueptr-delete-release,
-        readability-use-anyofallof,
+        readability-use-anyofallof
     ]
     CheckOptions: 
       readability-identifier-naming.VariableCase:  camelCase
+
+CompileFlags:
+  Add: [-xc++, -Wall, -Wextra, -Wno-unused-variable, -std=c++23]
+  Compiler: D:\mingw64\bin\g++.exe
+  CompilationDatabase: None
+
+InlayHints:
+  Enabled: Yes
+  ParameterNames: Yes
+  DeducedTypes: Yes
+  Designators: No
