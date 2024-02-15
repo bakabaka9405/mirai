@@ -9,9 +9,9 @@ namespace mirai {
 
 	template <size_t N>
 	struct constexpr_str<N, StaticStringLiteral> {
-		constexpr constexpr_str(const char (&s)[N + 1])
+		explicit constexpr constexpr_str(const char (&s)[N + 1])
 			: data(s) {}
-		constexpr operator string_view() const mr_noexcept {
+		explicit constexpr operator string_view() const mr_noexcept {
 			return data;
 		}
 		const char (&data)[N + 1];
@@ -20,8 +20,8 @@ namespace mirai {
 	template <size_t N>
 	struct constexpr_str<N, StaticStringConcat> {
 		template <size_t N1, int T1, size_t N2, int T2>
-		constexpr constexpr_str(const constexpr_str<N1, T1>& s1,
-								const constexpr_str<N2, T2>& s2)
+		explicit constexpr constexpr_str(const constexpr_str<N1, T1>& s1,
+										 const constexpr_str<N2, T2>& s2)
 			: constexpr_str(s1,
 							std::make_index_sequence<N1>{},
 							s2,
@@ -35,10 +35,10 @@ namespace mirai {
 			: data{ s1.data[I1]..., s2.data[I2]..., '\0' } {
 			static_assert(N == N1 + N2, "static_string length error");
 		}
-		constexpr operator string_view() const mr_noexcept {
+		explicit constexpr operator string_view() const mr_noexcept {
 			return data;
 		}
-		char data[N + 1];
+		char data[N + 1]{};
 	};
 
 	template <size_t N>

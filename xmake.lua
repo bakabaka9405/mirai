@@ -1,13 +1,13 @@
 add_rules("mode.debug", "mode.release")
 add_includedirs("include", {public = true})
 set_languages("c11","cxx23")
-
+add_requires("llvm")
 add_cxxflags("-DMR_LOCAL")
 
 if is_mode("debug") then 
     add_cxxflags("-DMR_DEBUG")
-    -- set_policy("build.sanitizer.address", true)
-    -- set_policy("build.sanitizer.undefined", true)
+    set_policy("build.sanitizer.address", true)
+    set_policy("build.sanitizer.undefined", true)
 end
 
 
@@ -34,6 +34,15 @@ target("embedder")
     set_kind("binary")
     add_files("src/embedder/*.cpp")
     add_deps("mirai")
+    set_default(false)
+
+target("minifier")
+    set_kind("binary")
+    add_files("src/minifier/*.cpp")
+    add_deps("mirai")
+    add_packages("llvm")
+    set_default(false)
+
 --
 -- If you want to known more usage about xmake, please see https: //xmake.io
 --

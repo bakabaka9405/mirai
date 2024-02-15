@@ -168,7 +168,7 @@ Diagnostics:
 
 CompileFlags:
   Add: [-xc++, -Wall, -Wextra, -Wno-unused-variable, -std=c++23]
-  Compiler: D:\mingw64\bin\g++.exe
+  Compiler: D:\mingw64\bin\gcc.exe
   CompilationDatabase: None
 
 InlayHints:

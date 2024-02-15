@@ -3,8 +3,8 @@
 #include <mirai/util/constexpr_str.hpp>
 namespace mirai {
 	template <typename T, typename... Args>
-	struct type_name_helper{
-		constexpr static auto name=string_literal("<unknown-type>");
+	struct type_name_helper {
+		constexpr static auto name = string_literal("<unknown-type>");
 	};
 
 	template <typename T, typename... Args>

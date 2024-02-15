@@ -2,11 +2,15 @@
 #include <mirai/pch.hpp>
 #include <mirai/util/string.hpp>
 namespace mirai {
-
 	MR_API void disable_stdio_sync() mr_noexcept {
 		std::ios::sync_with_stdio(false);
 		cin.tie(nullptr);
 		cout.tie(nullptr);
+	}
+
+	MR_API void lock_stdio() mr_noexcept {
+		flockfile(stdin);
+		flockfile(stdout);
 	}
 
 #if MR_HAVE_INT128
@@ -21,25 +25,60 @@ namespace mirai {
 		return out << to_string(v);
 	}
 #endif
-	MR_API ll readi() {
+	MR_API ll readi() mr_noexcept {
 		ull x = 0;
 		bool f = false;
-		ull c = getchar_unlocked();
-		while (c < '0' || c > '9') {
-			if (c == '-') MR_UNLIKELY f = true;
+		int c = getchar_unlocked();
+		while (!isdigit(c) && c != '-') c = getchar_unlocked();
+		if (c == '-') MR_UNLIKELY {
+				f = true;
+				c = getchar_unlocked();
+			}
+		while (isdigit(c)) {
+			x = (x << 1u) + (x << 3u) + (static_cast<ull>(c) ^ 48u);
 			c = getchar_unlocked();
 		}
-		while (c >= '0' && c <= '9') {
-			x = (x << 1u) + (x << 3u) + (c ^ 48u);
-			c = getchar_unlocked();
-		}
-		return f ? static_cast<ll>(x) : x;
+		return f ? -x : x; // NOLINT
 	}
 
-	MR_API void puti(std::integral auto&& x) {
-		if (x < 0) putchar_unlocked('-'), x = -x;
-		if (x > 9) puti(x / 10);
-		putchar_unlocked(x % 10 + '0');
+	MR_API double readf() mr_noexcept {
+		double x = 0;
+		bool f = false;
+		int c = getchar_unlocked();
+		while (!isdigit(c) && c != '-') c = getchar_unlocked();
+		if (c == '-') MR_UNLIKELY {
+				f = true;
+				c = getchar_unlocked();
+			}
+		while (isdigit(c)) {
+			x = x * 10 + (c ^ 48); // NOLINT
+			c = getchar_unlocked();
+		}
+		if (c == '.') MR_LIKELY {
+				c = getchar_unlocked();
+				double dec = 0.1;
+				while (isdigit(c)) {
+					x += (c ^ 48) * dec; // NOLINT
+					dec *= 0.1;
+					c = getchar_unlocked();
+				}
+			}
+		return f ? -x : x;
+	}
+
+	MR_API void puti(std::integral auto x) mr_noexcept {
+		constexpr static ull width = std::numeric_limits<std::decay_t<decltype(x)>>::digits10 + 3;
+		static char buf[width];
+		if (x < 0) {
+			putchar_unlocked('-');
+			x = -x;
+		}
+		ull p = width;
+		do {
+			buf[--p] = x % 10 + '0';
+			x /= 10;
+		} while (x != 0);
+		fwrite_unlocked(buf + p, 1, width - p, stdout);
 	}
 
 	template <typename... Args>
@@ -59,7 +98,7 @@ namespace mirai {
 
 	template <typename T, typename Y>
 	MR_API std::ostream& operator<<(std::ostream& out, const pair<T, Y>& p) {
-		return out << format("({}, {})", p.first, p.second);
+		return out << '(' << p.first << ", " << p.second << ')' << endl;
 	}
 
 	template <typename... Args>
@@ -100,7 +139,7 @@ namespace mirai {
 	struct __scanner_t { // NOLINT
 		inline decltype(auto) operator++() mr_noexcept { return *this; }
 		inline auto operator++(int) mr_noexcept->__scanner_t { return *this; }
-		inline auto get() const mr_noexcept {
+		inline static auto get() mr_noexcept {
 			std::conditional_t<sizeof...(Args) == 0, T, tuple<T, Args...>> res;
 			cin >> res;
 			return res;

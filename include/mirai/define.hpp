@@ -15,6 +15,18 @@
 #define MR_USE_MSVC 0
 #endif
 
+#ifdef __clang__
+#define MR_USE_CLANG 1
+#else
+#define MR_USE_CLANG 0
+#endif
+
+#ifdef __GNUC__
+#define MR_USE_GCC 1
+#else
+#define MR_USE_GCC 0
+#endif
+
 #if MR_USE_MSVC
 #define MR_HAVE_INT128 0
 #else
@@ -31,14 +43,16 @@
 #define MR_ASSERT(x) (void(0))
 #define MR_TRY if (true)
 #define MR_CATCH else if (false)
-
 #endif
 
 #define CONFIG_ITEM constexpr static auto&
 
-
 #if __cplusplus >= 202300L
+#ifdef MR_DEBUG
+#define MR_ASSUME(x) MR_ASSERT(x)
+#else
 #define MR_ASSUME(x) [[assume(x)]]
+#endif
 #else
 #define MR_ASSUME(x) MR_ASSERT(x)
 #endif

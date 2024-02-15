@@ -30,7 +30,7 @@
 #include <cctype>
 #include <cstring>
 #ifdef _WIN32
-#include<conio.h>
+#include <conio.h>
 #endif
 
 #if MR_USE_MSVC
@@ -63,10 +63,15 @@ namespace mirai {
 	using std::ofstream;
 	using std::setprecision;
 	using std::setw;
-	#ifdef _WIN32
-	#define getchar_unlocked _getchar_nolock
-	#define putchar_unlocked _putchar_nolock
-	#endif
+#ifdef _WIN32
+#define getchar_unlocked _getchar_nolock
+#define putchar_unlocked _putchar_nolock
+#define fread_unlocked _fread_nolock
+#define fwrite_unlocked _fwrite_nolock
+#define flockfile(f) _lock_file(f)
+#define funlockfile(f) _unlock_file(f)
+
+#endif
 
 	// utility
 	using std::copy;
@@ -79,9 +84,8 @@ namespace mirai {
 	using std::swap;
 	using std::tuple;
 
-	//bit
+	// bit
 	using std::popcount;
-	
 
 	// string
 	using std::string;
