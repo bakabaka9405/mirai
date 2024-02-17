@@ -1,6 +1,6 @@
 #pragma once
 #include <mirai/pch.hpp>
-namespace mirai {
+MR_NAMESPACE_BEGIN
 	template <size_t size>
 	class bitset {
 	private:
@@ -88,4 +88,4 @@ namespace mirai {
 		}
 		
 	};
-} // namespace mirai
+MR_NAMESPACE_END

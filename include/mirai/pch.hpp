@@ -141,11 +141,11 @@ using std::array;
 using std::deque;
 using std::initializer_list;
 using std::map;
-using std::set;
 using std::multimap;
 using std::multiset;
-using std::queue;
 using std::priority_queue;
+using std::queue;
+using std::set;
 using std::vector;
 template <typename T>
 using stack = std::stack<T, vector<T>>;
@@ -163,4 +163,12 @@ using std::smatch;
 // concepts
 using std::floating_point;
 using std::integral;
+
+template <bool B, typename T, typename Y>
+constexpr auto conditional_v(T&& t, Y&& y) {
+	if constexpr (B)
+		return std::forward<T>(t);
+	else
+		return std::forward<Y>(y);
+}
 MR_NAMESPACE_END

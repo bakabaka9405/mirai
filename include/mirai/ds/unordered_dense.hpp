@@ -1583,13 +1583,13 @@ namespace std {
 		return old_size - map.size();
 	}
 } // namespace std
-namespace mirai {
-	template <typename T, typename Y>
-	using unordered_map = ankerl::unordered_dense::map<T, Y>;
-	template <typename T>
-	using unordered_set = ankerl::unordered_dense::set<T>;
-	template <typename T>
-	using hash = ankerl::unordered_dense::hash<T>;
-} // namespace mirai
+MR_NAMESPACE_BEGIN
+template <typename T, typename Y>
+using unordered_map = ankerl::unordered_dense::map<T, Y>;
+template <typename T>
+using unordered_set = ankerl::unordered_dense::set<T>;
+template <typename T>
+using hash = ankerl::unordered_dense::hash<T>;
+MR_NAMESPACE_END
 #endif
 #endif
