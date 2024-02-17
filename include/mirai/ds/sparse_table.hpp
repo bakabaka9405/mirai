@@ -8,26 +8,30 @@ namespace mirai {
 	class sparse_table {
 	private:
 		vector<vector<T>> val;
+		ull size = 0, layer = 0;
 
 	public:
+		inline void resize(size_t n) mr_noexcept {
+			size = n;
+			layer = lg(size) + 1;
+			val.resize(layer);
+		}
 		inline void load(auto begin, auto end) mr_noexcept {
-			ull n = std::distance(begin, end);
-			ull layer = lg(n) + 1;
-			val.resize(layer, vector<T>(n));
+			resize(std::distance(begin, end));
 			copy(begin, end, val[0].begin());
+		}
+		inline void calc() mr_noexcept {
 			for (ull i = 1, k = 1; i < layer; i++, k <<= 1u) {
-				for (ull l = 0, r = k; r < n; l++, r++) {
+				val[i].resize(size - k + 1);
+				for (ull l = 0, r = k; r < size; l++, r++) {
 					val[i][l] = combine_proxy::work(val[i - 1][l], val[i - 1][r]);
 				}
 			}
 		}
 		inline void load(range auto&& r) mr_noexcept { load(mr_begin(r), mr_end(r)); }
 		sparse_table() mr_noexcept = default;
-		sparse_table(const sparse_table&) = delete;
-		sparse_table(sparse_table&&) = delete;
 		sparse_table(auto begin, auto end) mr_noexcept { load(begin, end); }
-		explicit sparse_table(auto&& r) mr_noexcept : sparse_table(std::begin(r), std::end(r)) {}
-
+		inline T& operator[](ull pos) mr_noexcept { return val[0][pos]; }
 		MR_NODISCARD inline T query(ull l, ull r) mr_noexcept {
 			MR_ASSUME(l <= r);
 			ull layer = lg(r - l + 1);

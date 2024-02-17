@@ -36,33 +36,38 @@
 #if MR_USE_MSVC
 #include <immintrin.h>
 #endif
-namespace mirai {
-	using namespace std::literals;
+MR_NAMESPACE_BEGIN
 
-	namespace ranges = std::ranges; // NOLINT
-	namespace views = std::views;	// NOLINT
-	namespace chrono = std::chrono; // NOLINT
+using namespace std::literals;
 
-	using ll = long long;
-	using ull = unsigned long long;
-	using i64 = long long;
-	using u64 = unsigned long long;
+namespace ranges = std::ranges; // NOLINT
+namespace views = std::views;	// NOLINT
+namespace chrono = std::chrono; // NOLINT
+
+using i8 = int8_t;
+using u8 = uint8_t;
+using i32 = int32_t;
+using u32 = uint32_t;
+using ll = int64_t;
+using ull = uint64_t;
+using i64 = int64_t;
+using u64 = uint64_t;
 
 #if MR_HAVE_INT128
-	using i128 = __int128_t;
-	using u128 = __uint128_t;
+using i128 = __int128_t;
+using u128 = __uint128_t;
 #endif
 
-	// IO
-	using std::cerr;
-	using std::cin;
-	using std::clog;
-	using std::cout;
-	using std::endl;
-	using std::ifstream;
-	using std::ofstream;
-	using std::setprecision;
-	using std::setw;
+// IO
+using std::cerr;
+using std::cin;
+using std::clog;
+using std::cout;
+using std::endl;
+using std::ifstream;
+using std::ofstream;
+using std::setprecision;
+using std::setw;
 #ifdef _WIN32
 #define getchar_unlocked _getchar_nolock
 #define putchar_unlocked _putchar_nolock
@@ -70,93 +75,92 @@ namespace mirai {
 #define fwrite_unlocked _fwrite_nolock
 #define flockfile(f) _lock_file(f)
 #define funlockfile(f) _unlock_file(f)
-
 #endif
 
-	// utility
-	using std::copy;
-	using std::copy_n;
-	using std::declval;
-	using std::exchange;
-	using std::make_pair;
-	using std::make_tuple;
-	using std::pair;
-	using std::swap;
-	using std::tuple;
+// utility
+using std::copy;
+using std::copy_n;
+using std::declval;
+using std::exchange;
+using std::make_pair;
+using std::make_tuple;
+using std::pair;
+using std::swap;
+using std::tuple;
 
-	// bit
-	using std::popcount;
+// bit
+using std::popcount;
 
-	// string
-	using std::string;
-	using std::string_view;
-	using std::to_string;
+// string
+using std::string;
+using std::string_view;
+using std::to_string;
 
-	// iterator
-	using std::back_inserter;
-	using std::inserter;
-	using std::istream_iterator;
-	using std::ostream_iterator;
+// iterator
+using std::back_inserter;
+using std::inserter;
+using std::istream_iterator;
+using std::ostream_iterator;
 
-	// tuple
-	using std::make_pair;
-	using std::make_tuple;
-	using std::tie;
+// tuple
+using std::make_pair;
+using std::make_tuple;
+using std::tie;
 
-	// algorithm
-	using std::nth_element;
-	using std::sort;
-	using std::stable_sort;
-	using std::unique;
-	using std::unique_copy;
+// algorithm
+using std::nth_element;
+using std::sort;
+using std::stable_sort;
+using std::unique;
+using std::unique_copy;
 
-	// random
-	using std::default_random_engine;
-	using std::random_device;
-	using std::uniform_int_distribution;
-	using std::uniform_real_distribution;
+// random
+using std::default_random_engine;
+using std::random_device;
+using std::uniform_int_distribution;
+using std::uniform_real_distribution;
 
-	// chrono
-	using chrono::duration;
-	using chrono::steady_clock;
-	using chrono::system_clock;
-	using chrono::time_point;
+// chrono
+using chrono::duration;
+using chrono::steady_clock;
+using chrono::system_clock;
+using chrono::time_point;
 
-	// numeric
-	using std::adjacent_difference;
-	using std::gcd;
-	using std::iota;
-	using std::lcm;
-	using std::lerp;
-	using std::max;
-	using std::min;
-	using std::partial_sum;
+// numeric
+using std::adjacent_difference;
+using std::gcd;
+using std::iota;
+using std::lcm;
+using std::lerp;
+using std::max;
+using std::min;
+using std::partial_sum;
 
-	// data structure
-	using std::array;
-	using std::deque;
-	using std::initializer_list;
-	using std::map;
-	using std::multimap;
-	using std::multiset;
-	using std::priority_queue;
-	using std::queue;
-	using std::set;
-	using std::vector;
-	template <typename T>
-	using stack = std::stack<T, vector<T>>;
+// data structure
+using std::array;
+using std::deque;
+using std::initializer_list;
+using std::map;
+using std::set;
+using std::multimap;
+using std::multiset;
+using std::queue;
+using std::priority_queue;
+using std::vector;
+template <typename T>
+using stack = std::stack<T, vector<T>>;
 
-	// functor
-	using std::function;
-	using std::greater;
-	using std::less;
+// functor
+using std::function;
+using std::greater;
+using std::less;
 
-	// regex
-	using std::regex;
-	using std::regex_search;
-	using std::smatch;
+// regex
+using std::regex;
+using std::regex_search;
+using std::smatch;
 
-	// concepts
-	using std::floating_point;
-	using std::integral;
-} // namespace mirai
+// concepts
+using std::floating_point;
+using std::integral;
+MR_NAMESPACE_END

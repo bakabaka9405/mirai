@@ -56,3 +56,6 @@
 #else
 #define MR_ASSUME(x) MR_ASSERT(x)
 #endif
+
+#define MR_NAMESPACE_BEGIN namespace mirai {
+#define MR_NAMESPACE_END }
