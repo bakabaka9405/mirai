@@ -9,8 +9,10 @@ concept vector_like = requires(T t1, T t2) {
 	{ t1 == t2 } -> std::same_as<bool>;
 };
 
-template <vector_like diff_t = ll, bool Compression = true, bool MergeByRank = true>
+template <vector_like diff_t = ll, bool Compression = true, bool MergeByRank = true, bool MergeBySize = false>
 class disjoint_set_union {
+	static_assert(MergeByRank ^ MergeBySize, "MergeByRank and MergeBySize cannot be both true");
+
 private:
 	vector<ll> _fa;
 	vector<diff_t> _diff;
@@ -48,6 +50,9 @@ public:
 		if constexpr (MergeByRank) {
 			if (_rank[x] > _rank[y]) swap(x, y), diff = -diff;
 			if (_rank[x] == _rank[y]) _rank[y]++;
+		}
+		else if constexpr (MergeBySize) {
+			if (_size[x] > _size[y]) swap(x, y), diff = -diff;
 		}
 		_size[y] += _size[x];
 		_diff[x] = diff;
