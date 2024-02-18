@@ -11,9 +11,9 @@ public:
 	basic_binary_indexed_tree() {}
 	basic_binary_indexed_tree(std::vector<T> a) {
 		tr.resize(a.size() + 1);
-		for (T i = 1; i <= a.size(); i++) {
+		for (T i = 1; i < a.size(); i++) {
 			tr[i] += a[i];
-			if (T j = i + lowbit(i); j <= a.size()) tr[j] += tr[i];
+			if (T j = i + lowbit(i); j < a.size()) tr[j] += tr[i];
 		}
 	}
 	template <size_t N>
@@ -44,7 +44,7 @@ public:
 		return query(r) - query(l - 1);
 	}
 	void resize(size_t size) {
-		tr.resize(size + 1);
+		tr.resize(size + 1, T{});
 	}
 };
 namespace alias {

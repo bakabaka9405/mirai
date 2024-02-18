@@ -2,14 +2,14 @@
 #include <mirai/pch.hpp>
 MR_NAMESPACE_BEGIN
 enum bsearch_mode {
-	sinistral,
-	dextral
+	sinistral, // 答案在左侧
+	dextral	   // 答案在右侧
 };
 template <bsearch_mode mode>
 ll int_bsearch(ll l, ll r, ll default_ans, auto&& check) {
 	ll ans = default_ans, mid;
 	while (l <= r) {
-		if (check(mid)) {
+		if (mid = (l + r) / 2; check(mid)) {
 			ans = mid;
 			if (mode == sinistral)
 				r = mid - 1;

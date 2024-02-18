@@ -1,4 +1,3 @@
-#define MR_DEBUG
 #include <mirai/util/debug.hpp>
 #include <mirai/util/time.hpp>
 #include <mirai/util/pipeline.hpp>
@@ -7,7 +6,7 @@
 #include <mirai/ds/unordered_dense.hpp>
 #include <regex>
 #include <filesystem>
-#include<format>
+#include <format>
 using namespace mirai;
 namespace fs = std::filesystem;
 vector<string> header_index(1);
@@ -93,6 +92,7 @@ int main(int argc, char** argv) {
 				embed_flag = false;
 				continue;
 			}
+			else if(line.starts_with("//"))continue;
 			if (in_embed_trunk && embed_flag) continue;
 			string header = get_header(line);
 			if (header.starts_with("mirai")) {
@@ -128,14 +128,14 @@ int main(int argc, char** argv) {
 	topo_sort<G, config>();
 	debug("sorted header:");
 	ofstream fout(dst_path);
-	for (auto i : flag_defines) fout << "#define " << i << endl;
+	for (auto&& i : flag_defines) fout << "#define " << i << endl;
 	for (auto i : topo | transform([](ll x) {
 					  if (x == 0)
 						  return string("<source file>");
 					  else
 						  return header_index[x];
 				  })) {
-		debug(i);
+		fout<<"// file:"<<i<<endl;
 		if (i == "<source file>")
 			fin.open(src_path);
 		else
@@ -164,9 +164,9 @@ int main(int argc, char** argv) {
 				embed_flag = false;
 				continue;
 			}
-			if (tmp.starts_with("#pragma once") || tmp.starts_with("//") || tmp.empty()) continue;
+			if (tmp.starts_with("__pragma(\"once\")") || tmp.starts_with("#pragma once") || tmp.starts_with("//") || tmp.empty()) continue;
 			string define = get_define(line);
-			if (define.starts_with("MR_FLAG"))continue;
+			if (define.starts_with("MR_FLAG")) continue;
 			string header = get_header(line);
 			if (!header.starts_with("fmt") && header.substr(0, 5) != "mirai") {
 				if (in_embed_trunk && embed_flag) continue;

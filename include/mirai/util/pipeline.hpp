@@ -303,7 +303,7 @@ MR_NODISCARD inline auto save_to(_range&& r, T&& dst) {
 		_range _r;
 		T _dst;
 		inline auto operator()() mr_noexcept {
-			for (auto&& i : _r) *_dst++ += i;
+			for (auto&& i : _r) *_dst++ = i;
 		}
 	};
 	return save_to_wrapper{ std::forward<_range>(r), std::forward<T>(dst) };

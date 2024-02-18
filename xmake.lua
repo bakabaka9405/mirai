@@ -5,8 +5,8 @@ add_cxxflags("-DMR_LOCAL")
 
 if is_mode("debug") then 
     add_cxxflags("-DMR_DEBUG")
-    set_policy("build.sanitizer.address", true)
-    set_policy("build.sanitizer.undefined", true)
+    -- set_policy("build.sanitizer.address", true)
+    -- set_policy("build.sanitizer.undefined", true)
 end
 
 
@@ -33,6 +33,7 @@ target("embedder")
     set_kind("binary")
     add_files("src/embedder/*.cpp")
     add_deps("mirai")
+    set_toolchains("gcc")
     set_default(false)
 
 
