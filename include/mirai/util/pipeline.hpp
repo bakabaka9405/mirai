@@ -315,7 +315,7 @@ MR_NODISCARD inline auto save_to(range_l&& r, range_r&& dst) {
 }
 
 template <typename T>
-struct __save_to_helper {
+struct __save_to_helper { // NOLINT(bugprone-reserved-identifier)
 	T _dst;
 	template <range _range>
 	friend inline auto operator|(_range&& lhs, __save_to_helper rhs) mr_noexcept {
@@ -331,6 +331,33 @@ MR_NODISCARD inline auto save_to(T&& dst) {
 template <range range>
 MR_NODISCARD inline auto save_to(range&& dst) {
 	return __save_to_helper{ mr_begin(dst) };
+}
+
+template <range _range, typename Container>
+MR_NODISCARD inline auto append_to(_range&& r, Container& dst) {
+	struct append_to_wrapper {
+		_range _r;
+		Container& dst;
+		inline auto operator()() mr_noexcept {
+			auto it = std::inserter(dst, mr_end(dst));
+			for (auto&& i : _r) *it = std::forward<std::decay_t<decltype(i)>>(i);
+		}
+	};
+	return append_to_wrapper{ std::forward<_range>(r), dst };
+}
+
+template <typename Container>
+struct __append_to_helper { // NOLINT(bugprone-reserved-identifier)
+	Container& _dst;
+	template <range _range>
+	friend inline auto operator|(_range&& lhs, __append_to_helper rhs) mr_noexcept {
+		return append_to(std::forward<_range>(lhs), rhs._dst);
+	}
+};
+
+template <typename Container>
+MR_NODISCARD inline auto append_to(Container& dst) {
+	return __append_to_helper{ dst };
 }
 
 template <range range, typename Container>
@@ -360,7 +387,7 @@ inline constexpr auto maps_to(range&& r, Container&& table) {
 }
 
 template <typename Container>
-struct __maps_to_helper {
+struct __maps_to_helper { // NOLINT(bugprone-reserved-identifier)
 	Container table;
 	template <range range>
 	friend inline decltype(auto) operator|(range&& r, __maps_to_helper self) {
@@ -387,5 +414,7 @@ inline constexpr auto as_square = [](auto x) { return x * x; };
 inline constexpr auto is_positive = [](auto x) { return x > 0; };
 
 inline constexpr auto not_negative = [](auto x) { return x >= 0; };
+
+inline constexpr auto to_pair = [](auto&& x) { return pair{ get<0>(x), get<1>(x) }; };
 
 MR_NAMESPACE_END

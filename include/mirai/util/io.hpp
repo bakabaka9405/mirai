@@ -98,7 +98,7 @@ MR_API std::istream& operator>>(std::istream& in, pair<T, Y>& p) {
 
 template <typename T, typename Y>
 MR_API std::ostream& operator<<(std::ostream& out, const pair<T, Y>& p) {
-	return out << '(' << p.first << ", " << p.second << ')' << endl;
+	return out << '(' << p.first << ", " << p.second << ')';
 }
 
 template <typename... Args>
