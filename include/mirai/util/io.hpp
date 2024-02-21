@@ -1,6 +1,7 @@
 #pragma once
 #include <mirai/pch.hpp>
 #include <mirai/util/string.hpp>
+#include <mirai/util/pipeline.hpp>
 MR_NAMESPACE_BEGIN
 MR_API void disable_stdio_sync() mr_noexcept {
 	std::ios::sync_with_stdio(false);
@@ -149,4 +150,7 @@ struct __scanner_t { // NOLINT
 
 template <typename... Args>
 constexpr __scanner_t<Args...> scanner;
+
+template <typename... Args>
+auto from_scanner = from(scanner<Args...>);
 MR_NAMESPACE_END

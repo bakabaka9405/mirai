@@ -34,7 +34,7 @@ inline constexpr auto take(_range&& r, size_t n) mr_noexcept {
 			iter_t _it;
 			size_t _count;
 
-			inline bool operator!=(const std::default_sentinel_t& rt) const mr_noexcept {
+			inline bool operator!=(const std::default_sentinel_t&) const mr_noexcept {
 				return _count;
 			}
 			inline decltype(auto) operator++() mr_noexcept {
@@ -42,7 +42,7 @@ inline constexpr auto take(_range&& r, size_t n) mr_noexcept {
 				--_count;
 				return *this;
 			}
-			inline auto operator++(int) mr_noexcept {
+			inline auto operator++(int) mr_noexcept->iterator {
 				return iterator{ _it++, _count-- };
 			}
 			inline auto operator*() const mr_noexcept {
@@ -61,7 +61,7 @@ inline constexpr auto take(_range&& r, size_t n) mr_noexcept {
 	return take_wrapper{ std::forward<_range>(r), n };
 }
 
-struct __take_helper {
+struct __take_helper { // NOLINT(bugprone-reserved-identifier)
 	size_t n;
 	friend inline auto operator|(auto&& lhs, __take_helper self) mr_noexcept {
 		return take(std::forward<std::decay_t<decltype(lhs)>>(lhs), self.n);
@@ -95,7 +95,7 @@ inline constexpr auto transform(_range&& r, Func&& func) {
 				++_it;
 				return *this;
 			}
-			inline auto operator++(int) mr_noexcept {
+			inline auto operator++(int) mr_noexcept->iterator {
 				iterator res = *this;
 				this->operator++();
 				return res;
@@ -108,10 +108,10 @@ inline constexpr auto transform(_range&& r, Func&& func) {
 		inline auto end() const mr_noexcept { return sentinel{ mr_end(_r) }; }
 	};
 	return transform_wrapper{ std::forward<_range>(r), func };
-};
+}
 
 template <typename Func>
-struct __transform_helper {
+struct __transform_helper { // NOLINT(bugprone-reserved-identifier)
 	Func func;
 	template <range _range>
 	friend inline auto operator|(_range&& lhs, __transform_helper self) mr_noexcept {
@@ -122,6 +122,34 @@ struct __transform_helper {
 template <typename Func>
 inline constexpr auto transform(Func&& func) {
 	return __transform_helper{ std::forward<Func>(func) };
+}
+
+template <range _range, typename... Func>
+inline constexpr auto dispatch(_range&& r, Func&&... func) {
+	struct dispatch_wrapper {
+		_range _r;
+		tuple<Func...> _func;
+		inline void operator()() const mr_noexcept {
+			for (auto&& i : _r)
+				std::apply([&]<typename... Args>(Args&&... f) -> void { ((f(std::forward<decltype((i))>(i))), ...); }, _func);
+		}
+	};
+	return dispatch_wrapper{ std::forward<_range>(r), std::make_tuple(std::forward<Func>(func)...) };
+}
+
+template <typename... Func>
+struct __dispatch_helper { // NOLINT(bugprone-reserved-identifier)
+	tuple<Func...> func;
+	template <range _range>
+	MR_NODISCARD friend constexpr inline decltype(auto) operator|(_range&& lhs, __dispatch_helper&& self) mr_noexcept {
+		return std::apply([&](Func&&... f) { return dispatch(std::forward<_range>(lhs), std::forward<Func>(f)...); }, std::move(self.func));
+	}
+};
+
+template <typename... Func>
+	requires(!range<Func> && ...)
+MR_NODISCARD inline constexpr auto dispatch(Func&&... func) mr_noexcept {
+	return __dispatch_helper<Func...>{ std::make_tuple(std::forward<Func>(func)...) };
 }
 
 template <range _range, typename Func>
@@ -150,7 +178,7 @@ inline auto filter(_range&& r, Func&& func) {
 				} while (_it != _end._it && !_func(*_it));
 				return *this;
 			}
-			inline auto operator++(int) mr_noexcept {
+			inline auto operator++(int) mr_noexcept->iterator {
 				iterator it = *this;
 				this->operator++();
 				return it;
@@ -170,7 +198,7 @@ inline auto filter(_range&& r, Func&& func) {
 	return filter_wrapper{ std::forward<_range>(r), std::forward<Func>(func) };
 };
 template <typename Func>
-struct __filter_helper {
+struct __filter_helper { // NOLINT(bugprone-reserved-identifier)
 	Func func;
 
 	template <range _range>
@@ -202,7 +230,7 @@ inline auto skip(_range&& r, size_t n) {
 	return skip_wrapper{ std::forward<_range>(r), n };
 }
 
-struct __skip_helper {
+struct __skip_helper { // NOLINT(bugprone-reserved-identifier)
 	size_t n;
 	friend inline auto operator|(auto&& lhs, __skip_helper self) mr_noexcept {
 		return skip(std::forward<decltype(lhs)>(lhs), self.n);
@@ -230,7 +258,7 @@ MR_NODISCARD inline auto extreme_value(_range&& r, Func cmp) {
 }
 
 template <typename T, typename Func>
-struct __extreme_value_helper {
+struct __extreme_value_helper { // NOLINT(bugprone-reserved-identifier)
 	Func _cmp;
 	template <range _range>
 	friend inline auto operator|(_range&& lhs, __extreme_value_helper rhs) mr_noexcept {
@@ -244,7 +272,7 @@ inline auto extreme_value(Func cmp) {
 }
 
 template <typename T>
-struct __maximum {
+struct __maximum { // NOLINT(bugprone-reserved-identifier)
 	constexpr static auto _cmp = std::greater<T>();
 	inline decltype(auto) operator()(range auto&& r) const mr_noexcept {
 		return extreme_value<T>(std::forward<decltype(r)>(r), _cmp);
@@ -255,7 +283,7 @@ struct __maximum {
 };
 
 template <typename T>
-struct __minimum {
+struct __minimum { // NOLINT(bugprone-reserved-identifier)
 	constexpr static auto _cmp = std::less<T>();
 	inline decltype(auto) operator()(range auto&& r) const mr_noexcept {
 		return extreme_value<T>(std::forward<decltype(r)>(r), _cmp);
@@ -284,7 +312,7 @@ MR_NODISCARD inline auto addup_to(_range&& r, T& dst) {
 }
 
 template <typename T>
-struct __addup_to_helper {
+struct __addup_to_helper { // NOLINT(bugprone-reserved-identifier)
 	T& _dst;
 	template <range _range>
 	friend inline auto operator|(_range&& lhs, __addup_to_helper rhs) mr_noexcept {
@@ -417,4 +445,6 @@ inline constexpr auto not_negative = [](auto x) { return x >= 0; };
 
 inline constexpr auto to_pair = [](auto&& x) { return pair{ get<0>(x), get<1>(x) }; };
 
+template <typename T, typename Y>
+inline constexpr auto to_struct = [](Y&& x) { return std::apply([&](auto&&... args) -> T { return { args... }; }, std::forward<Y>(x)); };
 MR_NAMESPACE_END
