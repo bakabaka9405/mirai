@@ -3,7 +3,7 @@
 #include <mirai/util/range.hpp>
 MR_NAMESPACE_BEGIN
 template <typename iter_t>
-MR_NODISCARD inline constexpr auto from(iter_t&& it) {
+constexpr auto from(iter_t&& it) {
 	struct from_wrapper {
 		iter_t it;
 		inline constexpr auto begin() const mr_noexcept { return it; }
@@ -17,8 +17,8 @@ inline constexpr auto in_array(range&& arr, ull l, ull r) {
 	struct in_array_wrapper {
 		range arr;
 		ull l, r;
-		inline constexpr auto begin() const mr_noexcept { return mr_begin(arr) + l; }
-		inline constexpr auto end() const mr_noexcept { return mr_begin(arr) + r + 1; }
+		inline constexpr auto begin() const mr_noexcept { return std::next(mr_begin(arr), l); }
+		inline constexpr auto end() const mr_noexcept { return std::next(mr_begin(arr), r + 1); }
 	};
 	return in_array_wrapper{ std::forward<range>(arr), l, r };
 }
@@ -134,7 +134,7 @@ inline constexpr auto dispatch(_range&& r, Func&&... func) {
 				std::apply([&]<typename... Args>(Args&&... f) -> void { ((f(std::forward<decltype((i))>(i))), ...); }, _func);
 		}
 	};
-	return dispatch_wrapper{ std::forward<_range>(r), std::make_tuple(std::forward<Func>(func)...) };
+	return dispatch_wrapper{ std::forward<_range>(r), std::forward_as_tuple(std::forward<Func>(func)...) };
 }
 
 template <typename... Func>
@@ -149,7 +149,7 @@ struct __dispatch_helper { // NOLINT(bugprone-reserved-identifier)
 template <typename... Func>
 	requires(!range<Func> && ...)
 MR_NODISCARD inline constexpr auto dispatch(Func&&... func) mr_noexcept {
-	return __dispatch_helper<Func...>{ std::make_tuple(std::forward<Func>(func)...) };
+	return __dispatch_helper<Func...>{ std::forward_as_tuple(std::forward<Func>(func)...) };
 }
 
 template <range _range, typename Func>

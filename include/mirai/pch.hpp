@@ -165,7 +165,7 @@ using std::floating_point;
 using std::integral;
 
 template <bool B, typename T, typename Y>
-constexpr auto conditional_v(T&& t, Y&& y) {
+MR_NODISCARD constexpr decltype(auto) conditional_v(T&& t, Y&& y) mr_noexcept {
 	if constexpr (B)
 		return std::forward<T>(t);
 	else
