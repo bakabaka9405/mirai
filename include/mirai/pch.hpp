@@ -76,7 +76,6 @@ using std::setw;
 #define flockfile(f) _lock_file(f)
 #define funlockfile(f) _unlock_file(f)
 #endif
-
 // utility
 using std::copy;
 using std::copy_n;

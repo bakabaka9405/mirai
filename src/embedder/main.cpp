@@ -92,7 +92,7 @@ int main(int argc, char** argv) {
 				embed_flag = false;
 				continue;
 			}
-			else if(line.starts_with("//"))continue;
+			else if (line.starts_with("//")) continue;
 			if (in_embed_trunk && embed_flag) continue;
 			string header = get_header(line);
 			if (header.starts_with("mirai")) {
@@ -135,7 +135,7 @@ int main(int argc, char** argv) {
 					  else
 						  return header_index[x];
 				  })) {
-		fout<<"// file:"<<i<<endl;
+		fout << "// file:" << i << endl;
 		if (i == "<source file>")
 			fin.open(src_path);
 		else
@@ -175,6 +175,6 @@ int main(int argc, char** argv) {
 		}
 		fin.close();
 	}
-	system(format("start notepad3 {}", dst_path.string()).c_str());
+	system(format("start /B notepad {}", dst_path.string()).c_str());
 	return 0;
 }

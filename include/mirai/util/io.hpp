@@ -137,13 +137,18 @@ MR_API void put_array(auto&& r, const char* sep = " ") mr_noexcept {
 }
 
 template <typename T, typename... Args>
+auto scan() {
+	std::conditional_t<sizeof...(Args) == 0, T, tuple<T, Args...>> res;
+	cin >> res;
+	return res;
+}
+
+template <typename T, typename... Args>
 struct __scanner_t { // NOLINT
 	inline decltype(auto) operator++() mr_noexcept { return *this; }
 	inline auto operator++(int) mr_noexcept->__scanner_t { return *this; }
 	inline static auto get() mr_noexcept {
-		std::conditional_t<sizeof...(Args) == 0, T, tuple<T, Args...>> res;
-		cin >> res;
-		return res;
+		return scan<T, Args...>();
 	}
 	inline auto operator*() const mr_noexcept { return get(); }
 };

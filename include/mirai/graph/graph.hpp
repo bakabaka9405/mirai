@@ -29,7 +29,7 @@ public:
 			_head.resize(n, -1);
 	}
 	template <typename U = T, typename std::enable_if_t<!std::is_same_v<U, void>, int> = 0>
-	void insert(ll u, ll v, const std::conditional_t<_have_weight, ll, U>& data) mr_noexcept {
+	void insert(ll u, ll v, const std::conditional_t<_have_weight, T, U>& data) mr_noexcept {
 		if (node_count() <= max(u, v)) resize(max(u, v) + 1);
 		if constexpr (_is_vector_model)
 			_e[u].emplace_back(v, data);
@@ -45,7 +45,7 @@ public:
 			_e.emplace_back(v, std::exchange(_head[u], _e.size()));
 	}
 	template <typename U = T, typename std::enable_if_t<!std::is_same_v<U, void>, int> = 0>
-	void insert_bothway(ll u, ll v, const std::conditional_t<_have_weight, ll, U>& data) mr_noexcept {
+	void insert_bothway(ll u, ll v, const std::conditional_t<_have_weight, T, U>& data) mr_noexcept {
 		insert(u, v, data);
 		insert(v, u, data);
 	}
@@ -64,28 +64,28 @@ public:
 				struct iterator {
 					ll _index;
 					const vector<pair<edge, ll>>& _e;
-					inline bool operator!=(const std::default_sentinel_t& rt) const mr_noexcept { return _index != -1; }
+					inline bool operator!=(const std::default_sentinel_t&) const mr_noexcept { return _index != -1; }
 					inline iterator& operator++() mr_noexcept {
 						_index = _e[_index].second;
 						return *this;
 					}
-					inline iterator operator++(int) mr_noexcept { return iterator{ std::exchange(_index, _e[_index].second), _e }; }
+					inline auto operator++(int) mr_noexcept { return iterator{ std::exchange(_index, _e[_index].second), _e }; }
 					inline auto operator*() const mr_noexcept { return _e[_index].first; }
 				};
 				inline auto begin() const mr_noexcept { return iterator{ _start, _e }; }
 				inline auto end() const mr_noexcept { return std::default_sentinel_t{}; }
-				inline size_t size() const mr_noexcept {
+				MR_NODISCARD inline size_t size() const mr_noexcept {
 					size_t res = 0;
 					ll x = _start;
 					while (~x) res++, x = _e[x].second;
 					return res;
 				}
-				inline bool empty() const mr_noexcept { return _start != -1; }
+				MR_NODISCARD inline bool empty() const mr_noexcept { return _start != -1; }
 			};
 			return range_wrapper{ _head[u], _e };
 		}
 	}
-	inline ll node_count() const mr_noexcept {
+	MR_NODISCARD inline ll node_count() const mr_noexcept {
 		if constexpr (_is_vector_model)
 			return _e.size();
 		else

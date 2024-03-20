@@ -34,6 +34,7 @@
 #if ANKERL_UNORDERED_DENSE_CPP_VERSION < 201703L
 #error ankerl::unordered_dense requires C++17 or higher
 #else
+#include<mirai/define.hpp>
 #include <array>
 #include <cstdint>
 #include <cstring>
