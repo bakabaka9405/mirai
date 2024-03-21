@@ -14,3 +14,5 @@ build/
 src/test
 
 mirai_config.json
+
+compile_commands.json

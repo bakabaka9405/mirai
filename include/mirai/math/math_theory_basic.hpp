@@ -17,9 +17,9 @@ MR_NODISCARD inline ull
 fastpow(ull x, ull k, ull P) mr_noexcept {
 	ull res = 1;
 	while (k) {
-		if (k & 1) res = res * x % P;
+		if (k & 1ull) res = res * x % P;
 		x = x * x % P;
-		k >>= 1;
+		k >>= 1ull;
 	}
 	return res;
 }
@@ -28,13 +28,13 @@ MR_NODISCARD inline ull inv(ull x, ull P) mr_noexcept {
 	return fastpow(x, P - 2, P);
 }
 
-inline void exgcd(ll a, ll b, ll& x, ll& y) mr_noexcept {
-	if (b == 0) {
-		x = 1, y = 0;
-		return;
+MR_NODISCARD inline auto exgcd(ll a, ll b) mr_noexcept {
+	ll x1 = 1, x2 = 0, x3 = 0, x4 = 1;
+	while (b != 0) {
+		ll c = a / b;
+		std::tie(x1, x2, x3, x4, a, b) = std::make_tuple(x3, x4, x1 - x3 * c, x2 - x4 * c, b, a - b * c);
 	}
-	exgcd(b, a % b, y, x);
-	y -= a / b * x;
+	return std::make_tuple(a, x1, x2);
 }
 
 inline void generate_inv_arr(std::random_access_iterator auto it, size_t n, ull P) mr_noexcept {

@@ -72,6 +72,51 @@ MR_NODISCARD inline constexpr auto take(size_t n) {
 	return __take_helper{ n };
 }
 
+template <range _range>
+MR_NODISCARD inline constexpr auto in_column(_range&& r, ull col) {
+	struct in_column_wrapper {
+		_range _r;
+		const ull _col;
+		struct iterator {
+			using iter_t = decltype(mr_begin(_r));
+			_range _r;
+			iter_t _it;
+			const ull _col;
+			inline bool operator!=(const std::default_sentinel_t&) const mr_noexcept {
+				return _it != mr_end(_r);
+			}
+			inline decltype(auto) operator++() mr_noexcept {
+				++_it;
+			}
+			inline auto operator++(int) mr_noexcept->iterator {
+				return iterator{ std::forward<_range>(_r), _it++, _col };
+			}
+			inline auto operator*() const mr_noexcept {
+				return (*_it)[_col];
+			}
+		};
+		inline auto begin() const mr_noexcept {
+			return iterator{ std::forward<_range>(_r), mr_begin(_r), _col };
+		}
+		inline constexpr auto end() const mr_noexcept {
+			return std::default_sentinel;
+		}
+	};
+	return in_column_wrapper{ std::forward<_range>(r), col };
+}
+
+struct __in_column_helper { // NOLINT(bugprone-reserved-identifier)
+	const ull col;
+	template <range _range>
+	friend inline auto operator|(_range&& lhs, __in_column_helper self) {
+		return in_column(std::forward<_range>(lhs), self.col);
+	}
+};
+
+MR_NODISCARD inline constexpr auto in_column(ull col) {
+	return __in_column_helper{ col };
+}
+
 template <range _range, typename Func>
 inline constexpr auto transform(_range&& r, Func&& func) {
 	struct transform_wrapper {
