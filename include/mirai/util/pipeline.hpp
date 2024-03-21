@@ -63,7 +63,7 @@ inline constexpr auto take(_range&& r, size_t n) mr_noexcept {
 
 struct __take_helper { // NOLINT(bugprone-reserved-identifier)
 	size_t n;
-	friend inline auto operator|(auto&& lhs, __take_helper self) mr_noexcept {
+	MR_NODISCARD friend inline auto operator|(auto&& lhs, __take_helper self) mr_noexcept {
 		return take(std::forward<std::decay_t<decltype(lhs)>>(lhs), self.n);
 	}
 };
@@ -79,17 +79,17 @@ MR_NODISCARD inline constexpr auto in_column(_range&& r, ull col) {
 		const ull _col;
 		struct iterator {
 			using iter_t = decltype(mr_begin(_r));
-			_range _r;
+			_range _rg;
 			iter_t _it;
 			const ull _col;
 			inline bool operator!=(const std::default_sentinel_t&) const mr_noexcept {
-				return _it != mr_end(_r);
+				return _it != mr_end(_rg);
 			}
 			inline decltype(auto) operator++() mr_noexcept {
 				++_it;
 			}
 			inline auto operator++(int) mr_noexcept->iterator {
-				return iterator{ std::forward<_range>(_r), _it++, _col };
+				return iterator{ std::forward<_range>(_rg), _it++, _col };
 			}
 			inline auto operator*() const mr_noexcept {
 				return (*_it)[_col];
@@ -108,7 +108,7 @@ MR_NODISCARD inline constexpr auto in_column(_range&& r, ull col) {
 struct __in_column_helper { // NOLINT(bugprone-reserved-identifier)
 	const ull col;
 	template <range _range>
-	friend inline auto operator|(_range&& lhs, __in_column_helper self) {
+	MR_NODISCARD friend inline auto operator|(_range&& lhs, __in_column_helper self) {
 		return in_column(std::forward<_range>(lhs), self.col);
 	}
 };
@@ -159,7 +159,7 @@ template <typename Func>
 struct __transform_helper { // NOLINT(bugprone-reserved-identifier)
 	Func func;
 	template <range _range>
-	friend inline auto operator|(_range&& lhs, __transform_helper self) mr_noexcept {
+	MR_NODISCARD friend inline auto operator|(_range&& lhs, __transform_helper self) mr_noexcept {
 		return transform(std::forward<_range>(lhs), std::move(self.func));
 	}
 };
@@ -247,7 +247,7 @@ struct __filter_helper { // NOLINT(bugprone-reserved-identifier)
 	Func func;
 
 	template <range _range>
-	friend inline auto operator|(_range&& lhs, __filter_helper self) mr_noexcept {
+	MR_NODISCARD friend inline auto operator|(_range&& lhs, __filter_helper self) mr_noexcept {
 		return filter(std::forward<_range>(lhs), std::move(self.func));
 	}
 };
@@ -277,7 +277,7 @@ inline auto skip(_range&& r, size_t n) {
 
 struct __skip_helper { // NOLINT(bugprone-reserved-identifier)
 	size_t n;
-	friend inline auto operator|(auto&& lhs, __skip_helper self) mr_noexcept {
+	MR_NODISCARD friend inline auto operator|(auto&& lhs, __skip_helper self) mr_noexcept {
 		return skip(std::forward<decltype(lhs)>(lhs), self.n);
 	}
 };
@@ -306,7 +306,7 @@ template <typename T, typename Func>
 struct __extreme_value_helper { // NOLINT(bugprone-reserved-identifier)
 	Func _cmp;
 	template <range _range>
-	friend inline auto operator|(_range&& lhs, __extreme_value_helper rhs) mr_noexcept {
+	MR_NODISCARD friend inline auto operator|(_range&& lhs, __extreme_value_helper rhs) mr_noexcept {
 		return extreme_value<T>(std::forward<_range>(lhs), std::move(rhs._cmp));
 	}
 };
@@ -322,7 +322,7 @@ struct __maximum { // NOLINT(bugprone-reserved-identifier)
 	inline decltype(auto) operator()(range auto&& r) const mr_noexcept {
 		return extreme_value<T>(std::forward<decltype(r)>(r), _cmp);
 	}
-	friend inline decltype(auto) operator|(range auto&& r, const __maximum&) mr_noexcept {
+	MR_NODISCARD friend inline decltype(auto) operator|(range auto&& r, const __maximum&) mr_noexcept {
 		return extreme_value<T>(std::forward<decltype(r)>(r), _cmp);
 	}
 };
@@ -333,7 +333,7 @@ struct __minimum { // NOLINT(bugprone-reserved-identifier)
 	inline decltype(auto) operator()(range auto&& r) const mr_noexcept {
 		return extreme_value<T>(std::forward<decltype(r)>(r), _cmp);
 	}
-	friend inline decltype(auto) operator|(range auto&& r, const __minimum&) mr_noexcept {
+	MR_NODISCARD friend inline decltype(auto) operator|(range auto&& r, const __minimum&) mr_noexcept {
 		return extreme_value<T>(std::forward<decltype(r)>(r), _cmp);
 	}
 };
@@ -360,7 +360,7 @@ template <typename T>
 struct __addup_to_helper { // NOLINT(bugprone-reserved-identifier)
 	T& _dst;
 	template <range _range>
-	friend inline auto operator|(_range&& lhs, __addup_to_helper rhs) mr_noexcept {
+	MR_NODISCARD friend inline auto operator|(_range&& lhs, __addup_to_helper rhs) mr_noexcept {
 		return addup_to(std::forward<_range>(lhs), rhs._dst);
 	}
 };
@@ -391,7 +391,7 @@ template <typename T>
 struct __save_to_helper { // NOLINT(bugprone-reserved-identifier)
 	T _dst;
 	template <range _range>
-	friend inline auto operator|(_range&& lhs, __save_to_helper rhs) mr_noexcept {
+	MR_NODISCARD friend inline auto operator|(_range&& lhs, __save_to_helper rhs) mr_noexcept {
 		return save_to(std::forward<_range>(lhs), std::move(rhs._dst));
 	}
 };
@@ -423,7 +423,7 @@ template <typename Container>
 struct __append_to_helper { // NOLINT(bugprone-reserved-identifier)
 	Container& _dst;
 	template <range _range>
-	friend inline auto operator|(_range&& lhs, __append_to_helper rhs) mr_noexcept {
+	MR_NODISCARD friend inline auto operator|(_range&& lhs, __append_to_helper rhs) mr_noexcept {
 		return append_to(std::forward<_range>(lhs), rhs._dst);
 	}
 };
@@ -463,7 +463,7 @@ template <typename Container>
 struct __maps_to_helper { // NOLINT(bugprone-reserved-identifier)
 	Container table;
 	template <range range>
-	friend inline decltype(auto) operator|(range&& r, __maps_to_helper self) {
+	MR_NODISCARD friend inline decltype(auto) operator|(range&& r, __maps_to_helper self) {
 		return maps_to(std::forward<range>(r), std::move(self.table));
 	}
 };
