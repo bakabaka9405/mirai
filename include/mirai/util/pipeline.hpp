@@ -490,6 +490,6 @@ inline constexpr auto not_negative = [](auto x) { return x >= 0; };
 
 inline constexpr auto to_pair = [](auto&& x) { return pair{ get<0>(x), get<1>(x) }; };
 
-template <typename T, typename Y>
-inline constexpr auto to_struct = [](Y&& x) { return std::apply([&](auto&&... args) -> T { return { args... }; }, std::forward<Y>(x)); };
+template <typename Dst>
+inline constexpr auto to_struct = [](auto&& x) { return std::apply([&](auto&&... args) -> Dst { return { args... }; }, std::forward<std::decay_t<decltype(x)>>(x)); };
 MR_NAMESPACE_END

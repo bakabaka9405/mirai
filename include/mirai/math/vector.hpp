@@ -6,7 +6,7 @@ struct vec2 {
 	T x, y;
 	constexpr vec2(auto&& _x, auto&& _y) mr_noexcept : x(_x), y(_y) {}
 	template <typename Y>
-	constexpr operator vec2<Y>() const mr_noexcept {
+	constexpr explicit operator vec2<Y>() const mr_noexcept {
 		return { static_cast<Y>(x), static_cast<Y>(y) };
 	}
 	constexpr vec2 operator+(const vec2& rt) const mr_noexcept { return { x + rt.x, y + rt.y }; }
@@ -30,17 +30,28 @@ struct vec2 {
 		x /= c, y /= c;
 		return *this;
 	}
-	constexpr double norm() const mr_noexcept { return sqrt(x * x + y * y); }
+	MR_NODISCARD constexpr auto norm() const mr_noexcept { return std::sqrt(x * x + y * y); }
 	constexpr bool operator==(const vec2& rt) const mr_noexcept { return std::equal_to<T>()(x, rt.x) && std::equal_to<T>()(y, rt.y); }
 	constexpr bool operator!=(const vec2& rt) const mr_noexcept { return !this->operator==(rt); }
 	friend std::ostream& operator<<(std::ostream& out, const vec2& vec) mr_noexcept {
 		return out << vec.to_string();
 	}
-	inline string to_string() const mr_noexcept {
+	MR_NODISCARD constexpr string to_string() const mr_noexcept {
 		return "(" + std::to_string(x) + "," + std::to_string(y) + ")";
 	}
-	MR_NODISCARD friend inline vec2 lerp(const vec2& lhs, const vec2& rhs, double t) mr_noexcept {
+	MR_NODISCARD friend constexpr vec2 lerp(const vec2& lhs, const vec2& rhs, double t) mr_noexcept {
 		return lhs + t * (rhs - lhs);
+	}
+	MR_NODISCARD friend constexpr auto cross_product(const vec2& lhs, const vec2& rhs) mr_noexcept {
+		return lhs.x * rhs.y - lhs.y * rhs.x;
+	}
+	MR_NODISCARD constexpr auto atan2() const mr_noexcept { return std::atan2(y, x); }
+
+	MR_NODISCARD constexpr auto distance_to(const vec2& rhs) const mr_noexcept {
+		return std::sqrt((x - rhs.x) * (x - rhs.x) + (y - rhs.y) * (y - rhs.y));
+	}
+	MR_NODISCARD friend constexpr auto manhattan_distance_to(const vec2& lhs, const vec2& rhs) mr_noexcept {
+		return std::abs(lhs.x - rhs.x) + std::abs(lhs.y - rhs.y);
 	}
 };
 using vec2i = vec2<ll>;
@@ -50,7 +61,7 @@ struct vec3 {
 	T x, y, z;
 	constexpr vec3(auto _x, auto _y, auto _z) mr_noexcept : x(_x), y(_y), z(_z) {}
 	template <typename Y>
-	constexpr operator vec3<Y>() const mr_noexcept {
+	constexpr explicit operator vec3<Y>() const mr_noexcept {
 		return { static_cast<Y>(x), static_cast<Y>(y), static_cast<Y>(z) };
 	}
 	constexpr vec3 operator+(const vec3& rt) const mr_noexcept { return { x + rt.x, y + rt.y, z + rt.z }; }
@@ -78,15 +89,21 @@ struct vec3 {
 		return std::equal_to<T>()(x, rt.x) && std::equal_to<T>()(y, rt.y) && std::equal_to<T>()(z, rt.z);
 	}
 	constexpr bool operator!=(const vec3& rt) const mr_noexcept { return !this->operator==(rt); }
-	constexpr double norm() const mr_noexcept { return sqrt(x * x + y * y + z * z); }
+	MR_NODISCARD constexpr auto norm() const mr_noexcept { return std::sqrt(x * x + y * y + z * z); }
 	friend std::ostream& operator<<(std::ostream& out, const vec3& vec) mr_noexcept {
 		return out << vec.to_string();
 	}
-	string to_string() const mr_noexcept {
+	MR_NODISCARD constexpr string to_string() const mr_noexcept {
 		return "(" + std::to_string(x) + "," + std::to_string(y) + "," + std::to_string(z) + ")";
 	}
 	MR_NODISCARD friend inline vec3 lerp(const vec3& lhs, const vec3& rhs, double t) mr_noexcept {
 		return lhs + t * (rhs - lhs);
+	}
+	MR_NODISCARD constexpr auto distance_to(const vec3& rhs) const mr_noexcept {
+		return std::sqrt((x - rhs.x) * (x - rhs.x) + (y - rhs.y) * (y - rhs.y) + (z - rhs.z) * (z - rhs.z));
+	}
+	MR_NODISCARD friend constexpr auto manhattan_distance_to(const vec3& lhs, const vec3& rhs) mr_noexcept {
+		return std::abs(lhs.x - rhs.x) + std::abs(lhs.y - rhs.y) + std::abs(lhs.z - rhs.z);
 	}
 };
 using vec3i = vec3<ll>;
@@ -107,3 +124,35 @@ string to_string(const vec3<T>& vec) {
 	return vec.to_string();
 }
 MR_NAMESPACE_END
+
+namespace std {
+	template <size_t N, typename T>
+	constexpr decltype(auto) get(const mirai::vec2<T>& vec) mr_noexcept { // NOLINT
+		if constexpr (N == 0)
+			return vec.x;
+		else if constexpr (N == 1)
+			return vec.y;
+		else {
+			static_assert(N < 2, "index out of range");
+		}
+	}
+
+	template <size_t N, typename T>
+	T& get(mirai::vec2<T>& vec) mr_noexcept { // NOLINT
+		if constexpr (N == 0)
+			return vec.x;
+		else if constexpr (N == 1)
+			return vec.y;
+		else {
+			static_assert(N < 2, "index out of range");
+		}
+	}
+
+	template <typename T>
+	struct tuple_size<mirai::vec2<T>> : std::integral_constant<std::size_t, 2> {}; // NOLINT
+
+	template <size_t N, typename T>
+	struct tuple_element<N, mirai::vec2<T>> { // NOLINT
+		using type = T;
+	};
+} // namespace std

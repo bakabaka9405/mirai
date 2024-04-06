@@ -46,15 +46,14 @@
 #endif
 
 #define CONFIG_ITEM constexpr static auto&
-
-#if __cplusplus >= 202300L
 #ifdef MR_DEBUG
 #define MR_ASSUME(x) MR_ASSERT(x)
 #else
-#define MR_ASSUME(x) [[assume(x)]]
-#endif
-#else
+#if __cplusplus >= 202300L
 #define MR_ASSUME(x) MR_ASSERT(x)
+#else
+#define MR_ASSUME(x) if(!(x)) __builtin_unreachable()
+#endif
 #endif
 
 #define MR_NAMESPACE_BEGIN namespace mirai {

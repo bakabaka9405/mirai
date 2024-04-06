@@ -146,6 +146,7 @@ using std::priority_queue;
 using std::queue;
 using std::set;
 using std::vector;
+using std::bitset;
 template <typename T>
 using stack = std::stack<T, vector<T>>;
 
@@ -162,6 +163,19 @@ using std::smatch;
 // concepts
 using std::floating_point;
 using std::integral;
+
+template <typename T>
+concept vec2_like = requires(T&& t) {
+	t.x;
+	t.y;
+};
+
+template <typename T>
+concept vec3_like = requires(T&& t) {
+	t.x;
+	t.y;
+	t.z;
+};
 
 template <bool B, typename T, typename Y>
 MR_NODISCARD constexpr decltype(auto) conditional_v(T&& t, Y&& y) mr_noexcept {
