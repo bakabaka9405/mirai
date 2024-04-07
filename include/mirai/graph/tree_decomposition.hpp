@@ -11,13 +11,13 @@ inline void __tree_decomposition_impl(ll u, ll top, ll& t) mr_noexcept {
 		config.dfs_order[config.dfs_order_pt]++;
 	else if constexpr (requires { config.dfs_order; })
 		config.dfs_order.push_back(u);
-	auto son = G[u] | transform(__edge_get_v) | filter([u](ll v) { return v != config.fa[u]; })
-			   | extreme_value<ll>([](ll l, ll r) { return config.size[l] > config.size[r]; }) | endp;
-	if (son.has_value()) {
-		__tree_decomposition_impl<G, config>(*son, top, t);
-		for (auto i : G[u] | transform(__edge_get_v) | filter([u, son](ll v) { return v != *son && v != config.fa[u]; }))
-			__tree_decomposition_impl<G, config>(i, i, t);
-	}
+	ll son = std::numeric_limits<ll>::min();
+	for (ll v : G[u])
+		if (v != config.fa[u] && (son == std::numeric_limits<ll>::min() || config.size[v] > config.size[son])) son = v;
+	if (son == std::numeric_limits<ll>::min()) return;
+	__tree_decomposition_impl<G, config>(son, top, t);
+	for (ll v : G[u])
+		if (v != config.fa[u] && v != son) __tree_decomposition_impl<G, config>(v, v, t);
 }
 
 template <auto& G, auto& config>

@@ -18,7 +18,7 @@ namespace mirai {
 		res.push_back(p0);
 		size_t sz = 1;
 		for (auto&& [vec, _] : buffer) {
-			while (sz >= 2 && cross_product(res[sz - 1] - res[sz - 2], vec - res[sz - 1]) < 0) {
+			while (sz >= 2 && cross_product(res[sz - 1] - res[sz - 2], vec - res[sz - 1]) <= 0) {
 				sz--;
 				res.pop_back();
 			}
@@ -27,4 +27,19 @@ namespace mirai {
 		}
 		return res;
 	}
+
+	double convex_hull_perimeter(vector<vec2f> hull) {
+		double res = 0;
+		for (size_t i = 0; i < hull.size(); i++)
+			res += hull[i].distance_to(hull[(i + 1) % hull.size()]);
+		return res;
+	}
+
+	double convex_hull_area(vector<vec2f> hull) {
+		double res = 0;
+		for (size_t i = 0; i < hull.size(); i++)
+			res += cross_product(hull[i], hull[(i + 1) % hull.size()]);
+		return res / 2;
+	}
+	
 } // namespace mirai

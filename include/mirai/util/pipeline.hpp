@@ -169,6 +169,11 @@ inline constexpr auto transform(Func&& func) {
 	return __transform_helper{ std::forward<Func>(func) };
 }
 
+template <typename Func>
+inline constexpr auto transform_apply(Func&& func) {
+	return __transform_helper{ [&](auto&& param) { return std::apply(func, std::forward<decltype(param)>(param)); } };
+}
+
 template <range _range, typename... Func>
 inline constexpr auto dispatch(_range&& r, Func&&... func) {
 	struct dispatch_wrapper {

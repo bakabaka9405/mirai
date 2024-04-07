@@ -53,6 +53,12 @@ struct vec2 {
 	MR_NODISCARD friend constexpr auto manhattan_distance_to(const vec2& lhs, const vec2& rhs) mr_noexcept {
 		return std::abs(lhs.x - rhs.x) + std::abs(lhs.y - rhs.y);
 	}
+	void rotate(double angle) mr_noexcept {
+		std::tie(x, y) = std::make_pair(x * std::cos(angle) - y * std::sin(angle), x * std::sin(angle) + y * std::cos(angle));
+	}
+	MR_NODISCARD constexpr vec2 rotated(double angle) const mr_noexcept {
+		return { x * std::cos(angle) - y * std::sin(angle), x * std::sin(angle) + y * std::cos(angle) };
+	}
 };
 using vec2i = vec2<ll>;
 using vec2f = vec2<double>;
