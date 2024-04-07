@@ -286,64 +286,6 @@ inline constexpr auto skip(size_t n) {
 	return __skip_helper{ n };
 }
 
-template <typename T, range _range, typename Func>
-MR_NODISCARD inline auto extreme_value(_range&& r, Func cmp) {
-	struct extreme_value_wrapper {
-		_range _r;
-		Func _cmp;
-		inline auto operator()() const mr_noexcept->std::optional<T> {
-			std::optional<T> res;
-			for (auto&& i : _r) {
-				if (!res.has_value() || _cmp(i, *res)) res = i;
-			}
-			return res;
-		}
-	};
-	return extreme_value_wrapper{ std::forward<_range>(r), cmp };
-}
-
-template <typename T, typename Func>
-struct __extreme_value_helper { // NOLINT(bugprone-reserved-identifier)
-	Func _cmp;
-	template <range _range>
-	MR_NODISCARD friend inline auto operator|(_range&& lhs, __extreme_value_helper rhs) mr_noexcept {
-		return extreme_value<T>(std::forward<_range>(lhs), std::move(rhs._cmp));
-	}
-};
-
-template <typename T, typename Func>
-inline auto extreme_value(Func cmp) {
-	return __extreme_value_helper<T, Func>{ std::forward<Func>(cmp) };
-}
-
-template <typename T>
-struct __maximum { // NOLINT(bugprone-reserved-identifier)
-	constexpr static auto _cmp = std::greater<T>();
-	inline decltype(auto) operator()(range auto&& r) const mr_noexcept {
-		return extreme_value<T>(std::forward<decltype(r)>(r), _cmp);
-	}
-	MR_NODISCARD friend inline decltype(auto) operator|(range auto&& r, const __maximum&) mr_noexcept {
-		return extreme_value<T>(std::forward<decltype(r)>(r), _cmp);
-	}
-};
-
-template <typename T>
-struct __minimum { // NOLINT(bugprone-reserved-identifier)
-	constexpr static auto _cmp = std::less<T>();
-	inline decltype(auto) operator()(range auto&& r) const mr_noexcept {
-		return extreme_value<T>(std::forward<decltype(r)>(r), _cmp);
-	}
-	MR_NODISCARD friend inline decltype(auto) operator|(range auto&& r, const __minimum&) mr_noexcept {
-		return extreme_value<T>(std::forward<decltype(r)>(r), _cmp);
-	}
-};
-
-template <typename T>
-inline constexpr __maximum<T> maximum;
-
-template <typename T>
-inline constexpr __minimum<T> minimum;
-
 template <range _range, typename T>
 MR_NODISCARD inline auto addup_to(_range&& r, T& dst) {
 	struct addup_to {

@@ -7,9 +7,7 @@ namespace mirai {
 		requires vec2_like<std::decay_t<decltype(*mr_begin(std::declval<Container>()))>>
 	vector<vec2f> graham(Container&& container) {
 		vector<pair<vec2f, double>> buffer;
-		vec2f p0{ std::numeric_limits<double>::max(), std::numeric_limits<double>::max()};
-		for (auto&& i : container)
-			if (i.y < p0.y || (i.y == p0.y && i.x < p0.x)) p0=i;
+		vec2f p0 = *ranges::max_element(container, [&](auto&& lhs, auto&& rhs) { return rhs.y < lhs.y || (rhs.y == lhs.y && rhs.x < lhs.x); });
 		for (auto&& vec : container | filter([&](auto&& vec) { return vec != p0; }))
 			buffer.emplace_back(vec, (vec - p0).atan2());
 		ranges::sort(buffer, [&](auto&& lhs, auto&& rhs) {
