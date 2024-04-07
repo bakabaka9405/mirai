@@ -25,6 +25,7 @@
 #include <memory_resource>
 #include <bit>
 #include <numbers>
+#include <coroutine>
 #include <cassert>
 #include <cmath>
 #include <cctype>

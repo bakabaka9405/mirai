@@ -28,27 +28,27 @@ private:
 	inline constexpr auto invoke(_range&& r) mr_noexcept {
 		struct cycle_wrapper {
 			_range _r;
-			struct iterator {
+			struct cycled_iterator {
 				using iter_t = decltype(mr_begin(_r));
 				iter_t _it;
-				_range _r;
+				_range rg;
 				inline bool operator!=(const std::default_sentinel_t&) const mr_noexcept {
 					return true;
 				}
 				inline decltype(auto) operator*() const mr_noexcept {
 					return *_it;
 				}
-				inline iterator& operator++() mr_noexcept {
-					if (++_it == mr_end(_r)) _it = mr_begin(_r);
+				inline cycled_iterator& operator++() mr_noexcept {
+					if (++_it == mr_end(rg)) _it = mr_begin(rg);
 					return *this;
 				}
-				inline auto operator++(int) mr_noexcept->iterator {
-					iterator res = *this;
+				inline auto operator++(int) mr_noexcept->cycled_iterator {
+					cycled_iterator res = *this;
 					this->operator++();
 					return res;
 				}
 			};
-			inline auto begin() const mr_noexcept { return iterator{ mr_begin(_r), _r }; }
+			inline auto begin() const mr_noexcept { return cycled_iterator{ mr_begin(_r), _r }; }
 			inline auto end() const mr_noexcept { return std::unreachable_sentinel; }
 		};
 		return cycle_wrapper{ std::forward<_range>(r) };
@@ -481,6 +481,18 @@ inline constexpr auto is_positive = [](auto x) { return x > 0; };
 inline constexpr auto not_negative = [](auto x) { return x >= 0; };
 
 inline constexpr auto to_pair = [](auto&& x) { return pair{ get<0>(x), get<1>(x) }; };
+
+inline constexpr auto equal_to = [](auto&& x) {
+	return [x](auto&& y) {
+		return x == y;
+	};
+};
+
+inline constexpr auto not_equal_to = [](auto&& x) {
+	return [x](auto&& y) {
+		return x != y;
+	};
+};
 
 template <typename Dst>
 inline constexpr auto to_struct = [](auto&& x) { return std::apply([&](auto&&... args) -> Dst { return { args... }; }, std::forward<std::decay_t<decltype(x)>>(x)); };

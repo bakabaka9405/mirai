@@ -3,6 +3,7 @@
 #include <mirai/util/pipeline.hpp>
 #include <mirai/graph/graph.hpp>
 #include <mirai/math/number.hpp>
+#include <mirai/util/coro.hpp>
 MR_NAMESPACE_BEGIN
 template <auto& G, auto& config>
 void calc_graph_degree() {
@@ -46,50 +47,15 @@ void topo_sort() {
 	}
 }
 
-template <auto& G, auto& config>
-void __dfs_in_tree_impl(ll u, ll fa, ll& t) {
-	if constexpr (requires { config.fa; }) {
-		if constexpr (requires { config.fa[u][0]; }) {
-			config.fa[u][0] = fa;
-			for (auto i : views::iota(1) | take(lg(G.node_count())))
-				config.fa[u][i] = config.fa[config.fa[u][i - 1]][i - 1];
-		}
-		else
-			config.fa[u] = fa;
-	}
-	if constexpr (requires { config.depth; }) config.depth[u] = config.depth[fa] + 1;
-	if constexpr (requires { config.dfn; }) config.dfn[u] = ++t;
-	if constexpr (requires { config.size; }) config.size[u] = 1;
-	if constexpr (requires { config.dfs_order; }) {
-		if constexpr (requires { config.dfs_order_pt; })
-			config.dfs_order[config.dfs_order_pt++] = u;
-		else
-			config.dfs_order.push_back(u);
-	}
-	if constexpr (requires { config.euler_order; }) {
-		if constexpr (requires { config.euler_order_pt; })
-			config.euler_order[config.euler_order_pt++] = u;
-		else
-			config.euler_order.push_back(u);
-	}
-	for (auto&& v : G[u] | transform(__edge_get_v)) {
-		[[unlikely]] if (v == fa)
-			continue;
-		__dfs_in_tree_impl<G, config>(v, u, t);
-		if constexpr (requires { config.size; }) config.size[u] += config.size[v];
-	}
-	if constexpr (requires { config.dfn;config.lev; }) config.lev[u] = t;
-	if constexpr (requires { config.euler_order; }) {
-		if constexpr (requires { config.euler_order_pt; })
-			config.euler_order[config.euler_order_pt++] = u;
-		else
-			config.euler_order.push_back(u);
-	}
+generator<pair<ll, ll>> __dfs_in_tree_impl(auto&& G, ll u, ll fa) {
+	co_yield { u, 0 };
+	for (auto&& v : G[u] | transform(__edge_get_v) | filter(not_equal_to(fa)))
+		for (auto&& [v2, status] : __dfs_in_tree_impl(std::forward<decltype(G)>(G), v, u))
+			co_yield { v2, status };
+	co_yield { u, 1 };
 }
 
-template <auto& G, auto& config>
-void dfs_in_tree(ll start) {
-	ll t = 0;
-	__dfs_in_tree_impl<G, config>(start, start, t);
+auto dfs_in_tree(auto&& G, ll root) {
+	return __dfs_in_tree_impl(std::forward<decltype(G)>(G), root, -1);
 }
 MR_NAMESPACE_END

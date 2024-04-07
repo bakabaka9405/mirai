@@ -63,19 +63,17 @@ struct default_pair_forward_iterator {
 };
 
 template <range _range1, range _range2>
-inline auto zip(_range1&& arr1, _range2&& arr2) mr_noexcept {
+constexpr auto zip(_range1&& arr1, _range2&& arr2) mr_noexcept {
 	struct zip_wrapper {
 		auto begin() const mr_noexcept { return default_pair_forward_iterator{ mr_begin(_arr1), mr_begin(_arr2) }; }
-
 		auto end() const mr_noexcept { return default_pair_sentinel{ mr_end(_arr1), mr_end(_arr2) }; }
-
 		_range1 _arr1;
 		_range2 _arr2;
 	};
 	return zip_wrapper{ std::forward<_range1>(arr1), std::forward<_range2>(arr2) };
 }
 
-inline auto enumerate(range auto&& arr) mr_noexcept {
+constexpr auto enumerate(range auto&& arr) mr_noexcept {
 	return zip(views::iota(0ll), std::forward<decltype(arr)>(arr));
 }
 
