@@ -42,10 +42,11 @@ struct vec2 {
 	MR_NODISCARD friend constexpr vec2 lerp(const vec2& lhs, const vec2& rhs, double t) mr_noexcept {
 		return lhs + t * (rhs - lhs);
 	}
+	MR_NODISCARD friend constexpr auto dot_product(const vec2& lhs, const vec2& rhs) mr_noexcept { return lhs.x * rhs.x + lhs.y * rhs.y; }
 	MR_NODISCARD friend constexpr auto cross_product(const vec2& lhs, const vec2& rhs) mr_noexcept {
 		return lhs.x * rhs.y - lhs.y * rhs.x;
 	}
-	MR_NODISCARD constexpr auto atan2() const mr_noexcept { return std::atan2(y, x); }
+	MR_NODISCARD constexpr auto atan() const mr_noexcept { return std::atan2(y, x); }
 
 	MR_NODISCARD constexpr auto distance_to(const vec2& rhs) const mr_noexcept {
 		return std::sqrt((x - rhs.x) * (x - rhs.x) + (y - rhs.y) * (y - rhs.y));

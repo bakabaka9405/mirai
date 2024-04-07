@@ -1,10 +1,6 @@
 #pragma once
 #include <mirai/pch.hpp>
 MR_NAMESPACE_BEGIN
-template <typename proxy_type, typename T>
-concept proxy_concept = requires() {
-	proxy_type::work(T(), T());
-};
 
 template <typename T>
 struct default_add_proxy {

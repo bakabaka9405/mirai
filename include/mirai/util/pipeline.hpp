@@ -22,6 +22,51 @@ inline constexpr auto in_array(range&& arr, ull l, ull r) {
 	};
 	return in_array_wrapper{ std::forward<range>(arr), l, r };
 }
+class __cycle_helper { // NOLINT(bugprone-reserved-identifier)
+private:
+	template <range _range>
+	inline constexpr auto invoke(_range&& r) mr_noexcept {
+		struct cycle_wrapper {
+			_range _r;
+			struct iterator {
+				using iter_t = decltype(mr_begin(_r));
+				iter_t _it;
+				_range _r;
+				inline bool operator!=(const std::default_sentinel_t&) const mr_noexcept {
+					return true;
+				}
+				inline decltype(auto) operator*() const mr_noexcept {
+					return *_it;
+				}
+				inline iterator& operator++() mr_noexcept {
+					if (++_it == mr_end(_r)) _it = mr_begin(_r);
+					return *this;
+				}
+				inline auto operator++(int) mr_noexcept->iterator {
+					iterator res = *this;
+					this->operator++();
+					return res;
+				}
+			};
+			inline auto begin() const mr_noexcept { return iterator{ mr_begin(_r), _r }; }
+			inline auto end() const mr_noexcept { return std::unreachable_sentinel; }
+		};
+		return cycle_wrapper{ std::forward<_range>(r) };
+	}
+
+public:
+	template <range _range>
+	MR_NODISCARD friend inline auto operator|(_range&& lhs, __cycle_helper rhs) mr_noexcept {
+		return rhs.invoke(std::forward<_range>(lhs));
+	}
+
+	template <range _range>
+	MR_NODISCARD auto operator()(_range&& r) const mr_noexcept {
+		return invoke(std::forward<_range>(r));
+	}
+};
+
+constexpr __cycle_helper cycle{};
 
 template <range _range>
 inline constexpr auto take(_range&& r, size_t n) mr_noexcept {
