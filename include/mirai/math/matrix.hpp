@@ -7,12 +7,12 @@ template <typename T, size_t n, size_t m, class add_proxy>
 struct matrix {
 	T v[n][m];
 	constexpr matrix() mr_noexcept : v{ { 0 } } {}
-	explicit constexpr matrix(T (&&val)[n][m]) mr_noexcept {
+	explicit constexpr matrix(const T (&&val)[n][m]) mr_noexcept {
 		for (size_t i = 0; i < n; i++) {
 			for (size_t j = 0; j < m; j++) v[i][j] = val[i][j];
 		}
 	}
-	constexpr matrix(std::initializer_list<T> val) mr_noexcept
+	constexpr matrix(const std::initializer_list<T>& val) mr_noexcept
 		: matrix() {
 		for (T* p = &v[0][0]; auto&& v : val) *p++ = std::move(v);
 	}

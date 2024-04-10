@@ -12,7 +12,7 @@ MR_NODISCARD MR_API ll time_now() mr_noexcept {
 struct auto_timer {
 	time_point<steady_clock> start;
 	string name;
-	explicit auto_timer(string name = "") mr_noexcept : start{ curr_time_point() }, name(std::move(name)) {}
+	explicit auto_timer(string name_ = "") mr_noexcept : start{ curr_time_point() }, name(std::move(name_)) {}
 	void restart() mr_noexcept { start = time_point<steady_clock>{ curr_time_point() }; }
 	MR_NODISCARD auto now() const mr_noexcept {
 		return curr_time_point() - start;

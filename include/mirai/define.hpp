@@ -50,11 +50,16 @@
 #define MR_ASSUME(x) MR_ASSERT(x)
 #else
 #if __cplusplus >= 202300L
-#define MR_ASSUME(x) MR_ASSERT(x)
+#define MR_ASSUME(x) [[assume(x)]]
 #else
-#define MR_ASSUME(x) if(!(x)) __builtin_unreachable()
+#if MR_USE_MSVC
+#define MR_ASSUME(x) __assume(x)
+#else
+#define MR_ASSUME(x) \
+	if (!(x)) __builtin_unreachable()
+#endif
 #endif
 #endif
 
 #define MR_NAMESPACE_BEGIN namespace mirai {
-#define MR_NAMESPACE_END }
+#define MR_NAMESPACE_END } 

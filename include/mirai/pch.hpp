@@ -23,6 +23,7 @@
 #include <ranges>
 #include <concepts>
 #include <memory_resource>
+#include <bitset>
 #include <bit>
 #include <numbers>
 #include <coroutine>

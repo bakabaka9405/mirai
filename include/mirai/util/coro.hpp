@@ -9,23 +9,30 @@ public:
 	struct promise_type {
 		using pointer = std::add_pointer_t<T>;
 		pointer value_;
-
-		auto co() mr_noexcept { return handle_type::from_promise(*this); }
-		auto get_return_object() mr_noexcept { return generator(co()); }
-		std::suspend_always initial_suspend() mr_noexcept { return {}; }
+		auto co() noexcept { return handle_type::from_promise(*this); }
+		auto get_return_object() noexcept { return generator(co()); }
+		std::suspend_always initial_suspend() noexcept { return {}; }
 		std::suspend_always final_suspend() noexcept { return {}; }
-		void unhandled_exception() mr_noexcept { throw; }
-		std::suspend_always yield_value(T&& value) mr_noexcept {
+		void unhandled_exception() noexcept { std::terminate(); }
+		std::suspend_always yield_value(T& value) noexcept {
 			value_ = std::addressof(value);
 			return {};
 		}
-		void return_void() mr_noexcept {}
+		std::suspend_always yield_value(T&& value) noexcept {
+			value_ = std::addressof(value);
+			return {};
+		}
+		void return_void() noexcept {}
 
-		decltype(auto) value() mr_noexcept { return *value_; }
+		decltype(auto) value() noexcept { return *value_; }
 	};
 
-	explicit generator(handle_type h) mr_noexcept : h_(h) {}
-	~generator() mr_noexcept {
+	explicit generator(handle_type h) noexcept
+		: h_(h) {}
+	generator(const generator&) = delete;
+	constexpr generator(generator&& other) noexcept
+		: h_(std::exchange(other.h_, {})) {}
+	~generator() noexcept {
 		if (h_) h_.destroy();
 	}
 

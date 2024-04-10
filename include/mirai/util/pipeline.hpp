@@ -31,7 +31,7 @@ private:
 			struct cycled_iterator {
 				using iter_t = decltype(mr_begin(_r));
 				iter_t _it;
-				_range rg;
+				_range& rg;
 				inline bool operator!=(const std::default_sentinel_t&) const mr_noexcept {
 					return true;
 				}
@@ -64,9 +64,7 @@ public:
 	MR_NODISCARD auto operator()(_range&& r) const mr_noexcept {
 		return invoke(std::forward<_range>(r));
 	}
-};
-
-constexpr __cycle_helper cycle{};
+} constexpr cycle;
 
 template <range _range>
 inline constexpr auto take(_range&& r, size_t n) mr_noexcept {
@@ -90,7 +88,7 @@ inline constexpr auto take(_range&& r, size_t n) mr_noexcept {
 			inline auto operator++(int) mr_noexcept->iterator {
 				return iterator{ _it++, _count-- };
 			}
-			inline auto operator*() const mr_noexcept {
+			inline decltype(auto) operator*() const mr_noexcept {
 				return *_it;
 			}
 		};
@@ -124,7 +122,7 @@ MR_NODISCARD inline constexpr auto in_column(_range&& r, ull col) {
 		const ull _col;
 		struct iterator {
 			using iter_t = decltype(mr_begin(_r));
-			_range _rg;
+			_range& _rg;
 			iter_t _it;
 			const ull _col;
 			inline bool operator!=(const std::default_sentinel_t&) const mr_noexcept {
@@ -134,14 +132,14 @@ MR_NODISCARD inline constexpr auto in_column(_range&& r, ull col) {
 				++_it;
 			}
 			inline auto operator++(int) mr_noexcept->iterator {
-				return iterator{ std::forward<_range>(_rg), _it++, _col };
+				return iterator{ _rg, _it++, _col };
 			}
 			inline auto operator*() const mr_noexcept {
 				return (*_it)[_col];
 			}
 		};
 		inline auto begin() const mr_noexcept {
-			return iterator{ std::forward<_range>(_r), mr_begin(_r), _col };
+			return iterator{ _r, mr_begin(_r), _col };
 		}
 		inline constexpr auto end() const mr_noexcept {
 			return std::default_sentinel;
@@ -173,7 +171,7 @@ inline constexpr auto transform(_range&& r, Func&& func) {
 		struct iterator {
 			using iter_t = decltype(mr_begin(_r));
 			iter_t _it;
-			Func _func;
+			Func& _func;
 			using value_type = decltype(_func(*_it));
 			inline bool operator!=(const sentinel& rt) const mr_noexcept {
 				return _it != rt._it;
@@ -190,33 +188,80 @@ inline constexpr auto transform(_range&& r, Func&& func) {
 				this->operator++();
 				return res;
 			}
-			inline auto operator*() const mr_noexcept {
+			inline auto operator*() const mr_noexcept->value_type {
 				return _func(*_it);
 			}
 		};
 		inline auto begin() const mr_noexcept { return iterator{ mr_begin(_r), _func }; }
 		inline auto end() const mr_noexcept { return sentinel{ mr_end(_r) }; }
 	};
-	return transform_wrapper{ std::forward<_range>(r), func };
+	return transform_wrapper{ std::forward<_range>(r), std::forward<Func>(func) };
 }
 
 template <typename Func>
 struct __transform_helper { // NOLINT(bugprone-reserved-identifier)
 	Func func;
 	template <range _range>
-	MR_NODISCARD friend inline auto operator|(_range&& lhs, __transform_helper self) mr_noexcept {
+	MR_NODISCARD friend constexpr auto operator|(_range&& lhs, __transform_helper&& self) mr_noexcept {
 		return transform(std::forward<_range>(lhs), std::move(self.func));
 	}
 };
 
 template <typename Func>
 inline constexpr auto transform(Func&& func) {
-	return __transform_helper{ std::forward<Func>(func) };
+	return __transform_helper<Func>{ std::forward<Func>(func) };
+}
+
+template <range _range, typename Func>
+inline constexpr auto transform_apply(_range&& r, Func&& func) {
+	struct transform_apply_wrapper {
+		_range _r;
+		Func _func;
+		struct sentinel {
+			decltype(mr_end(_r)) _it;
+		};
+		struct iterator {
+			using iter_t = decltype(mr_begin(_r));
+			iter_t _it;
+			Func& _func;
+			using value_type = decltype(std::apply(_func, *_it));
+			inline bool operator!=(const sentinel& rt) const mr_noexcept {
+				return _it != rt._it;
+			}
+			inline bool operator==(const sentinel& rt) const mr_noexcept {
+				return !this->operator!=(rt);
+			}
+			inline decltype(auto) operator++() mr_noexcept {
+				++_it;
+				return *this;
+			}
+			inline auto operator++(int) mr_noexcept->iterator {
+				iterator res = *this;
+				this->operator++();
+				return res;
+			}
+			inline auto operator*() const mr_noexcept->value_type {
+				return std::apply(_func, *_it);
+			}
+		};
+		inline auto begin() const mr_noexcept { return iterator{ mr_begin(_r), _func }; }
+		inline auto end() const mr_noexcept { return sentinel{ mr_end(_r) }; }
+	};
+	return transform_apply_wrapper{ std::forward<_range>(r), std::forward<Func>(func) };
 }
 
 template <typename Func>
+struct __transform_apply_helper { // NOLINT(bugprone-reserved-identifier)
+	Func func;
+	template <range _range>
+	MR_NODISCARD friend constexpr auto operator|(_range&& lhs, __transform_apply_helper&& self) mr_noexcept {
+		return transform(std::forward<_range>(lhs), std::move(self.func));
+	}
+};
+
+template <typename Func>
 inline constexpr auto transform_apply(Func&& func) {
-	return __transform_helper{ [&](auto&& param) { return std::apply(func, std::forward<decltype(param)>(param)); } };
+	return __transform_helper<Func>{ std::forward<Func>(func) };
 }
 
 template <range _range, typename... Func>
@@ -258,8 +303,8 @@ inline auto filter(_range&& r, Func&& func) {
 		struct iterator {
 			using iter_t = decltype(mr_begin(_r));
 			iter_t _it;
-			Func _func;
-			sentinel _end;
+			Func& _func_ref;
+			const sentinel& _end;
 			using value_type = decltype(*_it);
 			inline bool operator!=(const sentinel& rt) const mr_noexcept {
 				return _it != rt._it;
@@ -270,7 +315,7 @@ inline auto filter(_range&& r, Func&& func) {
 			inline decltype(auto) operator++() mr_noexcept {
 				do {
 					++_it;
-				} while (_it != _end._it && !_func(*_it));
+				} while (_it != _end._it && !_func_ref(*_it));
 				return *this;
 			}
 			inline auto operator++(int) mr_noexcept->iterator {
@@ -297,7 +342,7 @@ struct __filter_helper { // NOLINT(bugprone-reserved-identifier)
 	Func func;
 
 	template <range _range>
-	MR_NODISCARD friend inline auto operator|(_range&& lhs, __filter_helper self) mr_noexcept {
+	MR_NODISCARD friend inline auto operator|(_range&& lhs, __filter_helper&& self) mr_noexcept {
 		return filter(std::forward<_range>(lhs), std::move(self.func));
 	}
 };
@@ -405,7 +450,7 @@ MR_NODISCARD inline auto append_to(_range&& r, Container& dst) {
 		Container& dst;
 		inline auto operator()() mr_noexcept {
 			auto it = std::inserter(dst, mr_end(dst));
-			for (auto&& i : _r) *it = std::forward<std::decay_t<decltype(i)>>(i);
+			for (auto&& i : _r) *it++ = i;
 		}
 	};
 	return append_to_wrapper{ std::forward<_range>(r), dst };
@@ -426,7 +471,7 @@ MR_NODISCARD inline auto append_to(Container& dst) {
 }
 
 template <range range, typename Container>
-inline constexpr auto maps_to(range&& r, Container&& table) {
+inline constexpr auto map_to(range&& r, Container&& table) {
 	struct maps_to_wrapper {
 		using iter_t = decltype(mr_begin(r));
 		using sen_t = decltype(mr_end(r));
@@ -437,7 +482,7 @@ inline constexpr auto maps_to(range&& r, Container&& table) {
 		};
 		struct iterator {
 			iter_t it;
-			Container table;
+			Container& table;
 			inline bool operator!=(const sentinel& rt) const { return it != rt.sen; }
 			inline decltype(auto) operator*() const { return table[*it]; }
 			inline iterator& operator++() {
@@ -445,24 +490,24 @@ inline constexpr auto maps_to(range&& r, Container&& table) {
 				return *this;
 			}
 		};
-		inline constexpr auto begin() { return iterator{ mr_begin(_r), std::forward<Container>(table) }; }
+		inline constexpr auto begin() { return iterator{ mr_begin(_r), table }; }
 		inline constexpr auto end() const { return sentinel{ mr_end(_r) }; }
 	};
 	return maps_to_wrapper{ std::forward<range>(r), std::forward<Container>(table) };
 }
 
 template <typename Container>
-struct __maps_to_helper { // NOLINT(bugprone-reserved-identifier)
+struct __map_to_helper { // NOLINT(bugprone-reserved-identifier)
 	Container table;
 	template <range range>
-	MR_NODISCARD friend inline decltype(auto) operator|(range&& r, __maps_to_helper self) {
-		return maps_to(std::forward<range>(r), std::move(self.table));
+	MR_NODISCARD friend inline decltype(auto) operator|(range&& r, __map_to_helper&& self) {
+		return map_to(std::forward<range>(r), std::move(self.table));
 	}
 };
 
 template <typename Container>
-inline constexpr auto maps_to(Container&& table) {
-	return __maps_to_helper{ std::forward<Container>(table) };
+inline constexpr auto map_to(Container&& table) {
+	return __map_to_helper<Container>{ std::forward<Container>(table) };
 }
 
 constexpr inline struct {
@@ -470,6 +515,10 @@ constexpr inline struct {
 
 inline auto operator|(auto&& lhs, const decltype(endp)&) mr_noexcept {
 	return lhs();
+}
+
+void repeat(size_t n, auto&& func) mr_noexcept {
+	while (n--) func();
 }
 
 inline constexpr auto as_abs = [](auto x) { return std::abs(x); };

@@ -15,7 +15,6 @@ ll header_count;
 graph<void> G;
 vector<ll> id, topo;
 struct _config {
-	CONFIG_ITEM topo_order = topo;
 	CONFIG_ITEM in_degree = id;
 } config;
 string get_header(const string& s) {
@@ -50,20 +49,23 @@ bool register_header(const string& s) {
 }
 int main(int argc, char** argv) {
 	auto_timer _t;
-	if (argc < 3) {
-		cout << "error: not enough argument." << endl;
-		return 0;
-	}
-	else if (argc > 4) {
-		cout << "error: too many arguments." << endl;
-		return 0;
-	}
-	fs::path src_path = argv[1], mirai_path = argv[2];
-	fs::path dst_path = "output.cpp";
-	if (argc == 4) dst_path = argv[3];
+	// if (argc < 3) {
+	// 	cout << "error: not enough argument." << endl;
+	// 	return 0;
+	// }
+	// else if (argc > 4) {
+	// 	cout << "error: too many arguments." << endl;
+	// 	return 0;
+	// }
+	// fs::path src_path = argv[1], mirai_path = argv[2];
+	// fs::path dst_path = "output.cpp";
+	// if (argc == 4) dst_path = argv[3];
+	fs::path src_path = R"(C:\Temp\src.cpp)";
+	fs::path mirai_path = R"(E:\Working\proj\mirai\include\)";
+	fs::path dst_path = R"(C:\Temp\embed.cpp)";
 	ifstream fin(src_path);
 	if (!fin.is_open()) {
-		cout << "error: cannot open source file." << endl;
+		cout << "error: cannot open source file. " << endl;
 		return 0;
 	}
 	queue<ll> q;
@@ -125,7 +127,7 @@ int main(int argc, char** argv) {
 	}
 	id.resize(G.node_count() + 1);
 	calc_graph_degree<G, config>();
-	topo_sort<G, config>();
+	topo_sort(G, id) | append_to(topo) | endp;
 	debug("sorted header:");
 	ofstream fout(dst_path);
 	for (auto&& i : flag_defines) fout << "#define " << i << endl;
