@@ -106,8 +106,9 @@ inline constexpr auto take(_range&& r, size_t n) mr_noexcept {
 
 struct __take_helper { // NOLINT(bugprone-reserved-identifier)
 	size_t n;
-	MR_NODISCARD friend inline auto operator|(auto&& lhs, __take_helper self) mr_noexcept {
-		return take(std::forward<std::decay_t<decltype(lhs)>>(lhs), self.n);
+	template <range _range>
+	MR_NODISCARD friend inline auto operator|(_range&& lhs, __take_helper self) mr_noexcept {
+		return take(std::forward<_range>(lhs), self.n);
 	}
 };
 
@@ -171,7 +172,7 @@ inline constexpr auto transform(_range&& r, Func&& func) {
 		struct iterator {
 			using iter_t = decltype(mr_begin(_r));
 			iter_t _it;
-			Func& _func;
+			const Func& _func;
 			using value_type = decltype(_func(*_it));
 			inline bool operator!=(const sentinel& rt) const mr_noexcept {
 				return _it != rt._it;
@@ -223,7 +224,7 @@ inline constexpr auto transform_apply(_range&& r, Func&& func) {
 		struct iterator {
 			using iter_t = decltype(mr_begin(_r));
 			iter_t _it;
-			Func& _func;
+			const Func& _func;
 			using value_type = decltype(std::apply(_func, *_it));
 			inline bool operator!=(const sentinel& rt) const mr_noexcept {
 				return _it != rt._it;
