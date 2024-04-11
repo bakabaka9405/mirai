@@ -57,7 +57,7 @@ struct default_pair_forward_iterator {
 	inline auto operator++(int) mr_noexcept->default_pair_forward_iterator {
 		return default_pair_forward_iterator{ first++, second++ };
 	}
-	inline auto operator*() const mr_noexcept {
+	inline decltype(auto) operator*() const mr_noexcept {
 		return value_type{ *first, *second };
 	}
 };

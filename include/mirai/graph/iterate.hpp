@@ -19,7 +19,20 @@ void calc_graph_degree() {
 	}
 }
 
-generator<ll> topo_sort(auto&& G, auto&& in_degree) {
+template <typename T>
+auto iterate_all_edges(const graph<T>& G)
+	-> generator<std::conditional_t<std::is_same_v<T, void>, pair<ll, ll>, tuple<ll, ll, const T&>>> {
+	for (auto i : views::iota(0ll, G.node_count())) {
+		for (auto&& e : G[i]) {
+			if constexpr (std::is_same_v<T, void>)
+				co_yield { i, e };
+			else
+				co_yield { i, e.first, e.second };
+		}
+	}
+}
+
+generator<ll> topo_sort(auto&& G, auto&& in_degree, const auto&& get_v = __edge_get_v) {
 	vector<ll> used_degree(G.node_count());
 	queue<ll> q;
 	for (auto i : views::iota(0ll, G.node_count()))
@@ -27,23 +40,22 @@ generator<ll> topo_sort(auto&& G, auto&& in_degree) {
 	while (!q.empty()) {
 		auto u = q.front();
 		q.pop();
-		//cout << "topo at:" << u << endl;
+		// cout << "topo at:" << u << endl;
 		co_yield u;
-		for (auto&& v : G[u] | transform(__edge_get_v)) {
+		for (auto&& v : G[u] | transform(get_v)) {
 			if (++used_degree[v] == in_degree[v]) q.push(v);
 		}
 	}
 }
 
-generator<pair<ll, ll>> __dfs_in_tree_impl(auto&& G, ll u, ll fa) { // NOLINT(bugprone-reserved-identifier)
-	co_yield { u, 0 };
-	for (auto&& v : G[u] | transform(__edge_get_v) | filter(not_equal_to(fa)))
-		for (auto&& [v2, status] : __dfs_in_tree_impl(std::forward<decltype(G)>(G), v, u))
-			co_yield { v2, status };
-	co_yield { u, 1 };
-}
-
-auto dfs_in_tree(auto&& G, ll root) {
-	return __dfs_in_tree_impl(std::forward<decltype(G)>(G), root, -1);
+auto dfs_in_tree(auto&& G, ll root, const auto&& get_v = __edge_get_v) {
+	auto dfs = [&](auto&& self, auto&& G, ll u, ll fa) -> generator<tuple<ll, ll, ll>> {
+		co_yield { u, fa, 0 };
+		for (auto&& v : G[u] | transform(get_v) | filter(not_equal_to(fa)))
+			for (auto&& [v2, f, status] : self(self, std::forward<decltype(G)>(G), v, u))
+				co_yield { v2, f, status };
+		co_yield { u, fa, 1 };
+	};
+	return dfs(std::forward<decltype(G)>(G), root, -1);
 }
 MR_NAMESPACE_END

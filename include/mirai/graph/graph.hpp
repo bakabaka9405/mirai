@@ -13,16 +13,20 @@ private:
 	constexpr static bool _is_vector_model = _type == vector_model;
 	constexpr static bool _is_link_model = _type == link_model;
 	constexpr static bool _have_weight = !std::is_same_v<T, void>;
-	using edge = std::conditional_t<_have_weight, pair<ll, T>, ll>;
-	std::conditional_t<_is_vector_model, vector<vector<edge>>, vector<pair<edge, ll>>> _e;
-	struct __empty_item {
+
+public:
+	using edge_type = std::conditional_t<_have_weight, pair<ll, T>, ll>;
+
+private:
+	std::conditional_t<_is_vector_model, vector<vector<edge_type>>, vector<pair<edge_type, ll>>> _e;
+	struct __empty_item { // NOLINT(bugprone-reserved-identifier)
 		__empty_item(ll, ll) {}
 	};
 	[[no_unique_address]] std::conditional_t<_is_link_model, vector<ll>, __empty_item> _head; // NOLINT
 public:
-	inline graph() mr_noexcept : _e(), _head(0, -1) {}
-	inline graph(size_t n) mr_noexcept : _e(_is_vector_model ? n : 0), _head(n, -1) {}
-	inline void resize(size_t n) mr_noexcept {
+	constexpr graph() mr_noexcept : _e(), _head(0, -1) {}
+	constexpr explicit graph(size_t n) mr_noexcept : _e(_is_vector_model ? n : 0), _head(n, -1) {}
+	void resize(size_t n) mr_noexcept {
 		if constexpr (_is_vector_model)
 			_e.resize(n);
 		else
@@ -60,16 +64,16 @@ public:
 		else {
 			struct range_wrapper {
 				const ll _start;
-				const vector<pair<edge, ll>>& _e;
+				const vector<pair<edge_type, ll>>& _e;
 				struct iterator {
 					ll _index;
-					const vector<pair<edge, ll>>& _e;
+					const vector<pair<edge_type, ll>>& _e;
 					inline bool operator!=(const std::default_sentinel_t&) const mr_noexcept { return _index != -1; }
 					inline iterator& operator++() mr_noexcept {
 						_index = _e[_index].second;
 						return *this;
 					}
-					inline auto operator++(int) mr_noexcept { return iterator{ std::exchange(_index, _e[_index].second), _e }; }
+					inline auto operator++(int) mr_noexcept->iterator { return iterator{ std::exchange(_index, _e[_index].second), _e }; }
 					inline auto operator*() const mr_noexcept { return _e[_index].first; }
 				};
 				inline auto begin() const mr_noexcept { return iterator{ _start, _e }; }
@@ -77,7 +81,7 @@ public:
 				MR_NODISCARD inline size_t size() const mr_noexcept {
 					size_t res = 0;
 					ll x = _start;
-					while (~x) res++, x = _e[x].second;
+					while (~x) res++, x = _e[x].second; // NOLINT(hicpp-signed-bitwise)
 					return res;
 				}
 				MR_NODISCARD inline bool empty() const mr_noexcept { return _start != -1; }
@@ -96,7 +100,7 @@ public:
 template <typename T>
 concept weighted_graph = !std::same_as<T, void>;
 
-inline constexpr auto __edge_get_v = [](auto&& edge) {
+inline constexpr auto __edge_get_v = [](auto&& edge) { // NOLINT(bugprone-reserved-identifier)
 	if constexpr (std::is_same_v<std::decay_t<decltype(edge)>, ll>)
 		return edge;
 	else
