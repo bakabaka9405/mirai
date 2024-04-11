@@ -3,7 +3,7 @@
 #include <mirai/util/range.hpp>
 MR_NAMESPACE_BEGIN
 template <size_t radix = 8>
-void radix_sort(std::random_access_iterator auto begin, std::random_access_iterator auto end) {
+void radix_sort(std::forward_iterator auto begin, std::forward_iterator auto end) {
 	using T = std::decay_t<decltype(*begin)>;
 	constexpr static size_t element_size = sizeof(T) * 8;
 	static_assert(element_size % radix == 0, "radix must be a factor of element_size");

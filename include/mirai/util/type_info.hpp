@@ -1,6 +1,6 @@
 #pragma once
 #include <mirai/pch.hpp>
-#include <mirai/util/constexpr_str.hpp>
+#include <mirai/util/meta/constexpr_str.hpp>
 MR_NAMESPACE_BEGIN
 template <typename T, typename... Args>
 struct type_name_helper {

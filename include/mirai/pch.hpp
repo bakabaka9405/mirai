@@ -166,29 +166,4 @@ using std::smatch;
 using std::floating_point;
 using std::integral;
 
-template <typename T>
-concept vec2_like = requires(T&& t) {
-	t.x;
-	t.y;
-};
-
-template <typename T>
-concept vec3_like = requires(T&& t) {
-	t.x;
-	t.y;
-	t.z;
-};
-
-template <typename proxy_type, typename T>
-concept proxy = requires() {
-	proxy_type::work;
-};
-
-template <bool B, typename T, typename Y>
-MR_NODISCARD constexpr decltype(auto) conditional_v(T&& t, Y&& y) mr_noexcept {
-	if constexpr (B)
-		return std::forward<T>(t);
-	else
-		return std::forward<Y>(y);
-}
 MR_NAMESPACE_END

@@ -1,7 +1,7 @@
 #pragma once
 #include <mirai/pch.hpp>
 #include <mirai/util/string.hpp>
-#include <mirai/util/pipeline.hpp>
+#include <mirai/util/pipe.hpp>
 MR_NAMESPACE_BEGIN
 MR_API void disable_stdio_sync() mr_noexcept {
 	std::ios::sync_with_stdio(false);
