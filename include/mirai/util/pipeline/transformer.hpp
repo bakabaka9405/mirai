@@ -149,23 +149,8 @@ inline constexpr auto as_abs = [](auto x) { return std::abs(x); };
 
 inline constexpr auto as_square = [](auto x) { return x * x; };
 
-inline constexpr auto is_positive = [](auto x) { return x > 0; };
-
-inline constexpr auto not_negative = [](auto x) { return x >= 0; };
 
 inline constexpr auto to_pair = [](auto&& x) { return pair{ get<0>(x), get<1>(x) }; };
-
-inline constexpr auto equal_to = [](auto&& x) {
-	return [x](auto&& y) {
-		return x == y;
-	};
-};
-
-inline constexpr auto not_equal_to = [](auto&& x) {
-	return [x](auto&& y) {
-		return x != y;
-	};
-};
 
 template <typename Dst>
 inline constexpr auto to_struct = [](auto&& x) { return std::apply([&](auto&&... args) -> Dst { return { args... }; }, std::forward<std::decay_t<decltype(x)>>(x)); };

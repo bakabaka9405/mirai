@@ -12,7 +12,6 @@ void radix_sort(std::forward_iterator auto begin, std::forward_iterator auto end
 	constexpr static size_t bucket_size = 1ull << radix;
 	std::vector<T> buffer1(begin, end), buffer2(element_count);
 	std::array<ull, bucket_size> bucket;
-#pragma unroll
 	for (ull i = 0; i < loop_times; i++) {
 		bucket.fill(0);
 		for (auto&& j : buffer1)

@@ -1,7 +1,7 @@
 #pragma once
 #include <mirai/pch.hpp>
 #include <mirai/graph/graph.hpp>
-#include <mirai/util/pipeline.hpp>
+#include <mirai/util/pipe.hpp>
 MR_NAMESPACE_BEGIN
 template <auto& G, auto& config>
 inline void __tree_decomposition_impl(ll u, ll top, ll& t) mr_noexcept {

@@ -1,4 +1,6 @@
+#pragma once
 #include <mirai/pch.hpp>
+#include <mirai/util/debug.hpp>
 MR_NAMESPACE_BEGIN
 
 template <typename T>
@@ -28,12 +30,17 @@ public:
 	};
 
 	explicit generator(handle_type h) noexcept
-		: h_(h) {}
+		: h_(h) {
+		debug("generator constructed");
+	}
 	generator(const generator&) = delete;
 	constexpr generator(generator&& other) noexcept
-		: h_(std::exchange(other.h_, {})) {}
+		: h_(std::exchange(other.h_, {})) {
+		debug("generator moved");
+	}
 	~generator() noexcept {
 		if (h_) h_.destroy();
+		debug("generator destroyed");
 	}
 
 	struct iterator {

@@ -1,6 +1,6 @@
 #include <mirai/util/debug.hpp>
 #include <mirai/util/time.hpp>
-#include <mirai/util/pipeline.hpp>
+#include <mirai/util/pipe.hpp>
 #include <mirai/graph/graph.hpp>
 #include <mirai/graph/iterate.hpp>
 #include <mirai/ds/unordered_dense.hpp>

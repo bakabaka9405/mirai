@@ -161,66 +161,6 @@ MR_NODISCARD inline constexpr auto in_column(ull col) {
 	return __in_column_helper{ col };
 }
 
-template <range _range, typename Func>
-inline auto filter(_range&& r, Func&& func) {
-	struct filter_wrapper {
-		_range _r;
-		Func _func;
-		struct sentinel {
-			decltype(mr_end(_r)) _it;
-		};
-		struct iterator {
-			using iter_t = decltype(mr_begin(_r));
-			iter_t _it;
-			Func& _func_ref;
-			const sentinel& _end;
-			using value_type = decltype(*_it);
-			inline bool operator!=(const sentinel& rt) const mr_noexcept {
-				return _it != rt._it;
-			}
-			inline bool operator==(const sentinel& rt) const mr_noexcept {
-				return !this->operator!=(rt);
-			}
-			inline decltype(auto) operator++() mr_noexcept {
-				do {
-					++_it;
-				} while (_it != _end._it && !_func_ref(*_it));
-				return *this;
-			}
-			inline auto operator++(int) mr_noexcept->iterator {
-				iterator it = *this;
-				this->operator++();
-				return it;
-			}
-			inline auto operator*() const mr_noexcept->value_type {
-				return *_it;
-			}
-		};
-		inline auto begin() const mr_noexcept {
-			auto it = mr_begin(_r);
-			auto end = mr_end(_r);
-			while (it != end && !_func(*it)) ++it;
-			return iterator{ it, _func, sentinel{ end } };
-		}
-		inline auto end() const mr_noexcept { return sentinel{ mr_end(_r) }; }
-	};
-	return filter_wrapper{ std::forward<_range>(r), std::forward<Func>(func) };
-};
-template <typename Func>
-struct __filter_helper { // NOLINT(bugprone-reserved-identifier)
-	Func func;
-
-	template <range _range>
-	MR_NODISCARD friend inline auto operator|(_range&& lhs, __filter_helper&& self) mr_noexcept {
-		return filter(std::forward<_range>(lhs), std::move(self.func));
-	}
-};
-
-template <typename Func>
-inline auto filter(Func&& func) {
-	return __filter_helper{ std::forward<Func>(func) };
-}
-
 template <range _range>
 inline auto skip(_range&& r, size_t n) {
 	struct skip_wrapper {

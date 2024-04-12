@@ -1,6 +1,6 @@
 #pragma once
 #include <mirai/pch.hpp>
-#include <mirai/util/pipeline.hpp>
+#include <mirai/util/pipe.hpp>
 #include <mirai/graph/graph.hpp>
 #include <mirai/math/number.hpp>
 #include <mirai/util/coro.hpp>
