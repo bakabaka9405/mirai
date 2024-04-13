@@ -22,7 +22,7 @@ inline constexpr auto in_array(range&& arr, ull l, ull r) {
 	};
 	return in_array_wrapper{ std::forward<range>(arr), l, r };
 }
-class __cycle_helper { // NOLINT(bugprone-reserved-identifier)
+class __cycle_helper { 
 private:
 	template <range _range>
 	inline constexpr auto invoke(_range&& r) mr_noexcept {
@@ -104,7 +104,7 @@ inline constexpr auto take(_range&& r, size_t n) mr_noexcept {
 	return take_wrapper{ std::forward<_range>(r), n };
 }
 
-struct __take_helper { // NOLINT(bugprone-reserved-identifier)
+struct __take_helper { 
 	size_t n;
 	template <range _range>
 	MR_NODISCARD friend inline auto operator|(_range&& lhs, __take_helper self) mr_noexcept {
@@ -149,7 +149,7 @@ MR_NODISCARD inline constexpr auto in_column(_range&& r, ull col) {
 	return in_column_wrapper{ std::forward<_range>(r), col };
 }
 
-struct __in_column_helper { // NOLINT(bugprone-reserved-identifier)
+struct __in_column_helper { 
 	const ull col;
 	template <range _range>
 	MR_NODISCARD friend inline auto operator|(_range&& lhs, __in_column_helper self) {
@@ -179,7 +179,7 @@ inline auto skip(_range&& r, size_t n) {
 	return skip_wrapper{ std::forward<_range>(r), n };
 }
 
-struct __skip_helper { // NOLINT(bugprone-reserved-identifier)
+struct __skip_helper { 
 	size_t n;
 	MR_NODISCARD friend inline auto operator|(auto&& lhs, __skip_helper self) mr_noexcept {
 		return skip(std::forward<decltype(lhs)>(lhs), self.n);

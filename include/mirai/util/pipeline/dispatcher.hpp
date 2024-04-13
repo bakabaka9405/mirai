@@ -17,7 +17,7 @@ inline constexpr auto dispatch(_range&& r, Func&&... func) {
 }
 
 template <typename... Func>
-struct __dispatch_helper { // NOLINT(bugprone-reserved-identifier)
+struct __dispatch_helper { 
 	tuple<Func...> func;
 	template <range _range>
 	MR_NODISCARD friend constexpr inline decltype(auto) operator|(_range&& lhs, __dispatch_helper&& self) mr_noexcept {
@@ -44,7 +44,7 @@ MR_NODISCARD inline auto addup_to(_range&& r, T& dst) {
 }
 
 template <typename T>
-struct __addup_to_helper { // NOLINT(bugprone-reserved-identifier)
+struct __addup_to_helper { 
 	T& _dst;
 	template <range _range>
 	MR_NODISCARD friend inline auto operator|(_range&& lhs, __addup_to_helper rhs) mr_noexcept {
@@ -75,7 +75,7 @@ MR_NODISCARD inline auto save_to(range_l&& r, range_r&& dst) {
 }
 
 template <typename T>
-struct __save_to_helper { // NOLINT(bugprone-reserved-identifier)
+struct __save_to_helper { 
 	T _dst;
 	template <range _range>
 	MR_NODISCARD friend inline auto operator|(_range&& lhs, __save_to_helper rhs) mr_noexcept {
@@ -107,7 +107,7 @@ MR_NODISCARD inline auto append_to(_range&& r, Container& dst) {
 }
 
 template <typename Container>
-struct __append_to_helper { // NOLINT(bugprone-reserved-identifier)
+struct __append_to_helper { 
 	Container& _dst;
 	template <range _range>
 	MR_NODISCARD friend inline auto operator|(_range&& lhs, __append_to_helper rhs) mr_noexcept {
@@ -118,6 +118,33 @@ struct __append_to_helper { // NOLINT(bugprone-reserved-identifier)
 template <typename Container>
 MR_NODISCARD inline auto append_to(Container& dst) {
 	return __append_to_helper{ dst };
+}
+
+template <range _range, typename Container>
+MR_NODISCARD inline auto emplace_back_to(_range&& r, Container& dst) {
+	struct emplace_back_to_wrapper {
+		_range _r;
+		Container& dst;
+		inline auto operator()() mr_noexcept {
+			auto fn = [&](auto&&... args) { dst.emplace_back(std::forward<decltype(args)>(args)...); };
+			for (auto&& i : _r) std::apply(fn, i);
+		}
+	};
+	return emplace_back_to_wrapper{ std::forward<_range>(r), dst };
+}
+
+template <typename Container>
+struct __emplace_back_to_helper { 
+	Container& _dst;
+	template <range _range>
+	MR_NODISCARD friend inline auto operator|(_range&& lhs, __emplace_back_to_helper rhs) mr_noexcept {
+		return emplace_back_to(std::forward<_range>(lhs), rhs._dst);
+	}
+};
+
+template <typename Container>
+MR_NODISCARD inline auto emplace_back_to(Container& dst) {
+	return __emplace_back_to_helper{ dst };
 }
 
 constexpr inline struct {

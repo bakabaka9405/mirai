@@ -41,7 +41,7 @@ inline constexpr auto transform(_range&& r, Func&& func) {
 }
 
 template <typename Func>
-struct __transform_helper { // NOLINT(bugprone-reserved-identifier)
+struct __transform_helper { 
 	Func func;
 	template <range _range>
 	MR_NODISCARD friend constexpr auto operator|(_range&& lhs, __transform_helper&& self) mr_noexcept {
@@ -93,7 +93,7 @@ inline constexpr auto transform_apply(_range&& r, Func&& func) {
 }
 
 template <typename Func>
-struct __transform_apply_helper { // NOLINT(bugprone-reserved-identifier)
+struct __transform_apply_helper { 
 	Func func;
 	template <range _range>
 	MR_NODISCARD friend constexpr auto operator|(_range&& lhs, __transform_apply_helper&& self) mr_noexcept {
@@ -132,7 +132,7 @@ inline constexpr auto map_to(range&& r, Container&& table) {
 }
 
 template <typename Container>
-struct __map_to_helper { // NOLINT(bugprone-reserved-identifier)
+struct __map_to_helper { 
 	Container table;
 	template <range range>
 	MR_NODISCARD friend inline decltype(auto) operator|(range&& r, __map_to_helper&& self) {

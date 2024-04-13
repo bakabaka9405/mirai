@@ -11,13 +11,13 @@ ll int_bsearch(ll l, ll r, ll default_ans, auto&& check) {
 	while (l <= r) {
 		if (mid = (l + r) / 2; check(mid)) {
 			ans = mid;
-			if (mode == sinistral)
+			if constexpr (mode == sinistral)
 				r = mid - 1;
 			else
 				l = mid + 1;
 		}
 		else {
-			if (mode == sinistral)
+			if constexpr (mode == sinistral)
 				l = mid + 1;
 			else
 				r = mid - 1;

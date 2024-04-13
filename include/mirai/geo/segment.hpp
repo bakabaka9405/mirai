@@ -1,6 +1,6 @@
 #pragma once
 #include <mirai/pch.hpp>
-#include <mirai/math/vector.hpp>
+#include <mirai/math/vec2.hpp>
 MR_NAMESPACE_BEGIN
 template <typename T>
 struct segment {

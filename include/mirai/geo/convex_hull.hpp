@@ -1,6 +1,6 @@
 #pragma once
 #include <mirai/pch.hpp>
-#include <mirai/math/vector.hpp>
+#include <mirai/math/vec2.hpp>
 #include <mirai/util/pipe.hpp>
 #include <mirai/util/concepts.hpp>
 namespace mirai {

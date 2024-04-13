@@ -19,7 +19,7 @@ public:
 
 private:
 	std::conditional_t<_is_vector_model, vector<vector<edge_type>>, vector<pair<edge_type, ll>>> _e;
-	struct __empty_item { // NOLINT(bugprone-reserved-identifier)
+	struct __empty_item { 
 		__empty_item(ll, ll) {}
 	};
 	[[no_unique_address]] std::conditional_t<_is_link_model, vector<ll>, __empty_item> _head; // NOLINT
@@ -100,7 +100,7 @@ public:
 template <typename T>
 concept weighted_graph = !std::same_as<T, void>;
 
-inline constexpr auto __edge_get_v = [](auto&& edge) { // NOLINT(bugprone-reserved-identifier)
+inline constexpr auto __edge_get_v = [](auto&& edge) { 
 	if constexpr (std::is_same_v<std::decay_t<decltype(edge)>, ll>)
 		return edge;
 	else

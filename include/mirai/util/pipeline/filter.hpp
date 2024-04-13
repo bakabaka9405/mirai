@@ -48,7 +48,7 @@ inline auto filter(_range&& r, Func&& func) {
 	return filter_wrapper{ std::forward<_range>(r), std::forward<Func>(func) };
 };
 template <typename Func>
-struct __filter_helper { // NOLINT(bugprone-reserved-identifier)
+struct __filter_helper { 
 	Func func;
 
 	template <range _range>

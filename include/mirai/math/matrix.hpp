@@ -1,7 +1,7 @@
 #pragma once
 #include <mirai/pch.hpp>
 #include <mirai/util/proxy.hpp>
-#include <mirai/math/vector.hpp>
+#include <mirai/math/vec2.hpp>
 MR_NAMESPACE_BEGIN
 template <typename T, size_t n, size_t m, class add_proxy>
 struct matrix {

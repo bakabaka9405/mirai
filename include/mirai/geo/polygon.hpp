@@ -1,17 +1,17 @@
 #pragma once
 #include <mirai/pch.hpp>
-#include <mirai/math/vector.hpp>
+#include <mirai/math/vec2.hpp>
 MR_NAMESPACE_BEGIN
-double polygon_perimeter(const vector<vec2f>& hull) {
+double polygon_perimeter(const vector<vec2f>& poly) {
 	double res = 0;
-	for (size_t i = 0; i < hull.size(); i++)
-		res += hull[i].distance_to(hull[(i + 1) % hull.size()]);
+	for (size_t i = 0; i < poly.size(); i++)
+		res += poly[i].distance_to(poly[(i + 1) % poly.size()]);
 	return res;
 }
-double polygon_area(const vector<vec2f>& polygon) {
+double polygon_area(const vector<vec2f>& poly) {
 	double res = 0;
-	for (size_t i = 0; i < polygon.size(); i++)
-		res += cross_product(polygon[i], polygon[(i + 1) % polygon.size()]);
+	for (size_t i = 0; i < poly.size(); i++)
+		res += cross_product(poly[i], poly[(i + 1) % poly.size()]);
 	return std::abs(res / 2);
 }
 template <typename T>

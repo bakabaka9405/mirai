@@ -166,4 +166,7 @@ using std::smatch;
 using std::floating_point;
 using std::integral;
 
+// meta programming
+using std::forward;
+using std::move;
 MR_NAMESPACE_END
