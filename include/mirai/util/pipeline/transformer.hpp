@@ -149,6 +149,7 @@ inline constexpr auto as_abs = [](auto x) { return std::abs(x); };
 
 inline constexpr auto as_square = [](auto x) { return x * x; };
 
+inline constexpr auto as_opposite = [](auto x) { return -x; };
 
 inline constexpr auto to_pair = [](auto&& x) { return pair{ get<0>(x), get<1>(x) }; };
 

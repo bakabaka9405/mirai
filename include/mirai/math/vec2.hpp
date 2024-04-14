@@ -15,6 +15,7 @@ struct vec2 {
 	}
 	constexpr vec2 operator+(const vec2& rt) const mr_noexcept { return { x + rt.x, y + rt.y }; }
 	constexpr vec2 operator-(const vec2& rt) const mr_noexcept { return { x - rt.x, y - rt.y }; }
+	constexpr vec2 operator-() const mr_noexcept { return { -x, -y }; }
 	constexpr vec2 operator*(auto&& c) const mr_noexcept { return { x * c, y * c }; }
 	friend constexpr vec2 operator*(auto&& c, const vec2& vec) mr_noexcept { return vec * c; }
 	constexpr vec2 operator/(auto&& c) const mr_noexcept { return { x / c, y / c }; }
@@ -34,6 +35,7 @@ struct vec2 {
 		x /= c, y /= c;
 		return *this;
 	}
+	MR_NODISCARD constexpr auto norm_square() const mr_noexcept { return x * x + y * y; }
 	MR_NODISCARD constexpr auto norm() const mr_noexcept { return std::sqrt(x * x + y * y); }
 	constexpr bool operator==(const vec2& rt) const mr_noexcept { return std::equal_to<T>()(x, rt.x) && std::equal_to<T>()(y, rt.y); }
 	constexpr bool operator!=(const vec2& rt) const mr_noexcept { return !this->operator==(rt); }
@@ -51,6 +53,7 @@ struct vec2 {
 	MR_NODISCARD friend constexpr auto dot_product(const vec2& A, const vec2& B, const vec2& C) mr_noexcept { return dot_product(B - A, C - A); }
 	MR_NODISCARD friend constexpr auto dot_product_abs(const vec2& A, const vec2& B, const vec2& C) mr_noexcept { return std::abs(dot_product(A, B, C)); }
 	MR_NODISCARD friend constexpr auto cross_product(const vec2& lhs, const vec2& rhs) mr_noexcept { return lhs.x * rhs.y - lhs.y * rhs.x; }
+	MR_NODISCARD friend constexpr auto cross_product(const vec2& A, const vec2& B, const vec2& C) mr_noexcept { return cross_product(B - A, C - A); }
 	MR_NODISCARD constexpr auto atan() const mr_noexcept { return std::atan2(y, x); }
 	MR_NODISCARD constexpr auto distance_to(const vec2& rhs) const mr_noexcept {
 		return std::sqrt((x - rhs.x) * (x - rhs.x) + (y - rhs.y) * (y - rhs.y));
@@ -72,6 +75,9 @@ struct vec2 {
 	}
 	MR_NODISCARD constexpr vec2 rotated(double radian) const mr_noexcept {
 		return { x * std::cos(radian) - y * std::sin(radian), x * std::sin(radian) + y * std::cos(radian) };
+	}
+	MR_NODISCARD friend constexpr bool collinear(const vec2& v1, const vec2& v2, const vec2& v3) {
+		return std::abs(cross_product(v2 - v1, v3 - v1)) < 1e-9;
 	}
 };
 using vec2i = vec2<ll>;

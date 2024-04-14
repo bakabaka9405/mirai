@@ -22,7 +22,7 @@ inline constexpr auto in_array(range&& arr, ull l, ull r) {
 	};
 	return in_array_wrapper{ std::forward<range>(arr), l, r };
 }
-class __cycle_helper { 
+class __cycle_helper {
 private:
 	template <range _range>
 	inline constexpr auto invoke(_range&& r) mr_noexcept {
@@ -66,6 +66,53 @@ public:
 	}
 } constexpr cycle;
 
+class __adjacent_helper {
+private:
+	template <range _range>
+	inline constexpr auto invoke(_range&& r) mr_noexcept {
+		struct adjacent_wrapper {
+			_range _r;
+			using sentinel_t = std::remove_cvref_t<decltype(mr_end(_r))>;
+			struct adjacent_iterator {
+				using iter_t = decltype(mr_begin(_r));
+				iter_t _it_1, _it_2;
+				_range& rg;
+				inline bool operator!=(const sentinel_t& sentinel) const mr_noexcept {
+					return _it_2 != sentinel;
+				}
+				inline decltype(auto) operator*() const mr_noexcept {
+					return make_pair(*_it_1, *_it_2);
+				}
+				inline adjacent_iterator& operator++() mr_noexcept {
+					_it_1 = _it_2++;
+					return *this;
+				}
+				inline auto operator++(int) mr_noexcept->adjacent_iterator {
+					iter_t it = std::exchange(_it_1, _it_2++);
+					return { it, _it_1, rg };
+				}
+			};
+			inline auto begin() const mr_noexcept {
+				auto it_1 = mr_begin(_r), it_2 = it_1;
+				return adjacent_iterator{ it_1, ++it_2, _r };
+			}
+			inline auto end() const mr_noexcept { return mr_end(_r); }
+		};
+		return adjacent_wrapper{ std::forward<_range>(r) };
+	}
+
+public:
+	template <range _range>
+	MR_NODISCARD friend inline auto operator|(_range&& lhs, __adjacent_helper rhs) mr_noexcept {
+		return rhs.invoke(std::forward<_range>(lhs));
+	}
+
+	template <range _range>
+	MR_NODISCARD auto operator()(_range&& r) const mr_noexcept {
+		return invoke(std::forward<_range>(r));
+	}
+} constexpr adjacent;
+
 template <range _range>
 inline constexpr auto take(_range&& r, size_t n) mr_noexcept {
 	struct take_wrapper {
@@ -104,7 +151,7 @@ inline constexpr auto take(_range&& r, size_t n) mr_noexcept {
 	return take_wrapper{ std::forward<_range>(r), n };
 }
 
-struct __take_helper { 
+struct __take_helper {
 	size_t n;
 	template <range _range>
 	MR_NODISCARD friend inline auto operator|(_range&& lhs, __take_helper self) mr_noexcept {
@@ -149,7 +196,7 @@ MR_NODISCARD inline constexpr auto in_column(_range&& r, ull col) {
 	return in_column_wrapper{ std::forward<_range>(r), col };
 }
 
-struct __in_column_helper { 
+struct __in_column_helper {
 	const ull col;
 	template <range _range>
 	MR_NODISCARD friend inline auto operator|(_range&& lhs, __in_column_helper self) {
@@ -179,7 +226,7 @@ inline auto skip(_range&& r, size_t n) {
 	return skip_wrapper{ std::forward<_range>(r), n };
 }
 
-struct __skip_helper { 
+struct __skip_helper {
 	size_t n;
 	MR_NODISCARD friend inline auto operator|(auto&& lhs, __skip_helper self) mr_noexcept {
 		return skip(std::forward<decltype(lhs)>(lhs), self.n);
