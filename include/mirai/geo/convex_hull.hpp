@@ -16,6 +16,7 @@ namespace mirai {
 			return p0.distance_to(lhs.first) < p0.distance_to(rhs.first);
 		});
 		vector<vec2f> res;
+		res.reserve(32);
 		res.push_back(p0);
 		size_t sz = 1;
 		for (auto&& [vec, _] : buffer) {
