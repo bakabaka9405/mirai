@@ -6,7 +6,7 @@ MR_NAMESPACE_BEGIN
 class __transform_fn {
 private:
 	template <size_t I = 0, typename... Func>
-	constexpr static auto link_invoke(const tuple<Func...>& func, auto&& arg) mr_noexcept {
+	inline constexpr static auto link_invoke(const tuple<Func...>& func, auto&& arg) mr_noexcept {
 		if constexpr (I == sizeof...(Func)) {
 			return arg;
 		}
@@ -15,7 +15,7 @@ private:
 		}
 	}
 	template <range _range, typename... Func>
-	inline constexpr static auto invoke(_range&& r, tuple<Func...>&& func) {
+	inline constexpr static auto invoke(_range&& r, tuple<Func...>&& func) mr_noexcept {
 		struct transform_wrapper {
 			_range _r;
 			tuple<Func...> _func;
@@ -55,14 +55,14 @@ private:
 		friend class __transform_fn;
 		tuple<Func...> func;
 		template <range _range>
-		constexpr friend decltype(auto) operator|(_range&& r, __transform_helper&& self) {
+		constexpr friend auto operator|(_range&& r, __transform_helper&& self) mr_noexcept {
 			return __transform_fn::invoke(std::forward<_range>(r), std::move(self.func));
 		}
 	};
 
 public:
 	template <typename... Func>
-	constexpr auto operator()(Func&&... func) const {
+	constexpr auto operator()(Func&&... func) const mr_noexcept {
 		return __transform_helper<Func...>{ std::forward_as_tuple(std::forward<Func>(func)...) };
 	}
 };

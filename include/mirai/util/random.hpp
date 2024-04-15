@@ -49,8 +49,7 @@ shuffle(auto begin, auto end) mr_noexcept {
 	std::shuffle(begin, end, __gen);
 }
 
-inline void
-shuffle(auto&& r) mr_noexcept {
+inline void shuffle(auto& r) mr_noexcept {
 	ranges::shuffle(r, __gen);
 }
 MR_NAMESPACE_END

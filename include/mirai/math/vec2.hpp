@@ -1,5 +1,6 @@
 #pragma once
 #include <mirai/pch.hpp>
+#include <mirai/util/concepts.hpp>
 MR_NAMESPACE_BEGIN
 template <typename T>
 struct vec2 {
@@ -16,9 +17,9 @@ struct vec2 {
 	constexpr vec2 operator+(const vec2& rt) const mr_noexcept { return { x + rt.x, y + rt.y }; }
 	constexpr vec2 operator-(const vec2& rt) const mr_noexcept { return { x - rt.x, y - rt.y }; }
 	constexpr vec2 operator-() const mr_noexcept { return { -x, -y }; }
-	constexpr vec2 operator*(auto&& c) const mr_noexcept { return { x * c, y * c }; }
+	constexpr vec2 operator*(arithmetic auto c) const mr_noexcept { return { x * c, y * c }; }
 	friend constexpr vec2 operator*(auto&& c, const vec2& vec) mr_noexcept { return vec * c; }
-	constexpr vec2 operator/(auto&& c) const mr_noexcept { return { x / c, y / c }; }
+	constexpr vec2 operator/(arithmetic auto c) const mr_noexcept { return { x / c, y / c }; }
 	constexpr vec2& operator+=(const vec2& rt) mr_noexcept {
 		x += rt.x, y += rt.y;
 		return *this;
@@ -76,9 +77,16 @@ struct vec2 {
 	MR_NODISCARD constexpr vec2 rotated(double radian) const mr_noexcept {
 		return { x * std::cos(radian) - y * std::sin(radian), x * std::sin(radian) + y * std::cos(radian) };
 	}
-	MR_NODISCARD friend constexpr bool collinear(const vec2& v1, const vec2& v2, const vec2& v3) {
+	MR_NODISCARD friend constexpr bool is_collinear(const vec2& v1, const vec2& v2, const vec2& v3) {
 		return std::abs(cross_product(v2 - v1, v3 - v1)) < 1e-9;
 	}
+	MR_NODISCARD friend constexpr bool is_clockwise(const vec2& v1, const vec2& v2, const vec2& v3) {
+		return cross_product(v2 - v1, v3 - v1) < 0;
+	}
+	MR_NODISCARD friend constexpr bool is_counter_clockwise(const vec2& v1, const vec2& v2, const vec2& v3) {
+		return cross_product(v2 - v1, v3 - v1) > 0;
+	}
+	
 };
 using vec2i = vec2<ll>;
 using vec2f = vec2<double>;
