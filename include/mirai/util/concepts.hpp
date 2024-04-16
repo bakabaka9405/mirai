@@ -21,4 +21,10 @@ concept proxy = requires() {
 
 template <typename T>
 concept arithmetic = std::is_arithmetic_v<T>;
+
+template <typename T>
+concept range = requires(T&& t) {
+	mr_begin(t);
+	mr_end(t);
+};
 MR_NAMESPACE_END

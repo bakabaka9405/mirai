@@ -3,23 +3,17 @@
 #include <mirai/math/vec2.hpp>
 #include <mirai/util/pipe.hpp>
 #include <mirai/util/concepts.hpp>
-#include <mirai/util/debug.hpp>
+#include <mirai/geo/polar_angle_sort.hpp>
 namespace mirai {
-	template <typename Container>
-		requires vec2_like<std::decay_t<decltype(*mr_begin(std::declval<Container>()))>>
-	vector<vec2f> graham(Container&& container) mr_noexcept {
-		vector<pair<vec2f, double>> buffer;
-		vec2f p0 = *ranges::max_element(container, [&](auto&& lhs, auto&& rhs) { return rhs.y < lhs.y || (rhs.y == lhs.y && rhs.x < lhs.x); });
-		for (auto&& vec : container | filter(not_equal_to(p0))) buffer.emplace_back(vec, (vec - p0).atan());
-		ranges::sort(buffer, [&](auto&& lhs, auto&& rhs) {
-			if (lhs.second != rhs.second) return lhs.second < rhs.second;
-			return p0.distance_to(lhs.first) < p0.distance_to(rhs.first);
-		});
+	vector<vec2f> graham(vector<vec2f>& container) mr_noexcept {
+		for (auto& vec : container)
+			if (vec.y < container[0].y || (vec.y == container[0].y && vec.x < container[0].x)) swap(vec, container[0]);
+		polar_angle_sorting(container.begin() + 1, container.end(), container[0]);
 		vector<vec2f> res;
 		res.reserve(32);
-		res.push_back(p0);
+		res.push_back(container[0]);
 		size_t sz = 1;
-		for (auto&& [vec, _] : buffer) {
+		for (auto&& vec : container) {
 			while (sz >= 2 && cross_product(res[sz - 1] - res[sz - 2], vec - res[sz - 1]) <= 0) {
 				sz--;
 				res.pop_back();
@@ -28,6 +22,15 @@ namespace mirai {
 			res.push_back(vec);
 		}
 		return res;
+	}
+
+	auto graham(vector<vec2f>&& container) mr_noexcept {
+		return graham(container);
+	}
+
+	auto graham(range auto&& rg) mr_noexcept {
+		vector<vec2f> container(mr_begin(rg), mr_end(rg));
+		return graham(container);
 	}
 
 	bool point_in_hull(const vector<vec2f>& h, const vec2f& a) mr_noexcept {
