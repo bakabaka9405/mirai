@@ -2,8 +2,10 @@
 #include <mirai/pch.hpp>
 #include <mirai/graph/graph.hpp>
 MR_NAMESPACE_BEGIN
-void dijkstra(weighted_graph auto&& G, std::random_access_iterator auto dis, ll start, auto&& get_weight) {
-	vector<int8_t> vis(G.node_count(), static_cast<int8_t>(0));
+template <typename T, typename Compare = std::less<>>
+	requires(!std::is_same_v<T, void>)
+void dijkstra(graph<T>&& G, std::random_access_iterator auto dis, ll start, auto&& get_weight, Compare&& cmp = Compare{}) {
+	vector<uint8_t> vis(G.node_count());
 	using node = pair<ll, ll>;
 	priority_queue<node, vector<node>, std::greater<>> pq;
 	pq.emplace(0, start);
@@ -15,15 +17,17 @@ void dijkstra(weighted_graph auto&& G, std::random_access_iterator auto dis, ll 
 		vis[u] = 1;
 		for (auto&& [v, data] : G[u]) {
 			auto&& w = get_weight(data);
-			if (dis[u] + w < dis[v]) {
+			if (cmp(dis[u] + w, dis[v])) {
 				dis[v] = dis[u] + w;
-				if (!vis[v]) pq.push({ dis[v], v });
+				if (!vis[v]) pq.emplace(dis[v], v);
 			}
 		}
 	}
 }
-void spfa(weighted_graph auto&& G, std::random_access_iterator auto dis, ll start, auto&& get_weight, auto&& cmp = std::less<ll>()) {
-	vector<int8_t> in_queue(G.node_count, 1);
+template <typename T, typename Compare = std::less<>>
+	requires(!std::is_same_v<T, void>)
+void spfa(graph<T>&& G, std::random_access_iterator auto dis, ll start, auto&& get_weight, Compare&& cmp = Compare{}) {
+	vector<uint8_t> in_queue(G.node_count, 1);
 	queue<ll> q;
 	q.push(start);
 	in_queue[start] = 1;
@@ -35,7 +39,7 @@ void spfa(weighted_graph auto&& G, std::random_access_iterator auto dis, ll star
 			auto&& w = get_weight(data);
 			if (cmp(dis[u] + w, dis[v])) {
 				dis[v] = dis[u] + w;
-				if (!in_queue[v]) q.push({ dis[v], v }), in_queue[v] = 1;
+				if (!in_queue[v]) q.emplace(dis[v], v), in_queue[v] = 1;
 			}
 		}
 	}

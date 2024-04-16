@@ -5,9 +5,9 @@
 #include <mirai/ds/disjoint_set_union.hpp>
 #include <mirai/util/coro.hpp>
 MR_NAMESPACE_BEGIN
-template <typename T>
+template <typename T, typename Compare = std::less<>>
 	requires(!std::is_same_v<T, void>)
-generator<tuple<ll, ll, T>> kruskal(const graph<T>& G, auto&& cmp) {
+generator<tuple<ll, ll, T>> kruskal(const graph<T>& G, Compare&& cmp = Compare{}) {
 	disjoint_set_union dsu(G.node_count());
 	vector<tuple<ll, ll, T>> edges;
 	iterate_all_edges(G) | append_to(edges) | endp;
@@ -17,10 +17,5 @@ generator<tuple<ll, ll, T>> kruskal(const graph<T>& G, auto&& cmp) {
 		dsu.merge(u, v);
 		co_yield { u, v, w };
 	}
-}
-template <typename T>
-	requires(!std::is_same_v<T, void>)
-auto kruskal(const graph<T>& G) {
-	return kruskal(G, std::less<T>{});
 }
 MR_NAMESPACE_END
