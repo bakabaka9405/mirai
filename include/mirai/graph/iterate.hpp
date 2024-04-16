@@ -21,7 +21,7 @@ void calc_graph_degree() {
 
 template <typename T>
 auto iterate_all_edges(const graph<T>& G)
-	-> generator<std::conditional_t<std::is_same_v<T, void>, pair<ll, ll>, tuple<ll, ll, const T&>>> {
+	-> generator<std::conditional_t<std::is_same_v<T, void>, pair<ll, ll>, tuple<ll, ll, T>>> {
 	for (auto i : views::iota(0ll, G.node_count())) {
 		for (auto&& e : G[i]) {
 			if constexpr (std::is_same_v<T, void>)
