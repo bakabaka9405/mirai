@@ -40,7 +40,6 @@ generator<ll> topo_sort(auto&& G, auto&& in_degree, const auto&& get_v = __edge_
 	while (!q.empty()) {
 		auto u = q.front();
 		q.pop();
-		// cout << "topo at:" << u << endl;
 		co_yield u;
 		for (auto&& v : G[u] | transform(get_v)) {
 			if (++used_degree[v] == in_degree[v]) q.push(v);

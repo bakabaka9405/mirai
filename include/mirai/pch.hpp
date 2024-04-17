@@ -5,6 +5,7 @@
 #include <fstream>
 #include <iomanip>
 #include <initializer_list>
+#include <type_traits>
 #include <queue>
 #include <stack>
 #include <string>
@@ -31,12 +32,15 @@
 #include <cmath>
 #include <cctype>
 #include <cstring>
+#include <stdexcept>
 #ifdef _WIN32
 #include <conio.h>
 #endif
 
 #if MR_USE_MSVC
+#include <intrin.h>
 #include <immintrin.h>
+#pragma intrinsic(_umul128)
 #endif
 MR_NAMESPACE_BEGIN
 
