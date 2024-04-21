@@ -32,7 +32,7 @@ auto iterate_all_edges(const graph<T>& G)
 	}
 }
 
-generator<ll> topo_sort(auto&& G, auto&& in_degree, const auto&& get_v = __edge_get_v) {
+generator<ll> topo_sort(auto&& G, auto&& in_degree) {
 	vector<ll> used_degree(G.node_count());
 	queue<ll> q;
 	for (auto i : views::iota(0ll, G.node_count()))
@@ -41,7 +41,7 @@ generator<ll> topo_sort(auto&& G, auto&& in_degree, const auto&& get_v = __edge_
 		auto u = q.front();
 		q.pop();
 		co_yield u;
-		for (auto&& v : G[u] | transform(get_v)) {
+		for (auto&& v : G[u] | transform(__edge_get_v)) {
 			if (++used_degree[v] == in_degree[v]) q.push(v);
 		}
 	}

@@ -5,13 +5,13 @@ MR_NAMESPACE_BEGIN
 
 class __transform_fn {
 private:
-	template <size_t I = 0, typename... Func>
-	inline constexpr static auto link_invoke(const tuple<Func...>& func, auto&& arg) mr_noexcept {
+	template <size_t I = 0,typename T, typename... Func>
+	inline constexpr static auto link_invoke(const tuple<Func...>& func, T&& arg) mr_noexcept {
 		if constexpr (I == sizeof...(Func)) {
 			return arg;
 		}
 		else {
-			return link_invoke<I + 1>(func, std::invoke(get<I>(func), std::forward<std::remove_cvref_t<decltype(arg)>>(arg)));
+			return link_invoke<I + 1>(func, std::invoke(get<I>(func), std::forward<T>(arg)));
 		}
 	}
 	template <range _range, typename... Func>
@@ -69,57 +69,11 @@ public:
 
 constexpr __transform_fn transform;
 
-template <range _range, typename Func>
-inline constexpr auto transform_apply(_range&& r, Func&& func) {
-	struct transform_apply_wrapper {
-		_range _r;
-		Func _func;
-		struct sentinel {
-			decltype(mr_end(_r)) _it;
-		};
-		struct iterator {
-			using iter_t = decltype(mr_begin(_r));
-			iter_t _it;
-			const Func& _func;
-			using value_type = decltype(std::apply(_func, *_it));
-			inline bool operator!=(const sentinel& rt) const mr_noexcept {
-				return _it != rt._it;
-			}
-			inline bool operator==(const sentinel& rt) const mr_noexcept {
-				return !this->operator!=(rt);
-			}
-			inline decltype(auto) operator++() mr_noexcept {
-				++_it;
-				return *this;
-			}
-			inline auto operator++(int) mr_noexcept->iterator {
-				iterator res = *this;
-				this->operator++();
-				return res;
-			}
-			inline auto operator*() const mr_noexcept->value_type {
-				return std::apply(_func, *_it);
-			}
-		};
-		inline auto begin() const mr_noexcept { return iterator{ mr_begin(_r), _func }; }
-		inline auto end() const mr_noexcept { return sentinel{ mr_end(_r) }; }
-	};
-	return transform_apply_wrapper{ std::forward<_range>(r), std::forward<Func>(func) };
-}
-
-template <typename Func>
-struct __transform_apply_helper {
-	Func func;
-	template <range _range>
-	MR_NODISCARD friend constexpr auto operator|(_range&& lhs, __transform_apply_helper&& self) mr_noexcept {
-		return transform(std::forward<_range>(lhs), std::move(self.func));
-	}
-};
-
 template <typename Func>
 inline constexpr auto transform_apply(Func&& func) {
-	return __transform_apply_helper<Func>{ std::forward<Func>(func) };
+	return [func = std::forward<Func>(func)](auto&& v) { return std::apply(func, v); };
 }
+
 template <range range, typename Container>
 inline constexpr auto map_to(range&& r, Container&& table) {
 	struct maps_to_wrapper {
@@ -166,7 +120,7 @@ inline constexpr auto as_square = [](auto x) { return x * x; };
 
 inline constexpr auto as_opposite = [](auto x) { return -x; };
 
-inline constexpr auto to_pair = [](auto&& x) { return pair{ get<0>(x), get<1>(x) }; };
+inline constexpr auto to_pair = [](auto&& x) { return std::make_pair(std::get<0>(x), std::get<1>(x)); };
 
 template <typename Dst>
 inline constexpr auto to_struct = [](auto&& x) { return std::apply([&](auto&&... args) -> Dst { return { args... }; }, std::forward<std::decay_t<decltype(x)>>(x)); };

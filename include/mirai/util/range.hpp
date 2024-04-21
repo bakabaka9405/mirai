@@ -41,6 +41,50 @@ struct default_pair_forward_iterator {
 	}
 };
 
+namespace detail {
+	template <typename T, typename Y, size_t... I>
+	bool tuple_all_elements_not_eq_impl(T&& t, Y&& y, std::index_sequence<I...>) {
+		return (!std::equal_to<>{}(std::get<I>(t), std::get<I>(y)) && ...);
+	}
+
+	template <typename T, typename Y, size_t N>
+	bool tuple_all_elements_not_eq(T&& t, Y&& y) {
+		return tuple_all_elements_not_eq_impl(std::forward<T>(t), std::forward<Y>(y), std::make_index_sequence<N>());
+	}
+
+	template <typename T, size_t... I>
+	void tuple_all_elements_increase_impl(T& t, std::index_sequence<I...>) {
+		(std::get<I>(t)++, ...);
+	}
+
+	template <typename T, size_t N>
+	bool tuple_all_elements_increase(T& t) {
+		return tuple_all_elements_increase_impl(t, std::make_index_sequence<N>());
+	}
+
+	template <typename... sentinel_t>
+	struct default_tuple_sentinel {
+		tuple<sentinel_t...> sen;
+		template <typename Iterator>
+			requires(std::tuple_size_v<Iterator> == sizeof...(sentinel_t))
+		friend bool operator!=(Iterator&& lhs, const default_tuple_sentinel& self) mr_noexcept {
+			return tuple_all_elements_not_eq_impl(std::forward<Iterator>(lhs), self, sizeof...(sentinel_t));
+		}
+		template <typename Iterator>
+			requires(std::tuple_size_v<Iterator> == sizeof...(sentinel_t))
+		friend bool operator==(Iterator&& lhs, const default_tuple_sentinel& self) mr_noexcept {
+			return !(lhs != self);
+		}
+		inline decltype(auto) operator++() mr_noexcept {
+			tuple_all_elements_increase(sen, sizeof...(sentinel_t));
+			return *this;
+		}
+		inline void operator++(int) mr_noexcept {
+			tuple_all_elements_increase(sen, sizeof...(sentinel_t));
+		}
+	};
+} // namespace detail
+
 template <range _range1, range _range2>
 constexpr auto zip(_range1&& arr1, _range2&& arr2) mr_noexcept {
 	struct zip_wrapper {

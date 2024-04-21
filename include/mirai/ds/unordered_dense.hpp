@@ -143,7 +143,7 @@ namespace detail {
 		KeyEqual m_equal{};
 		uint8_t m_shifts = initial_shifts;
 		MR_NODISCARD auto next(value_idx_type bucket_idx) const -> value_idx_type {
-			return ANKERL_UNORDERED_DENSE_UNLIKELY(bucket_idx + 1U == m_num_buckets)
+			return MR_UNEXPECT(bucket_idx + 1U == m_num_buckets)
 					   ? 0
 					   : static_cast<value_idx_type>(bucket_idx + 1U);
 		}
@@ -324,7 +324,7 @@ namespace detail {
 			-> std::pair<iterator, bool> {
 			m_values.emplace_back(std::forward<Args>(args)...);
 			auto value_idx = static_cast<value_idx_type>(m_values.size() - 1);
-			if (ANKERL_UNORDERED_DENSE_UNLIKELY(is_full())) {
+			if (MR_UNEXPECT(is_full())) {
 				increase_size();
 			}
 			else {
@@ -357,7 +357,7 @@ namespace detail {
 		}
 		template <typename K>
 		auto do_find(K const& key) -> iterator {
-			if (ANKERL_UNORDERED_DENSE_UNLIKELY(empty())) {
+			if (MR_UNEXPECT(empty())) {
 				return end();
 			}
 			auto mh = mixed_hash(key);
@@ -590,7 +590,7 @@ namespace detail {
 			return std::move(m_values);
 		}
 		auto replace(value_container_type&& container) {
-			if (ANKERL_UNORDERED_DENSE_UNLIKELY(container.size() > max_size())) {
+			if (MR_UNEXPECT(container.size() > max_size())) {
 				on_error_too_many_elements();
 			}
 			auto shifts = calc_shifts_for_size(container.size());
@@ -699,7 +699,7 @@ namespace detail {
 				bucket_idx = next(bucket_idx);
 			}
 			auto value_idx = static_cast<value_idx_type>(m_values.size() - 1);
-			if (ANKERL_UNORDERED_DENSE_UNLIKELY(is_full())) {
+			if (MR_UNEXPECT(is_full())) {
 				increase_size();
 			}
 			else {

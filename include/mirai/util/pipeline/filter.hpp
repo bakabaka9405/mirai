@@ -68,23 +68,11 @@ inline constexpr auto not_negative = [](auto x) { return x >= 0; };
 
 template <typename T>
 inline constexpr auto equal_to(T&& x) mr_noexcept {
-	struct neq_wrapper {
-		T val;
-		constexpr bool operator()(const T& y) const mr_noexcept {
-			return val == y;
-		}
-	};
-	return neq_wrapper{ std::forward<T>(x) };
+	return [x = std::forward<T>(x)](const T& y) mr_noexcept { return x == y; };
 };
 
 template <typename T>
 inline constexpr auto not_equal_to(T&& x) mr_noexcept {
-	struct neq_wrapper {
-		T val;
-		constexpr bool operator()(const T& y) const mr_noexcept {
-			return val != y;
-		}
-	};
-	return neq_wrapper{ std::forward<T>(x) };
+	return [x = std::forward<T>(x)](const T& y) mr_noexcept { return x != y; };
 };
 MR_NAMESPACE_END
