@@ -11,7 +11,7 @@ First, you need to install Xmake.
 To build the embedder tool, run the following command at the root of the library:
 
 ```bash
-xmake -w
+xmake -w embedder
 ```
 
 After that, you can find the embedder tool named `embedder.exe` inside the `build` directory(also depending on the build mode you choose). Then you can add it to the path of environment variables.
@@ -58,11 +58,13 @@ int main(){
 And then, run
 
 ```bash
-embedder.exe ./test.cpp <PATH_TO_MIRAI_INCLUDE_DIR>
+embedder.exe ./test.cpp <PATH_TO_MIRAI_INCLUDE_DIR> <PATH_TO_OUTPUT_DIR>
 ```
 
-For example, run `embedder.exe ./test.cpp G:/Working/proj/mirai/include/`
+For example, run `embedder.exe ./test.cpp E:\\Working\\proj\\mirai\\include\\ C:\\Temp\\embed.cpp`
 
-The embedder will scan your source file, then embed all the header file needed into it. A new file `output.cpp` will be created, containing the parsed code. It will automatically opened by vscode (if installed). You can change the tool if you want.
+The embedder will scan your source file, then embed all the header file needed into it. A new file `embed.cpp` will be created, containing the parsed code. It will automatically opened by vscode (if installed). You can change the tool if you want.
+
+The embedder only support full-English paths. Paths containing Chinese are not supported.
 
 You can use the code to pass problem P2024 on Luogu, but be careful not to get banned. HAHA.
