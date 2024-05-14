@@ -1,5 +1,4 @@
 #pragma once
-// #define MR_FLAG_USE_INDEPENDENT_FMT
 #ifndef MR_LOCAL
 #pragma GCC diagnostic ignored "-Wattributes"
 #pragma GCC optimize("Ofast,no-stack-protector,unroll-loops,lto,fast-math,inline,omit-frame-pointer,unsafe-math-optimizations,unsafe-loop-optimizations,tree-vectorize")
