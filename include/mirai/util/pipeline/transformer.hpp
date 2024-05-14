@@ -79,44 +79,9 @@ inline constexpr auto transform_apply(Func&& func) {
 	return transform([func = std::forward<Func>(func)](auto&& v) { return std::apply(func, v); });
 }
 
-template <range range, typename Container>
-inline constexpr auto map_to(range&& r, Container&& table) {
-	struct maps_to_wrapper {
-		using iter_t = decltype(mr_begin(r));
-		using sen_t = decltype(mr_end(r));
-		range _r;
-		Container table;
-		struct sentinel {
-			sen_t sen;
-		};
-		struct iterator {
-			iter_t it;
-			Container& table;
-			inline bool operator!=(const sentinel& rt) const { return it != rt.sen; }
-			inline decltype(auto) operator*() const { return table[*it]; }
-			inline iterator& operator++() {
-				++it;
-				return *this;
-			}
-		};
-		inline constexpr auto begin() { return iterator{ mr_begin(_r), table }; }
-		inline constexpr auto end() const { return sentinel{ mr_end(_r) }; }
-	};
-	return maps_to_wrapper{ std::forward<range>(r), std::forward<Container>(table) };
-}
-
-template <typename Container>
-struct __map_to_helper {
-	Container table;
-	template <range range>
-	MR_NODISCARD friend inline decltype(auto) operator|(range&& r, __map_to_helper&& self) {
-		return map_to(std::forward<range>(r), std::move(self.table));
-	}
-};
-
 template <typename Container>
 inline constexpr auto map_to(Container&& table) {
-	return __map_to_helper<Container>{ std::forward<Container>(table) };
+	return transform([table = std::forward<Container>(table)](auto&& v) { return table[v]; });
 }
 
 inline constexpr auto as_abs = [](auto x) { return std::abs(x); };
