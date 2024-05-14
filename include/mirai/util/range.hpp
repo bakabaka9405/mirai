@@ -33,8 +33,10 @@ struct default_pair_forward_iterator {
 		++first, ++second;
 		return *this;
 	}
-	inline void operator++(int) mr_noexcept {
-		++first, ++second;
+	inline auto operator++(int) mr_noexcept->default_pair_forward_iterator {
+		auto res = *this;
+		this->operator++();
+		return res;
 	}
 	inline decltype(auto) operator*() const mr_noexcept {
 		return value_type{ *first, *second };
@@ -96,8 +98,9 @@ constexpr auto zip(_range1&& arr1, _range2&& arr2) mr_noexcept {
 	return zip_wrapper{ std::forward<_range1>(arr1), std::forward<_range2>(arr2) };
 }
 
-constexpr auto enumerate(range auto&& arr) mr_noexcept {
-	return zip(views::iota(0ll), std::forward<decltype(arr)>(arr));
+template <range _range>
+constexpr auto enumerate(_range&& arr) mr_noexcept {
+	return zip(views::iota(0ll), std::forward<_range>(arr));
 }
 
 MR_NAMESPACE_END

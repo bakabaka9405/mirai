@@ -5,7 +5,7 @@ MR_NAMESPACE_BEGIN
 
 class __transform_fn {
 private:
-	template <size_t I = 0,typename T, typename... Func>
+	template <size_t I = 0, typename T, typename... Func>
 	inline constexpr static auto link_invoke(const tuple<Func...>& func, T&& arg) mr_noexcept {
 		if constexpr (I == sizeof...(Func)) {
 			return arg;
@@ -19,16 +19,19 @@ private:
 		struct transform_wrapper {
 			_range _r;
 			tuple<Func...> _func;
-			using sentinel_t = std::remove_cvref_t<decltype(mr_end(_r))>;
+			struct sentinel {
+				using sentinel_t = std::decay_t<decltype(mr_end(_r))>;
+				sentinel_t _sen;
+			};
 			struct iterator {
-				using iter_t = decltype(mr_begin(_r));
+				using iter_t = std::decay_t<decltype(mr_begin(_r))>;
 				iter_t _it;
 				const tuple<Func...>& _func;
 				using value_type = decltype(__transform_fn::link_invoke(_func, *_it));
-				inline bool operator!=(const sentinel_t& rt) const mr_noexcept {
-					return _it != rt;
+				inline bool operator!=(const sentinel& rt) const mr_noexcept {
+					return _it != rt._sen;
 				}
-				inline bool operator==(const sentinel_t& rt) const mr_noexcept {
+				inline bool operator==(const sentinel& rt) const mr_noexcept {
 					return !this->operator!=(rt);
 				}
 				inline decltype(auto) operator++() mr_noexcept {
@@ -45,7 +48,9 @@ private:
 				}
 			};
 			inline auto begin() const mr_noexcept { return iterator{ mr_begin(_r), _func }; }
-			inline auto end() const mr_noexcept { return mr_end(_r); }
+			inline auto end() const mr_noexcept {
+				return sentinel{ mr_end(_r) };
+			}
 		};
 		return transform_wrapper{ std::forward<_range>(r), std::forward<tuple<Func...>>(func) };
 	}
@@ -71,7 +76,7 @@ constexpr __transform_fn transform;
 
 template <typename Func>
 inline constexpr auto transform_apply(Func&& func) {
-	return [func = std::forward<Func>(func)](auto&& v) { return std::apply(func, v); };
+	return transform([func = std::forward<Func>(func)](auto&& v) { return std::apply(func, v); });
 }
 
 template <range range, typename Container>
