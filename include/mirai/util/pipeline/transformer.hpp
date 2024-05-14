@@ -6,7 +6,7 @@ MR_NAMESPACE_BEGIN
 class __transform_fn {
 private:
 	template <size_t I = 0, typename T, typename... Func>
-	inline constexpr static auto link_invoke(const tuple<Func...>& func, T&& arg) mr_noexcept {
+	inline constexpr static auto link_invoke(tuple<Func...>& func, T&& arg) mr_noexcept {
 		if constexpr (I == sizeof...(Func)) {
 			return arg;
 		}
@@ -26,7 +26,7 @@ private:
 			struct iterator {
 				using iter_t = std::decay_t<decltype(mr_begin(_r))>;
 				iter_t _it;
-				const tuple<Func...>& _func;
+				tuple<Func...>& _func;
 				using value_type = decltype(__transform_fn::link_invoke(_func, *_it));
 				inline bool operator!=(const sentinel& rt) const mr_noexcept {
 					return _it != rt._sen;
@@ -43,11 +43,11 @@ private:
 					this->operator++();
 					return res;
 				}
-				inline auto operator*() const mr_noexcept->value_type {
+				inline auto operator*() mr_noexcept->value_type {
 					return __transform_fn::link_invoke(_func, *_it);
 				}
 			};
-			inline auto begin() const mr_noexcept { return iterator{ mr_begin(_r), _func }; }
+			inline auto begin() mr_noexcept { return iterator{ mr_begin(_r), _func }; }
 			inline auto end() const mr_noexcept {
 				return sentinel{ mr_end(_r) };
 			}
