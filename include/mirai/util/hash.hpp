@@ -2,7 +2,7 @@
 #include <mirai/pch.hpp>
 MR_NAMESPACE_BEGIN
 namespace detail::wyhash {
-	inline void mum(uint64_t* a, uint64_t* b) {
+	inline void mum(uint64_t* a, uint64_t* b) mr_noexcept {
 #if MR_HAVE_INT128
 		__uint128_t r = *a;
 		r *= *b;
@@ -30,24 +30,24 @@ namespace detail::wyhash {
 		*b = hi;
 #endif
 	}
-	[[nodiscard]] inline auto mix(uint64_t a, uint64_t b) -> uint64_t {
+	[[nodiscard]] inline auto mix(uint64_t a, uint64_t b) mr_noexcept->uint64_t {
 		mum(&a, &b);
 		return a ^ b;
 	}
-	[[nodiscard]] inline auto r8(const uint8_t* p) -> uint64_t {
+	[[nodiscard]] inline auto r8(const uint8_t* p) mr_noexcept->uint64_t {
 		uint64_t v{};
 		std::memcpy(&v, p, 8U);
 		return v;
 	}
-	[[nodiscard]] inline auto r4(const uint8_t* p) -> uint64_t {
+	[[nodiscard]] inline auto r4(const uint8_t* p) mr_noexcept->uint64_t {
 		uint32_t v{};
 		std::memcpy(&v, p, 4);
 		return v;
 	}
-	[[nodiscard]] inline auto r3(const uint8_t* p, size_t k) -> uint64_t {
+	[[nodiscard]] inline auto r3(const uint8_t* p, size_t k) mr_noexcept->uint64_t {
 		return (static_cast<uint64_t>(p[0]) << 16U) | (static_cast<uint64_t>(p[k >> 1U]) << 8U) | p[k - 1];
 	}
-	[[maybe_unused]] [[nodiscard]] inline auto hash(void const* key, size_t len) -> uint64_t {
+	[[maybe_unused]] [[nodiscard]] inline auto hash(void const* key, size_t len) mr_noexcept->uint64_t {
 		static constexpr auto secret = std::array{ UINT64_C(0xa0761d6478bd642f),
 												   UINT64_C(0xe7037ed1a0b428db),
 												   UINT64_C(0x8ebc6af09c88c6e3),
@@ -76,11 +76,11 @@ namespace detail::wyhash {
 				uint64_t see1 = seed;
 				uint64_t see2 = seed;
 				do {
-						seed = mix(r8(p) ^ secret[1], r8(p + 8) ^ seed);
-						see1 = mix(r8(p + 16) ^ secret[2], r8(p + 24) ^ see1);
-						see2 = mix(r8(p + 32) ^ secret[3], r8(p + 40) ^ see2);
-						p += 48;
-						i -= 48;
+					seed = mix(r8(p) ^ secret[1], r8(p + 8) ^ seed);
+					see1 = mix(r8(p + 16) ^ secret[2], r8(p + 24) ^ see1);
+					see2 = mix(r8(p + 32) ^ secret[3], r8(p + 40) ^ see2);
+					p += 48;
+					i -= 48;
 				} while (MR_EXPECT(i > 48));
 				seed ^= see1 ^ see2;
 			}
@@ -94,7 +94,7 @@ namespace detail::wyhash {
 		}
 		return mix(secret[1] ^ len, mix(a ^ secret[1], b ^ seed));
 	}
-	MR_NODISCARD inline auto hash(uint64_t x) -> uint64_t {
+	MR_NODISCARD inline auto hash(uint64_t x) mr_noexcept->uint64_t {
 		return detail::wyhash::mix(x, UINT64_C(0x9E3779B97F4A7C15));
 	}
 } // namespace detail::wyhash
@@ -151,7 +151,7 @@ struct hash<Enum, typename std::enable_if<std::is_enum<Enum>::value>::type> {
 template <typename... Args>
 struct tuple_hash_helper {
 	template <typename Arg>
-	[[nodiscard]] constexpr static auto to64(Arg const& arg) -> uint64_t {
+	[[nodiscard]] constexpr static auto to64(Arg const& arg) mr_noexcept->uint64_t {
 		if constexpr (std::is_integral_v<Arg> || std::is_enum_v<Arg>) {
 			return static_cast<uint64_t>(arg);
 		}
@@ -159,7 +159,7 @@ struct tuple_hash_helper {
 			return hash<Arg>{}(arg);
 		}
 	}
-	[[nodiscard]] static auto mix64(uint64_t state, uint64_t v) -> uint64_t {
+	[[nodiscard]] static auto mix64(uint64_t state, uint64_t v) mr_noexcept->uint64_t {
 		return detail::wyhash::mix(state + v, uint64_t{ 0x9ddfea08eb382d69 });
 	}
 	template <typename T, std::size_t... Idx>
