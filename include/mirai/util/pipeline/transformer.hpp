@@ -63,6 +63,10 @@ private:
 		constexpr friend auto operator|(_range&& r, __transform_helper&& self) mr_noexcept {
 			return __transform_fn::invoke(std::forward<_range>(r), std::move(self.func));
 		}
+		template <range _range>
+		constexpr friend auto operator|(_range&& r, const __transform_helper& self) mr_noexcept {
+			return __transform_fn::invoke(std::forward<_range>(r), tuple<Func...>{ self.func });
+		}
 	};
 
 public:
