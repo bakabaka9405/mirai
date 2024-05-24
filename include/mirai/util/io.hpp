@@ -110,13 +110,7 @@ MR_API std::istream& operator>>(std::istream& in, tuple<Args...>& t) {
 	return in;
 }
 
-template <typename T, typename... Args>
-MR_API std::ostream& operator<<(std::ostream& out, const tuple<T, Args...>& t) {
-	[&]<size_t... I>(std::index_sequence<I...>) {
-		out << "(" << std::get<0>(t), ((out << ", " << std::get<I + 1>(t)), ...), out << ")";
-	}(std::make_index_sequence<sizeof...(Args)>());
-	return out;
-}
+
 
 template <typename T>
 MR_API void read_array(auto&& it, size_t read_n) mr_noexcept {

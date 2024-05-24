@@ -17,7 +17,7 @@ inline constexpr auto dispatch(_range&& r, Func&&... func) {
 }
 
 template <typename... Func>
-struct __dispatch_helper { 
+struct __dispatch_helper {
 	tuple<Func...> func;
 	template <range _range>
 	MR_NODISCARD friend constexpr inline decltype(auto) operator|(_range&& lhs, __dispatch_helper&& self) mr_noexcept {
@@ -44,7 +44,7 @@ MR_NODISCARD inline auto addup_to(_range&& r, T& dst) {
 }
 
 template <typename T>
-struct __addup_to_helper { 
+struct __addup_to_helper {
 	T& _dst;
 	template <range _range>
 	MR_NODISCARD friend inline auto operator|(_range&& lhs, __addup_to_helper rhs) mr_noexcept {
@@ -75,7 +75,7 @@ MR_NODISCARD inline auto save_to(range_l&& r, range_r&& dst) {
 }
 
 template <typename T>
-struct __save_to_helper { 
+struct __save_to_helper {
 	T _dst;
 	template <range _range>
 	MR_NODISCARD friend inline auto operator|(_range&& lhs, __save_to_helper rhs) mr_noexcept {
@@ -107,7 +107,7 @@ MR_NODISCARD inline auto append_to(_range&& r, Container& dst) {
 }
 
 template <typename Container>
-struct __append_to_helper { 
+struct __append_to_helper {
 	Container& _dst;
 	template <range _range>
 	MR_NODISCARD friend inline auto operator|(_range&& lhs, __append_to_helper rhs) mr_noexcept {
@@ -134,7 +134,7 @@ MR_NODISCARD inline auto emplace_back_to(_range&& r, Container& dst) {
 }
 
 template <typename Container>
-struct __emplace_back_to_helper { 
+struct __emplace_back_to_helper {
 	Container& _dst;
 	template <range _range>
 	MR_NODISCARD friend inline auto operator|(_range&& lhs, __emplace_back_to_helper rhs) mr_noexcept {
@@ -146,6 +146,36 @@ template <typename Container>
 MR_NODISCARD inline auto emplace_back_to(Container& dst) {
 	return __emplace_back_to_helper{ dst };
 }
+
+template <typename Container, size_t Padding = 0>
+class __join_as_helper {
+public:
+	template <range _range>
+	MR_NODISCARD friend inline auto operator|(_range&& lhs, __join_as_helper) mr_noexcept {
+		return [rg = std::forward<_range>(lhs)]() {
+			Container container;
+			using T = std::decay_t<decltype(*mr_begin(rg))>;
+			if constexpr (requires(Container c) { c.push_back(*mr_begin(lhs)); }) {
+				if constexpr (Padding) {
+					for (size_t i = 0; i < Padding; ++i) container.push_back(T{});
+				}
+				auto inserter = std::back_inserter(container);
+				for (auto&& i : rg) *inserter++ = i;
+			}
+			else {
+				auto inserter = std::inserter(container, mr_end(container));
+				if constexpr (Padding) {
+					for (size_t i = 0; i < Padding; ++i) *inserter++ = T{};
+				}
+				for (auto&& i : rg) *inserter++ = i;
+			}
+			return container;
+		};
+	}
+};
+
+template <typename Container, size_t Padding = 0>
+constexpr inline __join_as_helper<Container, Padding> join_as;
 
 constexpr inline struct {
 } endp;

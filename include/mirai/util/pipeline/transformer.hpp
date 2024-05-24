@@ -14,6 +14,16 @@ private:
 			return link_invoke<I + 1>(func, std::invoke(get<I>(func), std::forward<T>(arg)));
 		}
 	}
+
+	template <size_t I = 0, typename T, typename... Func>
+	inline constexpr static auto link_invoke_const(const tuple<Func...>& func, T&& arg) mr_noexcept {
+		if constexpr (I == sizeof...(Func)) {
+			return arg;
+		}
+		else {
+			return link_invoke_const<I + 1>(func, std::invoke(get<I>(func), std::forward<T>(arg)));
+		}
+	}
 	template <range _range, typename... Func>
 	inline constexpr static auto invoke(_range&& r, tuple<Func...>&& func) mr_noexcept {
 		struct transform_wrapper {
@@ -47,7 +57,33 @@ private:
 					return __transform_fn::link_invoke(_func, *_it);
 				}
 			};
+			struct const_iterator {
+				using iter_t = std::decay_t<decltype(mr_begin(_r))>;
+				iter_t _it;
+				const tuple<Func...>& _func;
+				using value_type = decltype(__transform_fn::link_invoke_const(_func, *_it));
+				inline bool operator!=(const sentinel& rt) const mr_noexcept {
+					return _it != rt._sen;
+				}
+				inline bool operator==(const sentinel& rt) const mr_noexcept {
+					return !this->operator!=(rt);
+				}
+				inline decltype(auto) operator++() mr_noexcept {
+					++_it;
+					return *this;
+				}
+				inline auto operator++(int) mr_noexcept->iterator {
+					iterator res = *this;
+					this->operator++();
+					return res;
+				}
+				inline auto operator*() mr_noexcept->value_type {
+					return __transform_fn::link_invoke_const(_func, *_it);
+				}
+			};
+
 			inline auto begin() mr_noexcept { return iterator{ mr_begin(_r), _func }; }
+			inline auto begin() const mr_noexcept { return const_iterator{ mr_begin(_r), _func }; }
 			inline auto end() const mr_noexcept {
 				return sentinel{ mr_end(_r) };
 			}
