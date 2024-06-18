@@ -42,6 +42,29 @@ MR_API ll readi() mr_noexcept {
 	return f ? -x : x; // NOLINT
 }
 
+MR_API ull readu() mr_noexcept {
+	ull x = 0;
+	int c = getchar_unlocked();
+	while (!isdigit(c)) c = getchar_unlocked();
+	while (isdigit(c)) {
+		x = (x << 1u) + (x << 3u) + (static_cast<ull>(c) ^ 48u);
+		c = getchar_unlocked();
+	}
+	return x; // NOLINT
+}
+
+MR_API ull readu_mod(ll P) mr_noexcept {
+	ull x = 0;
+	int c = getchar_unlocked();
+	while (!isdigit(c)) c = getchar_unlocked();
+	while (isdigit(c)) {
+		x = (x << 1u) + (x << 3u) + (static_cast<ull>(c) ^ 48u);
+		x %= P;
+		c = getchar_unlocked();
+	}
+	return x; // NOLINT
+}
+
 MR_API double readf() mr_noexcept {
 	double x = 0;
 	bool f = false;
@@ -109,8 +132,6 @@ MR_API std::istream& operator>>(std::istream& in, tuple<Args...>& t) {
 	}(std::make_index_sequence<sizeof...(Args)>());
 	return in;
 }
-
-
 
 template <typename T>
 MR_API void read_array(auto&& it, size_t read_n) mr_noexcept {
