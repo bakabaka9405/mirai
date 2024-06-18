@@ -65,31 +65,6 @@ MR_API ull readu_mod(ll P) mr_noexcept {
 	return x; // NOLINT
 }
 
-MR_API double readf() mr_noexcept {
-	double x = 0;
-	bool f = false;
-	int c = getchar_unlocked();
-	while (!isdigit(c) && c != '-') c = getchar_unlocked();
-	if (c == '-') MR_UNLIKELY {
-			f = true;
-			c = getchar_unlocked();
-		}
-	while (isdigit(c)) {
-		x = x * 10 + (c ^ 48); // NOLINT
-		c = getchar_unlocked();
-	}
-	if (c == '.') MR_LIKELY {
-			c = getchar_unlocked();
-			double dec = 0.1;
-			while (isdigit(c)) {
-				x += (c ^ 48) * dec; // NOLINT
-				dec *= 0.1;
-				c = getchar_unlocked();
-			}
-		}
-	return f ? -x : x;
-}
-
 MR_API void puti(std::integral auto x) mr_noexcept {
 	constexpr static ull width = std::numeric_limits<std::decay_t<decltype(x)>>::digits10 + 3;
 	static char buf[width];
@@ -125,31 +100,7 @@ MR_API std::ostream& operator<<(std::ostream& out, const pair<T, Y>& p) {
 	return out << '(' << p.first << ", " << p.second << ')';
 }
 
-template <typename... Args>
-MR_API std::istream& operator>>(std::istream& in, tuple<Args...>& t) {
-	[&]<size_t... I>(std::index_sequence<I...>) {
-		((in >> std::get<I>(t)), ...);
-	}(std::make_index_sequence<sizeof...(Args)>());
-	return in;
-}
 
-template <typename T>
-MR_API void read_array(auto&& it, size_t read_n) mr_noexcept {
-	copy_n(istream_iterator<T>(cin), read_n, it);
-}
-
-MR_API void put_array(auto&& begin, auto&& end, const char* sep = " ", bool end_line = true) mr_noexcept {
-	auto pt = begin;
-	cout << *pt++;
-	while (pt != end) {
-		cout << sep << *pt++;
-	}
-	if (end_line) cout << endl;
-}
-
-MR_API void put_array(auto&& r, const char* sep = " ") mr_noexcept {
-	put_array(std::begin(r), std::end(r), sep);
-}
 
 template <typename T, typename... Args>
 auto scan() {

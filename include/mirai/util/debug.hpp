@@ -1,26 +1,20 @@
 #pragma once
 #include <mirai/pch.hpp>
 MR_NAMESPACE_BEGIN
-template <typename... Args>
-MR_API void print_dbg(Args... args) {
-	if constexpr (sizeof...(Args) > 0)
-		((cout << args << " "), ...) << endl;
-	else
-		cout << endl;
-}
-
-#ifdef MR_DEBUG
-#define debug(...) mirai::print_dbg("[", __func__, ":", __LINE__, "]", ##__VA_ARGS__) // NOLINT(bugprone-lambda-function-name)
-#else
-#define debug(...)
-#endif
-
 template <typename T, typename... Args>
 MR_API std::ostream& operator<<(std::ostream& out, const tuple<T, Args...>& t) {
 	[&]<size_t... I>(std::index_sequence<I...>) {
 		out << "(" << std::get<0>(t), ((out << ", " << std::get<I + 1>(t)), ...), out << ")";
 	}(std::make_index_sequence<sizeof...(Args)>());
 	return out;
+}
+
+template <typename... Args>
+MR_API std::istream& operator>>(std::istream& in, tuple<Args...>& t) {
+	[&]<size_t... I>(std::index_sequence<I...>) {
+		((in >> std::get<I>(t)), ...);
+	}(std::make_index_sequence<sizeof...(Args)>());
+	return in;
 }
 
 template <typename T>
@@ -63,4 +57,20 @@ MR_API std::ostream& operator<<(std::ostream& out, const std::map<T, Y>& m) {
 	out << '}';
 	return out;
 }
+
+template <typename... Args>
+MR_API void __print_dbg_impl(const std::source_location& location, Args... args) {
+	if constexpr (sizeof...(Args) > 0) {
+		cout << location.file_name() << ":" << location.line() << ":" << location.column() << ": `" << location.function_name() << "`: ";
+		((cout << args << " "), ...) << endl;
+	}
+	else
+		cout << endl;
+}
+
+#ifdef MR_DEBUG
+#define debug(...) mirai::__print_dbg_impl(std::source_location::current(), __VA_ARGS__)
+#else
+#define debug(...)
+#endif
 MR_NAMESPACE_END

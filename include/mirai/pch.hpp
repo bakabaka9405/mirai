@@ -33,6 +33,7 @@
 #include <cctype>
 #include <cstring>
 #include <stdexcept>
+#include <source_location>
 #ifdef _WIN32
 #include <conio.h>
 #endif
