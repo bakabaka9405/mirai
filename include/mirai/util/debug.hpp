@@ -62,7 +62,9 @@ template <typename... Args>
 MR_API void __print_dbg_impl(const std::source_location& location, Args... args) {
 	if constexpr (sizeof...(Args) > 0) {
 		cout << location.file_name() << ":" << location.line() << ":" << location.column() << ": `" << location.function_name() << "`: ";
+		cout<<"\033[36m";
 		((cout << args << " "), ...) << endl;
+		cout<<"\033[0m";
 	}
 	else
 		cout << endl;
