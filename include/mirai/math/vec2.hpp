@@ -38,6 +38,7 @@ struct vec2 {
 	}
 	MR_NODISCARD constexpr auto norm_square() const mr_noexcept { return x * x + y * y; }
 	MR_NODISCARD constexpr auto norm() const mr_noexcept { return std::sqrt(x * x + y * y); }
+	MR_NODISCARD constexpr auto normalized() const mr_noexcept { return *this / norm(); }
 	constexpr bool operator==(const vec2& rt) const mr_noexcept { return std::equal_to<T>()(x, rt.x) && std::equal_to<T>()(y, rt.y); }
 	constexpr bool operator!=(const vec2& rt) const mr_noexcept { return !this->operator==(rt); }
 	friend std::ostream& operator<<(std::ostream& out, const vec2& vec) mr_noexcept {
@@ -56,7 +57,7 @@ struct vec2 {
 	MR_NODISCARD friend constexpr auto dot_product_abs(const vec2& A, const vec2& B, const vec2& C) mr_noexcept { return std::abs(dot_product(A, B, C)); }
 	MR_NODISCARD friend constexpr auto cross_product(const vec2& lhs, const vec2& rhs) mr_noexcept { return lhs.x * rhs.y - lhs.y * rhs.x; }
 	MR_NODISCARD friend constexpr auto cross_product(const vec2& A, const vec2& B, const vec2& C) mr_noexcept { return cross_product(B - A, C - A); }
-	MR_NODISCARD friend constexpr auto cross_product_abs(const vec2& lhs, const vec2& rhs) mr_noexcept { return std::abs(cross_product(lhs, rhs));}
+	MR_NODISCARD friend constexpr auto cross_product_abs(const vec2& lhs, const vec2& rhs) mr_noexcept { return std::abs(cross_product(lhs, rhs)); }
 	MR_NODISCARD friend constexpr auto cross_product_abs(const vec2& A, const vec2& B, const vec2& C) mr_noexcept { return std::abs(cross_product(A, B, C)); }
 	MR_NODISCARD constexpr auto atan() const mr_noexcept { return std::atan2(y, x); }
 	MR_NODISCARD constexpr auto distance_to(const vec2& rhs) const mr_noexcept {

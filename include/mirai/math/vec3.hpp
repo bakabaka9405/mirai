@@ -34,7 +34,9 @@ struct vec3 {
 		return std::equal_to<T>()(x, rt.x) && std::equal_to<T>()(y, rt.y) && std::equal_to<T>()(z, rt.z);
 	}
 	constexpr bool operator!=(const vec3& rt) const mr_noexcept { return !this->operator==(rt); }
+	MR_NODISCARD constexpr auto norm_square() const mr_noexcept { return x * x + y * y + z * z; }
 	MR_NODISCARD constexpr auto norm() const mr_noexcept { return std::sqrt(x * x + y * y + z * z); }
+	MR_NODISCARD constexpr auto normalized() const mr_noexcept { return *this / norm(); }
 	friend std::ostream& operator<<(std::ostream& out, const vec3& vec) mr_noexcept {
 		return out << vec.to_string();
 	}
