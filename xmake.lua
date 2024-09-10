@@ -11,7 +11,6 @@ end
 
 target("mirai")
     set_kind("static")
-    set_pcxxheader("include/mirai/pch.hpp")
     -- set_precompiled_header("include/mirai/pch.hpp")
 
 local cpp_files = os.files("src/test/*.cpp")

@@ -18,7 +18,7 @@
 #define MR_USE_GCC 0
 #endif
 
-#if MR_USE_MSVC
+#if MR_USE_MSVC || !defined(_WIN64)
 #define MR_HAVE_INT128 0
 #else
 #define MR_HAVE_INT128 1

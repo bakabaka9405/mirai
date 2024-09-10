@@ -28,6 +28,7 @@
 #include <bit>
 #include <numbers>
 #include <coroutine>
+#include <exception>
 #include <cassert>
 #include <cmath>
 #include <cctype>

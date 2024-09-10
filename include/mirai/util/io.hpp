@@ -100,7 +100,21 @@ MR_API std::ostream& operator<<(std::ostream& out, const pair<T, Y>& p) {
 	return out << '(' << p.first << ", " << p.second << ')';
 }
 
+template <typename T, typename... Args>
+MR_API std::ostream& operator<<(std::ostream& out, const tuple<T, Args...>& t) {
+	[&]<size_t... I>(std::index_sequence<I...>) {
+		out << "(" << std::get<0>(t), ((out << ", " << std::get<I + 1>(t)), ...), out << ")";
+	}(std::make_index_sequence<sizeof...(Args)>());
+	return out;
+}
 
+template <typename... Args>
+MR_API std::istream& operator>>(std::istream& in, tuple<Args...>& t) {
+	[&]<size_t... I>(std::index_sequence<I...>) {
+		((in >> std::get<I>(t)), ...);
+	}(std::make_index_sequence<sizeof...(Args)>());
+	return in;
+}
 
 template <typename T, typename... Args>
 auto scan() {

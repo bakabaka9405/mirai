@@ -26,6 +26,7 @@ ADD_TYPE_NAME(typename T, T&, string_concat(type_name<T>, "&"));
 ADD_TYPE_NAME(typename T, T*, string_concat(type_name<T>, "*"));
 ADD_TYPE_NAME(typename T, T&&, string_concat(type_name<T>, "&&"));
 ADD_TYPE_NAME(typename T, const T, string_concat("const ", type_name<T>));
+ADD_TYPE_NAME(, bool, "bool");
 ADD_TYPE_NAME(, char, "char");
 ADD_TYPE_NAME(, int, "int");
 ADD_TYPE_NAME(, long long, "long long");

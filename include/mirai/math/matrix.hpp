@@ -3,7 +3,7 @@
 #include <mirai/util/proxy.hpp>
 #include <mirai/math/vec2.hpp>
 MR_NAMESPACE_BEGIN
-template <typename T, size_t n, size_t m, class add_proxy>
+template <typename T, size_t n, size_t m>
 struct matrix {
 	T v[n][m];
 	constexpr matrix() mr_noexcept : v{ { 0 } } {}
@@ -33,19 +33,19 @@ struct matrix {
 		matrix res = *this;
 		for (size_t i = n; i; i--) {
 			for (size_t j = m; j; j--) {
-				v[i][j] = add_proxy::work(v[i][j], rt.v[i][j]);
+				v[i][j] = v[i][j] + rt.v[i][j];
 			}
 		}
 	}
 
 	template <std::size_t t>
-	MR_NODISCARD constexpr matrix<T, n, t, add_proxy> operator*(const matrix<T, m, t, add_proxy>& rt) const mr_noexcept {
-		matrix<T, n, t, add_proxy> res;
+	MR_NODISCARD constexpr matrix<T, n, t> operator*(const matrix<T, m, t>& rt) const mr_noexcept {
+		matrix<T, n, t> res;
 		for (ll i = 0; i < n; ++i)
 			for (ll k = 0; k < t; ++k) {
-				ll r = v[i][k];
+				T r = v[i][k];
 				for (ll j = 0; j < m; ++j)
-					res.v[i][j] = add_proxy::work(res.v[i][j], rt.v[k][j] * r);
+					res.v[i][j] += rt.v[k][j] * r;
 			}
 		return res;
 	}
@@ -69,16 +69,16 @@ struct matrix {
 		return this->operator==(rt);
 	}
 
-	MR_NODISCARD constexpr matrix<T, m, n, add_proxy> transpose() const mr_noexcept {
-		matrix<T, m, n, add_proxy> res;
+	MR_NODISCARD constexpr matrix<T, m, n> transpose() const mr_noexcept {
+		matrix<T, m, n> res;
 		for (ll i = 0; i < n; i++)
 			for (ll j = 0; j < m; j++) res[j][i] = res[i][j];
 		return res;
 	}
 };
 
-template <typename T, std::size_t n, std::size_t m, class add_proxy>
-std::ostream& operator<<(std::ostream& out, const matrix<T, n, m, add_proxy>& mat) mr_noexcept {
+template <typename T, std::size_t n, std::size_t m>
+std::ostream& operator<<(std::ostream& out, const matrix<T, n, m>& mat) mr_noexcept {
 	for (auto&& r : mat.v) {
 		for (auto&& x : r) out << x << " ";
 		out << endl;
@@ -86,9 +86,9 @@ std::ostream& operator<<(std::ostream& out, const matrix<T, n, m, add_proxy>& ma
 	return out;
 }
 
-template <typename T, std::size_t n, class add_proxy>
-matrix<T, n, n, add_proxy> fastpow(matrix<T, n, n, add_proxy> x, ull k) mr_noexcept {
-	matrix<T, n, n, add_proxy> res = matrix<T, n, n, add_proxy>::I();
+template <typename T, std::size_t n>
+matrix<T, n, n> fastpow(matrix<T, n, n> x, ull k) mr_noexcept {
+	auto res = matrix<T, n, n>::I();
 	while (k) {
 		if (k & 1u) res = res * x;
 		x = x * x;

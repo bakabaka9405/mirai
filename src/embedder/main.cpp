@@ -49,17 +49,17 @@ bool register_header(const string& s) {
 }
 int main(int argc, char** argv) {
 	auto_timer _t;
-	// if (argc < 3) {
-	// 	cout << "error: not enough argument." << endl;
-	// 	return 0;
-	// }
-	// else if (argc > 4) {
-	// 	cout << "error: too many arguments." << endl;
-	// 	return 0;
-	// }
-	// fs::path src_path = argv[1], mirai_path = argv[2];
-	// fs::path dst_path = "output.cpp";
-	// if (argc == 4) dst_path = argv[3];
+	//  if (argc < 3) {
+	//  	cout << "error: not enough argument." << endl;
+	//  	return 0;
+	//  }
+	//  else if (argc > 4) {
+	//  	cout << "error: too many arguments." << endl;
+	//  	return 0;
+	//  }
+	//  fs::path src_path = argv[1], mirai_path = argv[2];
+	//  fs::path dst_path = "output.cpp";
+	//  if (argc == 4) dst_path = argv[3];
 	fs::path src_path = R"(C:\Temp\src.cpp)";
 	fs::path mirai_path = R"(E:\Working\proj\mirai\include\)";
 	fs::path dst_path = R"(C:\Temp\embed.cpp)";
@@ -178,5 +178,6 @@ int main(int argc, char** argv) {
 		fin.close();
 	}
 	system(format("start /B notepad {}", dst_path.string()).c_str());
+	// system((string("start /B notepad ") + dst_path.string()).c_str());
 	return 0;
 }
