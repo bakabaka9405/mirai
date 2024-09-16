@@ -9,7 +9,7 @@ enum graph_model_type {
 
 template <typename T, graph_model_type _type = vector_model>
 class graph {
-private:
+protected:
 	constexpr static bool _is_vector_model = _type == vector_model;
 	constexpr static bool _is_link_model = _type == link_model;
 	constexpr static bool _have_weight = !std::is_same_v<T, void>;
@@ -17,12 +17,13 @@ private:
 public:
 	using edge_type = std::conditional_t<_have_weight, pair<ll, T>, ll>;
 
-private:
+protected:
 	std::conditional_t<_is_vector_model, vector<vector<edge_type>>, vector<pair<edge_type, ll>>> _e;
-	struct __empty_item { 
+	struct __empty_item {
 		__empty_item(ll, ll) {}
 	};
-	[[no_unique_address]] std::conditional_t<_is_link_model, vector<ll>, __empty_item> _head; // NOLINT
+	[[no_unique_address]] std::conditional_t<_is_link_model, vector<ll>, __empty_item> _head;
+
 public:
 	constexpr graph() mr_noexcept : _e(), _head(0, -1) {}
 	constexpr explicit graph(size_t n) mr_noexcept : _e(_is_vector_model ? n : 0), _head(n, -1) {}
@@ -100,7 +101,7 @@ public:
 template <typename T>
 concept weighted_graph = !std::same_as<T, void>;
 
-inline constexpr auto __edge_get_v = [](auto&& edge) { 
+inline constexpr auto __edge_get_v = [](auto&& edge) {
 	if constexpr (std::is_same_v<std::decay_t<decltype(edge)>, ll>)
 		return edge;
 	else

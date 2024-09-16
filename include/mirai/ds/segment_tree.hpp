@@ -1,14 +1,12 @@
 #include <mirai/pch.hpp>
 MR_NAMESPACE_BEGIN
-template <typename T, typename Container = std::vector<T>>
-	requires requires(T&& x, T&& y) { {x+y}->std::same_as<T>;T{};T{-1}; }
+template <typename T, typename Container = std::vector<T>, T e = T{}, T o = T{ -1 }>
+	requires requires(T&& x, T&& y) { {x+y}->std::same_as<T>; }
 class segment_tree {
 public:
 	using value_type = T;
 	using size_type = std::size_t;
 	using container_type = Container;
-	static constexpr T e = T{};
-	static constexpr T o = T{ -1 };
 	void build_impl(size_type p, size_type l, size_type r, auto&& container) mr_noexcept {
 		if (l == r) {
 			data[p] = container[l];

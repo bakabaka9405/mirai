@@ -49,7 +49,7 @@ private:
 					return *this;
 				}
 				inline auto operator++(int) mr_noexcept->iterator {
-					iterator res = *this;
+					auto res = *this;
 					this->operator++();
 					return res;
 				}
@@ -72,8 +72,8 @@ private:
 					++_it;
 					return *this;
 				}
-				inline auto operator++(int) mr_noexcept->iterator {
-					iterator res = *this;
+				inline auto operator++(int) mr_noexcept->const_iterator {
+					auto res = *this;
 					this->operator++();
 					return res;
 				}
@@ -118,21 +118,4 @@ template <typename Func>
 inline constexpr auto transform_apply(Func&& func) {
 	return transform([func = std::forward<Func>(func)](auto&& v) { return std::apply(func, v); });
 }
-
-template <typename Container>
-inline constexpr auto map_to(Container&& table) {
-	return transform([table = std::forward<Container>(table)](auto&& v) { return table[v]; });
-}
-
-inline constexpr auto as_abs = [](auto x) { return std::abs(x); };
-
-inline constexpr auto as_square = [](auto x) { return x * x; };
-
-inline constexpr auto as_opposite = [](auto x) { return -x; };
-
-inline constexpr auto to_pair = [](auto&& x) { return std::make_pair(std::get<0>(x), std::get<1>(x)); };
-
-template <typename Dst>
-inline constexpr auto to_struct = [](auto&& x) { return std::apply([&](auto&&... args) -> Dst { return { args... }; }, std::forward<std::decay_t<decltype(x)>>(x)); };
-
 MR_NAMESPACE_END

@@ -61,18 +61,4 @@ template <typename Func>
 inline auto filter(Func&& func) {
 	return __filter_helper{ std::forward<Func>(func) };
 }
-
-inline constexpr auto is_positive = [](auto x) { return x > 0; };
-
-inline constexpr auto not_negative = [](auto x) { return x >= 0; };
-
-template <typename T>
-inline constexpr auto equal_to(T&& x) mr_noexcept {
-	return [x = std::forward<T>(x)](const T& y) mr_noexcept { return x == y; };
-};
-
-template <typename T>
-inline constexpr auto not_equal_to(T&& x) mr_noexcept {
-	return [x = std::forward<T>(x)](const T& y) mr_noexcept { return x != y; };
-};
 MR_NAMESPACE_END

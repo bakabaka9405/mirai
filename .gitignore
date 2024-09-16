@@ -16,3 +16,4 @@ src/test
 mirai_config.json
 
 compile_commands.json
+mirai.code-workspace

@@ -175,4 +175,16 @@ using std::integral;
 // meta programming
 using std::forward;
 using std::move;
+
+#define _MR_COUNT_ARGS_IMPL(_1, _2, _3, _4, _5, _6, _7, _8, _9, _10, N, ...) N
+#define _MR_COUNT_ARGS(...) _MR_COUNT_ARGS_IMPL(__VA_ARGS__, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1)
+#define _MR_CONCAT_IMPL(x, y) x##y
+#define _MR_CONCAT(x, y) _MR_CONCAT_IMPL(x, y)
+
+#define _MR_LAMBDA1(x) [&] mr_noexcept { return x; }
+#define _MR_LAMBDA2(x, y) [&](auto&&(x)) mr_noexcept { return y; }
+#define _MR_LAMBDA3(x, y, z) [&](auto&&(x), auto&&(y)) mr_noexcept { return z; }
+#define _MR_LAMBDA4(x, y, z, w) [&](auto&&(x), auto&&(y), auto&&(z)) mr_noexcept { return w; }
+#define lambda(...) _MR_CONCAT(_MR_LAMBDA, _MR_COUNT_ARGS(__VA_ARGS__))(__VA_ARGS__)
+
 MR_NAMESPACE_END
