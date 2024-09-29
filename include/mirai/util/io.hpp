@@ -117,18 +117,20 @@ MR_API std::istream& operator>>(std::istream& in, tuple<Args...>& t) {
 }
 
 template <typename T, typename... Args>
-auto scan() {
+auto __scan() {
 	std::conditional_t<sizeof...(Args) == 0, T, tuple<T, Args...>> res;
 	cin >> res;
 	return res;
 }
+
+#define scan(...) __scan<__VA_ARGS__>()
 
 template <typename T, typename... Args>
 struct __scanner_t { // NOLINT
 	inline decltype(auto) operator++() mr_noexcept { return *this; }
 	inline auto operator++(int) mr_noexcept->__scanner_t { return *this; }
 	inline static auto get() mr_noexcept {
-		return scan<T, Args...>();
+		return scan(T, Args...);
 	}
 	inline auto operator*() const mr_noexcept { return get(); }
 };
@@ -138,4 +140,8 @@ constexpr __scanner_t<Args...> scanner;
 
 template <typename... Args>
 auto from_scanner = from(scanner<Args...>);
+
+#define multicase            \
+	ll case_count = scan(ll); \
+	for (ll current_case = 1; current_case <= case_count; ++current_case)
 MR_NAMESPACE_END
