@@ -5,7 +5,7 @@
 #include <mirai/util/pipe.hpp>
 #include <mirai/geo/polygon.hpp>
 MR_NAMESPACE_BEGIN
-generator<tuple<vec2f, vec2f, vec2f>> rotating_parallel(const vector<vec2f>& hull) {
+generator<tuple<vec2f, vec2f, vec2f>> rotating_parallel_coro(const vector<vec2f>& hull) {
 	if (hull.size() < 2) co_return;
 	ull m = hull.size();
 	ull it = 0;
@@ -17,7 +17,7 @@ generator<tuple<vec2f, vec2f, vec2f>> rotating_parallel(const vector<vec2f>& hul
 	co_yield { hull.back(), hull.front(), hull[it] };
 }
 
-generator<tuple<vec2f, vec2f, vec2f, vec2f, vec2f>> rotating_rectangle(const vector<vec2f>& hull) {
+generator<tuple<vec2f, vec2f, vec2f, vec2f, vec2f>> rotating_rectangle_coro(const vector<vec2f>& hull) {
 	if (hull.size() < 3) co_return;
 	ull m = hull.size();
 	ull A = 0, B = 1, C = 2, D = 1, E = 1;

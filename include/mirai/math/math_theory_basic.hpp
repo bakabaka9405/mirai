@@ -24,10 +24,6 @@ fastpow(ull x, ull k, ull P) mr_noexcept {
 	return res;
 }
 
-MR_NODISCARD inline ull inv(ull x, ull P) mr_noexcept {
-	return fastpow(x, P - 2, P);
-}
-
 MR_NODISCARD inline auto exgcd(ll a, ll b) mr_noexcept {
 	ll x1 = 1, x2 = 0, x3 = 0, x4 = 1;
 	while (b != 0) {
@@ -37,5 +33,8 @@ MR_NODISCARD inline auto exgcd(ll a, ll b) mr_noexcept {
 	return std::make_tuple(a, x1, x2);
 }
 
+MR_NODISCARD inline ull inv(ull x, ull P) mr_noexcept {
+	return std::get<1>(exgcd((ll)x, (ll)P));
+}
 
 MR_NAMESPACE_END

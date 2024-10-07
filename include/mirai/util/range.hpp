@@ -115,4 +115,7 @@ constexpr auto enumerate(_range&& arr, size_t start = 0) mr_noexcept {
 	return zip(views::iota(start), std::forward<_range>(arr));
 }
 
+template <range _range>
+using range_element_t = decltype(*mr_begin(std::declval<_range>()));
+
 MR_NAMESPACE_END

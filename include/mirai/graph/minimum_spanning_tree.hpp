@@ -7,7 +7,7 @@
 MR_NAMESPACE_BEGIN
 template <typename T, typename Compare = std::less<>>
 	requires(!std::is_same_v<T, void>)
-generator<tuple<ll, ll, T>> kruskal(const graph<T>& G, Compare&& cmp = Compare{}) {
+generator<tuple<ll, ll, T>> kruskal_coro(const graph<T>& G, Compare&& cmp = Compare{}) {
 	disjoint_set_union dsu(G.node_count());
 	vector<tuple<ll, ll, T>> edges;
 	iterate_all_edges(G) | append_to(edges) | endp;

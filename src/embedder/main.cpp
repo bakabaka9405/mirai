@@ -127,7 +127,7 @@ int main(int argc, char** argv) {
 	}
 	id.resize(G.node_count() + 1);
 	calc_graph_degree<G, config>();
-	topo_sort(G, id) | append_to(topo) | endp;
+	topo_sort_coro(G, id) | append_to(topo) | endp;
 	debug("sorted header:");
 	ofstream fout(dst_path);
 	for (auto&& i : flag_defines) fout << "#define " << i << endl;

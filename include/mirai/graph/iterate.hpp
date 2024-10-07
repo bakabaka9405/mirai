@@ -20,7 +20,7 @@ void calc_graph_degree() {
 }
 
 template <typename T>
-auto iterate_all_edges(const graph<T>& G)
+auto iterate_all_edges_coro(const graph<T>& G)
 	-> generator<std::conditional_t<std::is_same_v<T, void>, pair<ll, ll>, tuple<ll, ll, T>>> {
 	for (auto i : views::iota(0ll, G.node_count())) {
 		for (auto&& e : G[i]) {
@@ -32,7 +32,7 @@ auto iterate_all_edges(const graph<T>& G)
 	}
 }
 
-generator<ll> topo_sort(auto&& G, auto&& in_degree) {
+generator<ll> topo_sort_coro(auto&& G, auto&& in_degree) {
 	vector<ll> used_degree(G.node_count());
 	queue<ll> q;
 	for (auto i : views::iota(0ll, G.node_count()))
@@ -47,10 +47,10 @@ generator<ll> topo_sort(auto&& G, auto&& in_degree) {
 	}
 }
 
-auto dfs_in_tree(auto&& G, ll root, const auto&& get_v = __edge_get_v) {
+auto dfs_in_tree_coro(auto&& G, ll root, const auto&& get_v = __edge_get_v) {
 	auto dfs = [&](auto&& self, auto&& G, ll u, ll fa) -> generator<tuple<ll, ll, ll>> {
 		co_yield { u, fa, 0 };
-		for (auto&& v : G[u] | transform(get_v) | filter(not_equal_to(fa)))
+		for (auto&& v : G[u] | transform(get_v) | filter(lambda(x, x != fa)))
 			for (auto&& [v2, f, status] : self(self, std::forward<decltype(G)>(G), v, u))
 				co_yield { v2, f, status };
 		co_yield { u, fa, 1 };

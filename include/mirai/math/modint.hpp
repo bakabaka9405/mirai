@@ -4,6 +4,7 @@
 MR_NAMESPACE_BEGIN
 template <ull P>
 struct modint {
+	static_assert(P > 0, "P must be positive");
 	ll val;
 	constexpr modint(ll v = 0) mr_noexcept // NOLINT
 		: val(((v % P) + P) % P) {}
@@ -12,7 +13,7 @@ struct modint {
 		return *this;
 	}
 	modint inv() const mr_noexcept {
-		return std::get<1>(exgcd(P, val));
+		return mirai::inv(val, P);
 	}
 	modint operator+(const modint& v) const mr_noexcept { return modint{ val + v.val }; }
 	modint operator-(const modint& v) const mr_noexcept { return modint{ val - v.val }; }

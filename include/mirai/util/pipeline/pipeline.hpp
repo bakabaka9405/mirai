@@ -152,7 +152,6 @@ MR_NODISCARD inline constexpr auto take(size_t n) {
 	return __take_helper{ n };
 }
 
-
 template <range _range>
 inline auto skip(_range&& r, size_t n) {
 	struct skip_wrapper {
@@ -184,6 +183,68 @@ inline constexpr auto skip(size_t n) {
 
 void repeat(size_t n, auto&& func) mr_noexcept {
 	while (n--) func();
+}
+
+auto irange(ll l, ll r) mr_noexcept {
+	MR_ASSUME(l <= r);
+	struct irange_wrapper {
+		ll l, r;
+		struct iterator {
+			ll v;
+			ll sen_v;
+			inline bool operator!=(const std::default_sentinel_t&) const mr_noexcept {
+				return v != sen_v;
+			}
+			inline iterator& operator++() mr_noexcept {
+				++v;
+				return *this;
+			}
+			inline auto operator++(int) mr_noexcept->iterator {
+				return iterator{ v++, sen_v };
+			}
+			inline ll operator*() const mr_noexcept {
+				return v;
+			}
+		};
+		MR_NODISCARD constexpr auto begin() const mr_noexcept {
+			return iterator{ l, r };
+		}
+		MR_NODISCARD constexpr auto end() const mr_noexcept {
+			return std::default_sentinel;
+		}
+	};
+	return irange_wrapper{ l, r };
+}
+
+auto irange(ll l, ll r, ll step) mr_noexcept {
+	struct irange_wrapper {
+		ll l, r, step;
+		struct iterator {
+			ll v;
+			ll sen_v;
+			ll step;
+			inline bool operator!=(const std::default_sentinel_t&) const mr_noexcept {
+				return v != sen_v;
+			}
+			inline iterator& operator++() mr_noexcept {
+				v += step;
+				return *this;
+			}
+			inline auto operator++(int) mr_noexcept->iterator {
+				return iterator{ v + step, sen_v, step };
+			}
+			inline ll operator*() const mr_noexcept {
+				return v;
+			}
+		};
+		MR_NODISCARD constexpr auto begin() const mr_noexcept {
+			return iterator{ l, r, step };
+		}
+		MR_NODISCARD constexpr auto end() const mr_noexcept {
+			return std::default_sentinel;
+		}
+	};
+	return irange_wrapper{ l, r, step };
 }
 
 MR_NAMESPACE_END
