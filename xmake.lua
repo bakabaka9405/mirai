@@ -4,8 +4,8 @@ set_languages("c11","cxx23")
 add_cxxflags("-DMR_LOCAL")
 if is_mode("debug") then 
     add_cxxflags("-DMR_DEBUG")
-    set_policy("build.sanitizer.address", true)
-    set_policy("build.sanitizer.undefined", true)
+    -- set_policy("build.sanitizer.address", true)
+    -- set_policy("build.sanitizer.undefined", true)
 end
 
 
@@ -34,6 +34,12 @@ target("embedder")
     --set_toolchains("gcc")
     set_default(false)
 
+target("calc")
+    set_kind("binary")
+    add_files("src/calc/*.cpp")
+    add_deps("mirai")
+    --set_toolchains("gcc")
+    set_default(false)
 
 --
 -- If you want to known more usage about xmake, please see https: //xmake.io

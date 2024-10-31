@@ -14,10 +14,6 @@ concept vec3_like = requires(T&& t) {
 	t.z;
 };
 
-template <typename proxy_type, typename T>
-concept proxy = requires() {
-	proxy_type::work;
-};
 
 template <typename T>
 concept arithmetic = std::is_arithmetic_v<T>;

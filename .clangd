@@ -168,7 +168,7 @@ Diagnostics:
 
 CompileFlags:
   Add: [-xc++, -Wall, -Wextra, -Wno-unused-variable, -std=c++20, -DMR_CLANGD]
-  Compiler: "C:/mingw64/bin/gcc.exe"
+  Compiler: "gcc"
 
 InlayHints:
   Enabled: true
