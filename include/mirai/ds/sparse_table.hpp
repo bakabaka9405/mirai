@@ -12,45 +12,26 @@ private:
 	vector<vector<T>> val;
 	ull size = 0, layer = 0;
 
-public:
-	inline void resize(size_t n) mr_noexcept {
-		size = n;
-		layer = std::bit_width(n) + 1;
-		val.resize(layer);
-	}
-	inline void load(auto&& begin, auto&& end) mr_noexcept {
-		if constexpr (requires { std::distance(begin, end); }) {
-			resize(std::distance(begin, end));
-			val[0].resize(std::distance(begin, end));
-			copy(begin, end, val[0].begin());
-		}
-		else {
-			if (val.empty()) val.push_back({});
-			val[0].clear();
-			for (auto i = begin; i != end; ++i) val[0].push_back(*i);
-			resize(val[0].size());
-		}
-	}
 	inline void calc() mr_noexcept {
-		for (ull i = 1, k = 1; i < layer; i++, k <<= 1u) {
+		layer = std::bit_width(size);
+		val.resize(layer);
+		for (ull i = 1, k = 1; i < layer; i++, k <<= 1) {
 			val[i].resize(size - k + 1);
-			for (ull l = 0, r = k; r < val[i - 1].size(); l++, r++) {
+			for (ull l = 0, r = k; r < size; l++, r++)
 				val[i][l] = merge(val[i - 1][l], val[i - 1][r]);
-			}
 		}
 	}
-	inline void load(range auto&& r) mr_noexcept { load(mr_begin(r), mr_end(r)); }
-	inline void load_and_calc(range auto&& r) mr_noexcept {
-		load(r);
+
+public:
+	constexpr sparse_table() = default;
+	explicit constexpr sparse_table(const vector<T>& vec)
+		: size(vec.size()), val(1, vec) {
 		calc();
 	}
-	inline void load_and_calc(auto&& begin, auto&& end) mr_noexcept {
-		load(begin, end);
+	explicit constexpr sparse_table(vector<T>&& vec)
+		: size(vec.size()), val(1, std::move(vec)) {
 		calc();
 	}
-	sparse_table() mr_noexcept = default;
-	sparse_table(auto begin, auto end) mr_noexcept { load(begin, end); }
-	inline T& operator[](ull pos) mr_noexcept { return val[0][pos]; }
 	MR_NODISCARD inline T query(ull l, ull r) mr_noexcept {
 		MR_ASSUME(l <= r);
 		ull layer = std::bit_width(r - l + 1) - 1;

@@ -10,7 +10,7 @@ struct circle {
 	constexpr circle(circle&&) mr_noexcept = default;
 	constexpr circle& operator=(const circle&) mr_noexcept = default;
 	constexpr circle(vec2f _center, double _radius) mr_noexcept : center(_center), radius(_radius) {}
-	constexpr bool operator==(const circle& rt) const mr_noexcept { return center == rt.center && std::equal_to<double>()(radius, rt.radius); }
+	constexpr bool operator==(const circle& rt) const mr_noexcept { return center == rt.center && std::equal_to<>()(radius, rt.radius); }
 	constexpr bool operator!=(const circle& rt) const mr_noexcept { return !this->operator==(rt); }
 	MR_NODISCARD constexpr static circle from_diameter(const vec2f& a, const vec2f& b) mr_noexcept {
 		return { (a + b) / 2, a.distance_to(b) / 2 };
