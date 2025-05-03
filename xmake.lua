@@ -34,12 +34,6 @@ target("embedder")
     --set_toolchains("gcc")
     set_default(false)
 
-target("calc")
-    set_kind("binary")
-    add_files("src/calc/*.cpp")
-    add_deps("mirai")
-    --set_toolchains("gcc")
-    set_default(false)
 
 --
 -- If you want to known more usage about xmake, please see https: //xmake.io

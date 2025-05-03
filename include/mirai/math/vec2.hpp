@@ -51,15 +51,24 @@ struct vec2 {
 	MR_NODISCARD friend constexpr vec2 lerp(const vec2& lhs, const vec2& rhs, double t) mr_noexcept {
 		return lhs + t * (rhs - lhs);
 	}
-	MR_NODISCARD friend constexpr auto dot_product(const vec2& lhs, const vec2& rhs) mr_noexcept { return lhs.x * rhs.x + lhs.y * rhs.y; }
-	MR_NODISCARD friend constexpr auto dot_product_abs(const vec2& lhs, const vec2& rhs) mr_noexcept { return std::abs(dot_product(lhs, rhs)); }
-	MR_NODISCARD friend constexpr auto dot_product(const vec2& A, const vec2& B, const vec2& C) mr_noexcept { return dot_product(B - A, C - A); }
-	MR_NODISCARD friend constexpr auto dot_product_abs(const vec2& A, const vec2& B, const vec2& C) mr_noexcept { return std::abs(dot_product(A, B, C)); }
-	MR_NODISCARD friend constexpr auto cross_product(const vec2& lhs, const vec2& rhs) mr_noexcept { return lhs.x * rhs.y - lhs.y * rhs.x; }
-	MR_NODISCARD friend constexpr auto cross_product(const vec2& A, const vec2& B, const vec2& C) mr_noexcept { return cross_product(B - A, C - A); }
-	MR_NODISCARD friend constexpr auto cross_product_abs(const vec2& lhs, const vec2& rhs) mr_noexcept { return std::abs(cross_product(lhs, rhs)); }
-	MR_NODISCARD friend constexpr auto cross_product_abs(const vec2& A, const vec2& B, const vec2& C) mr_noexcept { return std::abs(cross_product(A, B, C)); }
+	MR_NODISCARD friend constexpr auto dot_product(const vec2& A, const vec2& B) mr_noexcept { return A.x * B.x + A.y * B.y; }
+	MR_NODISCARD friend constexpr auto dot_product_abs(const vec2& A, const vec2& B) mr_noexcept { return std::abs(dot_product(A, B)); }
+	MR_NODISCARD friend constexpr auto dot_product(const vec2& origin, const vec2& A, const vec2& B) mr_noexcept { return dot_product(A - origin, B - origin); }
+	MR_NODISCARD friend constexpr auto dot_product_abs(const vec2& origin, const vec2& A, const vec2& B) mr_noexcept { return std::abs(dot_product(origin, A, B)); }
+	MR_NODISCARD friend constexpr auto cross_product(const vec2& A, const vec2& B) mr_noexcept { return A.x * B.y - A.y * B.x; }
+	MR_NODISCARD friend constexpr auto cross_product(const vec2& origin, const vec2& A, const vec2& B) mr_noexcept { return cross_product(A - origin, B - origin); }
+	MR_NODISCARD friend constexpr auto cross_product_abs(const vec2& A, const vec2& B) mr_noexcept { return std::abs(cross_product(A, B)); }
+	MR_NODISCARD friend constexpr auto cross_product_abs(const vec2& origin, const vec2& A, const vec2& B) mr_noexcept { return std::abs(cross_product(origin, A, B)); }
 	MR_NODISCARD constexpr auto atan() const mr_noexcept { return std::atan2(y, x); }
+	MR_NODISCARD friend constexpr auto cos(const vec2& A, const vec2& B) {
+		return dot_product(A, B) / (A.norm() * B.norm());
+	}
+	MR_NODISCARD friend constexpr auto sin(const vec2& A, const vec2& B) {
+		return cross_product(A, B) / (A.norm() * B.norm());
+	}
+	MR_NODISCARD friend constexpr auto atan(const vec2& A, const vec2& B) {
+		return std::atan2(cross_product(A, B), dot_product(A, B));
+	}
 	MR_NODISCARD constexpr auto distance_to(const vec2& rhs) const mr_noexcept {
 		return std::sqrt((x - rhs.x) * (x - rhs.x) + (y - rhs.y) * (y - rhs.y));
 	}
@@ -69,11 +78,11 @@ struct vec2 {
 	MR_NODISCARD friend constexpr auto manhattan_distance_to(const vec2& lhs, const vec2& rhs) mr_noexcept {
 		return std::abs(lhs.x - rhs.x) + std::abs(lhs.y - rhs.y);
 	}
-	MR_NODISCARD constexpr vec2 project_to(const vec2& dst) const mr_noexcept {
+	MR_NODISCARD constexpr vec2 projected_to(const vec2& dst) const mr_noexcept {
 		return dst * dot_product(*this, dst) / dot_product(dst, dst);
 	}
 	MR_NODISCARD friend constexpr vec2 projection(const vec2& src, const vec2& dst) {
-		return src.project_to(dst);
+		return src.projected_to(dst);
 	}
 	void rotate(double radian) mr_noexcept {
 		std::tie(x, y) = std::make_pair(x * std::cos(radian) - y * std::sin(radian), x * std::sin(radian) + y * std::cos(radian));
@@ -84,11 +93,11 @@ struct vec2 {
 	MR_NODISCARD friend constexpr bool is_collinear(const vec2& v1, const vec2& v2, const vec2& v3) {
 		return std::abs(cross_product(v2 - v1, v3 - v1)) < 1e-9;
 	}
-	MR_NODISCARD friend constexpr bool is_clockwise(const vec2& v1, const vec2& v2, const vec2& v3) {
-		return cross_product(v2 - v1, v3 - v1) < 0;
+	MR_NODISCARD friend constexpr bool is_clockwise(const vec2& origin, const vec2& to, const vec2& from) {
+		return cross_product(to - origin, from - origin) < 0;
 	}
-	MR_NODISCARD friend constexpr bool is_counter_clockwise(const vec2& v1, const vec2& v2, const vec2& v3) {
-		return cross_product(v2 - v1, v3 - v1) > 0;
+	MR_NODISCARD friend constexpr bool is_counter_clockwise(const vec2& origin, const vec2& to, const vec2& from) {
+		return cross_product(to - origin, from - origin) > 0;
 	}
 	MR_NODISCARD constexpr static vec2<double> from_polar(double theta, double r = 1) mr_noexcept {
 		return { r * std::cos(theta), r * std::sin(theta) };

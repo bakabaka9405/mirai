@@ -1,16 +1,18 @@
 #pragma once
 #include <mirai/pch.hpp>
 #include <mirai/util/range.hpp>
+#include <mirai/util/meta/meta.hpp>
 MR_NAMESPACE_BEGIN
 
 class __transform_fn {
-private:
+public:
 	template <size_t I = 0, typename T, typename... Func>
 	inline constexpr static auto link_invoke(tuple<Func...>& func, T&& arg) mr_noexcept {
 		if constexpr (I == sizeof...(Func)) {
 			return arg;
 		}
 		else {
+			static_assert(std::invocable<nth_type_t<I, Func...>, T>, "cannot invoke, check if the function is invocable with the argument");
 			return link_invoke<I + 1>(func, std::invoke(get<I>(func), std::forward<T>(arg)));
 		}
 	}
@@ -21,6 +23,7 @@ private:
 			return arg;
 		}
 		else {
+			static_assert(std::invocable<nth_type_t<I, Func...>, T>, "cannot invoke, check if the function is invocable with the argument");
 			return link_invoke_const<I + 1>(func, std::invoke(get<I>(func), std::forward<T>(arg)));
 		}
 	}

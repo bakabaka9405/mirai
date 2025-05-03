@@ -1,10 +1,9 @@
 #pragma once
+#include <chrono>
 #include <mirai/pch.hpp>
 MR_NAMESPACE_BEGIN
 
-inline random_device __gen;
-
-inline std::mt19937_64 __e(__gen());
+inline std::mt19937_64 __e(std::chrono::system_clock::now().time_since_epoch().count());
 
 MR_NODISCARD inline ll
 randi(ll l, ll r) mr_noexcept {
@@ -40,16 +39,16 @@ struct rand_generator {
 	uniform_auto_distribution<T> u;
 	rand_generator(T l, T r) mr_noexcept : l(l), r(r), u{ l, r } {}
 	T operator()() mr_noexcept {
-		return u(__gen);
+		return u(__e);
 	}
 };
 
 inline void
 shuffle(auto begin, auto end) mr_noexcept {
-	std::shuffle(begin, end, __gen);
+	std::shuffle(begin, end, __e);
 }
 
 inline void shuffle(auto& r) mr_noexcept {
-	ranges::shuffle(r, __gen);
+	ranges::shuffle(r, __e);
 }
 MR_NAMESPACE_END

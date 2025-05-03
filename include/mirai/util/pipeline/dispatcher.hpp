@@ -183,4 +183,12 @@ constexpr inline struct {
 inline auto operator|(auto&& lhs, const decltype(endp)&) mr_noexcept {
 	return lhs();
 }
+
+struct to_stdout {
+	char sep = ' ';
+	explicit constexpr to_stdout(char sep = ' ') mr_noexcept : sep(sep) {}
+	void operator()(auto&& x) const mr_noexcept {
+		std::cout << x << sep;
+	}
+};
 MR_NAMESPACE_END
