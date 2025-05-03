@@ -33,12 +33,12 @@ struct line {
 		return !l1.is_parallel_to(l2);
 	}
 	MR_NODISCARD constexpr friend vec2f intersection(const line& l1, const line& l2) mr_noexcept {
-		auto u = cross_product(l2.d, l1.o - l2.o) / cross_product(l2.d, l1.d);
+		auto u = cross_product(l2.o - l1.o, l2.d) / cross_product(l1.d, l2.d);
 		return l1.o + l1.d * u;
 	}
 	MR_NODISCARD constexpr friend std::optional<vec2f> intersection_opt(const line& l1, const line& l2) mr_noexcept {
 		if (l1.is_parallel_to(l2)) return std::nullopt;
-		auto u = cross_product(l2.d, l1.o - l2.o) / cross_product(l2.d, l1.d);
+		auto u = cross_product(l2.o - l1.o, l2.d) / cross_product(l1.d, l2.d);
 		return l1.o + l1.d * u;
 	}
 };
