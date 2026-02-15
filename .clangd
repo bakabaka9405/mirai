@@ -1,11 +1,10 @@
 If:
-  PathMatch: [.*\.cpp,.*\.h,.*\.hpp]
+  PathMatch: [.*\.cpp, .*\.h, .*\.hpp]
 
-Diagnostics: 
-  UnusedIncludes:  None
-  ClangTidy: 
-    Add: 
-    [
+Diagnostics:
+  UnusedIncludes: None
+  ClangTidy:
+    Add: [
         # performance-*,
         # bugprone-*,
         # modernize-*,
@@ -161,14 +160,14 @@ Diagnostics:
         readability-static-definition-in-anonymous-namespace,
         readability-string-compare,
         readability-uniqueptr-delete-release,
-        readability-use-anyofallof
-    ]
-    CheckOptions: 
-      readability-identifier-naming.VariableCase:  camelCase
+        readability-use-anyofallof,
+      ]
+    CheckOptions:
+      readability-identifier-naming.VariableCase: camelCase
 
 CompileFlags:
   Add: [-xc++, -Wall, -Wextra, -Wno-unused-variable, -std=c++23, -DMR_CLANGD]
-  Compiler: "gcc"
+  Compiler: 'gcc'
 
 InlayHints:
   Enabled: true

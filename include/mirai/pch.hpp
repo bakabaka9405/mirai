@@ -56,8 +56,8 @@ using i8 = int8_t;
 using u8 = uint8_t;
 using i32 = int32_t;
 using u32 = uint32_t;
-using ll = int64_t;
-using ull = uint64_t;
+using ll = long long;
+using ull = unsigned long long;
 using i64 = int64_t;
 using u64 = uint64_t;
 
@@ -185,6 +185,7 @@ using std::move;
 #define _MR_LAMBDA2(x, y) [&](auto&&(x)) mr_noexcept { return y; }
 #define _MR_LAMBDA3(x, y, z) [&](auto&&(x), auto&&(y)) mr_noexcept { return z; }
 #define _MR_LAMBDA4(x, y, z, w) [&](auto&&(x), auto&&(y), auto&&(z)) mr_noexcept { return w; }
+#define _MR_LAMBDA5(a, b, c, d, w) [&](auto&&(a), auto&&(b), auto&&(c), auto&&(d)) mr_noexcept { return w; }
 #define lambda(...) _MR_CONCAT(_MR_LAMBDA, _MR_COUNT_ARGS(__VA_ARGS__))(__VA_ARGS__)
 
 MR_NAMESPACE_END

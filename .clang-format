@@ -7,25 +7,25 @@ AccessModifierOffset: -4
 # 开括号(开圆括号、开尖括号、开方括号)后的对齐:  Align, DontAlign, AlwaysBreak(总是在开括号后换行)
 AlignAfterOpenBracket: Align
 # 连续赋值时，对齐所有等号
-AlignConsecutiveAssignments: "None"
+AlignConsecutiveAssignments: 'None'
 # 连续声明时，对齐所有声明的变量名
-AlignConsecutiveDeclarations: "None"
+AlignConsecutiveDeclarations: 'None'
 # 左对齐逃脱换行(使用反斜杠换行)的反斜杠
 AlignEscapedNewlinesLeft: true
 # 水平对齐二元和三元表达式的操作数
-AlignOperands: "Align"
+AlignOperands: 'Align'
 # 对齐连续的尾随的注释
 AlignTrailingComments: true
 # 允许函数声明的所有参数在放在下一行
 AllowAllParametersOfDeclarationOnNextLine: true
 # 允许短的块放在同一行
-AllowShortBlocksOnASingleLine: "Always"
+AllowShortBlocksOnASingleLine: 'Always'
 # 允许短的case标签放在同一行
 AllowShortCaseLabelsOnASingleLine: true
 # 允许短的函数放在同一行:  None, InlineOnly(定义在类中), Empty(空函数), Inline(定义在类中，空函数), All
 AllowShortFunctionsOnASingleLine: Inline
 # 允许短的if语句保持在同一行
-AllowShortIfStatementsOnASingleLine: "AllIfsAndElse"
+AllowShortIfStatementsOnASingleLine: 'AllIfsAndElse'
 # 允许短的循环保持在同一行
 AllowShortLoopsOnASingleLine: true
 # 总是在定义返回类型后换行(deprecated)
@@ -36,16 +36,16 @@ AlwaysBreakAfterReturnType: None
 # 总是在多行string字面量前换行
 AlwaysBreakBeforeMultilineStrings: false
 # 总是在template声明后换行
-AlwaysBreakTemplateDeclarations: "No"
+AlwaysBreakTemplateDeclarations: 'No'
 # false表示函数实参要么都在同一行，要么都各自一行
 BinPackArguments: true
 # false表示所有形参要么都在同一行，要么都各自一行
-BinPackParameters: true
+BinPackParameters: 'BinPack'
 BreakBeforeBraces: Custom
 # 大括号换行，只有当BreakBeforeBraces设置为Custom时才有效
 BraceWrapping:
   AfterClass: false
-  AfterControlStatement: "Never"
+  AfterControlStatement: 'Never'
   AfterEnum: false
   AfterFunction: false
   AfterNamespace: false
@@ -64,7 +64,7 @@ BreakConstructorInitializersBeforeComma: false
 # 每行字符的限制，0表示没有限制
 ColumnLimit: 0
 # 描述具有特殊意义的注释的正则表达式，它不应该被分割为多行或以其它方式改变
-CommentPragmas: "^ IWYU pragma: "
+CommentPragmas: '^ IWYU pragma: '
 # 构造函数的初始化列表要么都在同一行，要么都各自一行
 ConstructorInitializerAllOnOneLineOrOnePerLine: false
 # 构造函数的初始化列表的缩进宽度
@@ -90,19 +90,13 @@ IndentWrappedFunctionNames: false
 # 保留在块开始处的空行
 KeepEmptyLinesAtTheStartOfBlocks: true
 # 开始一个块的宏的正则表达式
-MacroBlockBegin: ""
+MacroBlockBegin: ''
 # 结束一个块的宏的正则表达式
-MacroBlockEnd: ""
+MacroBlockEnd: ''
 # 连续空行的最大数量
 MaxEmptyLinesToKeep: 1
 # 命名空间的缩进:  None, Inner(缩进嵌套的命名空间中的内容), All
-NamespaceIndentation: All
-# 使用ObjC块时缩进宽度
-ObjCBlockIndentWidth: 4
-# 在ObjC的@property后添加一个空格
-ObjCSpaceAfterProperty: false
-# 在ObjC的protocol列表前添加一个空格
-ObjCSpaceBeforeProtocolList: true
+NamespaceIndentation: None
 # 在call(后对函数调用换行的penalty
 PenaltyBreakBeforeFirstCallParameter: 19
 # 在一个注释中引入换行的penalty
@@ -118,9 +112,9 @@ PenaltyReturnTypeOnItsOwnLine: 60
 # 指针和引用的对齐:  Left, Right, Middle
 PointerAlignment: Left
 # 允许重新排版注释
-ReflowComments: true
+ReflowComments: 'IndentOnly'
 # 允许排序#include
-SortIncludes: "Never"
+SortIncludes: { 'Enabled': false }
 # 在C风格类型转换后添加空格
 SpaceAfterCStyleCast: false
 # 在赋值运算符之前添加空格
@@ -132,7 +126,7 @@ SpaceInEmptyParentheses: false
 # 在尾随的评论前添加的空格数(只适用于//)
 SpacesBeforeTrailingComments: 1
 # 在尖括号的<后和>前添加空格
-SpacesInAngles: "Never"
+SpacesInAngles: 'Never'
 # 在容器(ObjC和JavaScript的数组和字典等)字面量中添加空格
 SpacesInContainerLiterals: true
 # 在C风格类型转换的括号中添加空格
@@ -142,7 +136,7 @@ SpacesInParentheses: false
 # 在方括号的[后和]前添加空格，lamda表达式和未指明大小的数组的声明不受影响
 SpacesInSquareBrackets: false
 # 标准:  Cpp03, Cpp11, Auto
-Standard: "c++20"
+Standard: 'Latest'
 # tab宽度
 TabWidth: 4
 # 使用tab字符:  Never, ForIndentation, ForContinuationAndIndentation, Always

@@ -12,7 +12,7 @@ namespace fs = std::filesystem;
 vector<string> header_index(1);
 unordered_map<string, ll> header_table;
 ll header_count;
-graph<void> G;
+graph<void> E(1);
 vector<ll> id, topo;
 struct _config {
 	CONFIG_ITEM in_degree = id;
@@ -49,20 +49,20 @@ bool register_header(const string& s) {
 }
 int main(int argc, char** argv) {
 	auto_timer _t;
-	//  if (argc < 3) {
-	//  	cout << "error: not enough argument." << endl;
-	//  	return 0;
-	//  }
-	//  else if (argc > 4) {
-	//  	cout << "error: too many arguments." << endl;
-	//  	return 0;
-	//  }
-	//  fs::path src_path = argv[1], mirai_path = argv[2];
-	//  fs::path dst_path = "output.cpp";
-	//  if (argc == 4) dst_path = argv[3];
-	fs::path src_path = R"(C:\Temp\src.cpp)";
-	fs::path mirai_path = R"(E:\Working\proj\mirai\include\)";
-	fs::path dst_path = R"(C:\Temp\embed.cpp)";
+	 if (argc < 3) {
+	 	cout << "error: not enough argument." << endl;
+	 	return 0;
+	 }
+	 else if (argc > 4) {
+	 	cout << "error: too many arguments." << endl;
+	 	return 0;
+	 }
+	 fs::path src_path = argv[1], mirai_path = argv[2];
+	 fs::path dst_path = "output.cpp";
+	 if (argc == 4) dst_path = argv[3];
+	// fs::path src_path = R"(C:\Temp\src.cpp)";
+	// fs::path mirai_path = R"(E:\Working\proj\mirai\include\)";
+	// fs::path dst_path = R"(C:\Temp\embed.cpp)";
 	ifstream fin(src_path);
 	if (!fin.is_open()) {
 		cout << "error: cannot open source file. " << endl;
@@ -100,7 +100,7 @@ int main(int argc, char** argv) {
 			if (header.starts_with("mirai")) {
 				debug("found header:", header);
 				if (register_header(header)) q.push(header_table[header]);
-				G.insert(header_table[header], u);
+				E.insert(header_table[header], u);
 				continue;
 			}
 			string define = get_define(line);
@@ -125,9 +125,9 @@ int main(int argc, char** argv) {
 		debug("scanning header", header_index[u]);
 		scan_file(u);
 	}
-	id.resize(G.node_count() + 1);
-	calc_graph_degree<G, config>();
-	topo_sort_coro(G, id) | append_to(topo) | endp;
+	id.resize(E.node_count() + 1);
+	calc_graph_degree<E, config>();
+	topo_sort_coro(E, id) | append_to(topo) | endp;
 	debug("sorted header:");
 	ofstream fout(dst_path);
 	for (auto&& i : flag_defines) fout << "#define " << i << endl;

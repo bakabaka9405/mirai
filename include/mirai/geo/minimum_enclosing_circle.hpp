@@ -22,4 +22,9 @@ circle minimum_enclosing_circle(vector<vec2f>& points) {
 	}
 	return res;
 }
+
+circle minimum_enclosing_circle(auto&& begin, auto&& end) {
+	vector<vec2f> points(begin, end);
+	return minimum_enclosing_circle(points);
+}
 MR_NAMESPACE_END

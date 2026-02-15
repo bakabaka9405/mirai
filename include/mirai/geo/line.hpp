@@ -12,6 +12,9 @@ struct line {
 		: o(o),
 		  d(d) {}
 	MR_NODISCARD static constexpr line from_segment(const vec2f& p1, const vec2f& p2) mr_noexcept { return { p1, p2 - p1 }; }
+	MR_NODISCARD static constexpr line from_common_equation(double a, double b, double c) mr_noexcept {
+		return { vec2f(-a * c / (a * a + b * b), -b * c / (a * a + b * b)), vec2f(b, -a) };
+	}
 	MR_NODISCARD constexpr bool operator==(const line& other) const mr_noexcept { return o == other.o && d == other.d; }
 	MR_NODISCARD constexpr bool operator!=(const line& other) const mr_noexcept { return !(*this == other); }
 	MR_NODISCARD constexpr auto distance_to(const vec2f& p) const mr_noexcept {

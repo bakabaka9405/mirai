@@ -1,29 +1,23 @@
 #pragma once
 #include <mirai/pch.hpp>
 MR_NAMESPACE_BEGIN
+// int 范围内的模数可以把移位数改为 62
 struct fastmod {
-	i64 f, l;
-	u64 m, d;
-	explicit fastmod(ull d)
-		: d(d) {
-		l = 64 - __builtin_clzll(d - 1);
-		constexpr i128 one = 1;
-		i128 M = ((one << (64 + l)) + (one << l)) / d;
-		if (M < (one << 64))
-			f = 1, m = M;
-		else
-			f = 0, m = M - (one << 64);
+	ll m, p;
+	void init(ll p_) {
+		m = ll(((__int128)1 << 64) / p_);
+		p = p_;
 	}
-	friend i128 operator/(i128 n, const fastmod& mod_num) { // get n / d
-		if (mod_num.f)
-			return u128(n) * mod_num.m >> 64u >> mod_num.l;
-		else {
-			u64 t = u128(n) * mod_num.m >> 64u;
-			return (((n - t) >> 1u) + t) >> (mod_num.l - 1);
-		}
-	}
-	friend u64 operator%(u64 n, const fastmod& mod_num) { // get n % d
-		return n - n / mod_num * mod_num.d;
+	ll operator()(ll x) const noexcept {
+		x -= (ll)((__int128(x) * m) >> 64) * p;
+		if (x >= p) x -= p;
+		return x;
 	}
 };
+ll operator%(ll a, const fastmod& mod) {
+	return mod(a);
+}
+ll& operator%=(ll& a, const fastmod& mod) {
+	return a = mod(a);
+}
 MR_NAMESPACE_END

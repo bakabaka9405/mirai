@@ -8,32 +8,37 @@ if is_mode("debug") then
     -- set_policy("build.sanitizer.undefined", true)
 end
 
-
 target("mirai")
     set_kind("static")
+    set_plat("msys")
+    set_arch("x64")
     -- set_precompiled_header("include/mirai/pch.hpp")
+target_end()
 
-local cpp_files = os.files("src/test/*.cpp")
--- 循环处理每个cpp文件
-for _, file in ipairs(cpp_files) do
-    -- 提取文件名（不包含路径和扩展名）
-    local file_name = path.basename(file)
-
-    -- 创建独立的项目
-    target(file_name)
-        set_kind("binary")
-        add_files(file)
-        add_deps("mirai")
-        set_default(false)
-end
-
-target("embedder")
+target("embedder")    
+    set_plat("msys")
+    set_arch("x64")
+    set_toolchains("gcc")
     set_kind("binary")
     add_files("src/embedder/*.cpp")
     add_deps("mirai")
-    --set_toolchains("gcc")
     set_default(false)
+target_end()
 
+target("shaker")
+    set_kind("binary")
+    set_toolchains("llvm")
+    set_plat("msys")
+    set_arch("x64")
+    add_files("src/shaker/*.cpp")
+    add_deps("mirai")
+    set_default(false)
+    add_cxflags("-fno-rtti")
+
+    add_linkdirs("C:/Tools/msys64/clang64/lib")
+    add_links("clang-cpp", "LLVM-21")
+    add_syslinks("version")
+target_end()
 
 --
 -- If you want to known more usage about xmake, please see https: //xmake.io
